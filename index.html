@@ -253,6 +253,48 @@ select{font:inherit;padding:11px;border-radius:12px;border:1px solid #2c3463;bac
 .fbanner{width:100%;margin-bottom:14px;padding:14px;border-radius:16px;background:var(--card2);text-align:left;display:flex;align-items:center;gap:12px}
 .fbanner b{display:block;font-size:17px}.fbanner span{color:var(--mut);font-size:12px;font-weight:400}
 .fbanner .finfo{color:#5dff9a;font-size:13px;font-weight:700;text-shadow:0 0 6px #2ecc7166}
+
+/* ===== TEMA 1 · NEON ROXO ===== */
+#games .gc .gpill{color:#032111!important;font-size:10px!important;font-weight:900!important}
+#games .tourcard .tneon{color:#fff!important;font-weight:900!important;font-size:20px!important;text-shadow:0 0 8px #fff,0 0 16px #ff2bd6,0 0 30px #ff2bd6}
+#games .tourcard small{color:#ffd6f2!important;font-size:12.5px;font-weight:700}
+body{background:radial-gradient(120% 50% at 50% 0%,#2a0e5c 0%,#0b0b1f 55%,#07070f 100%) fixed;background-color:#07070f}
+.scr{padding-bottom:118px}
+#lobby .top{margin-bottom:16px}
+#lav{width:54px;height:54px;font-size:22px;border:none;background-color:#7209b7;box-shadow:0 0 0 3px #ffc23d,0 0 16px #b026ff99}
+.hello small{display:block;font-size:13px;color:#d9c8ff}
+#lname{font-size:22px;font-weight:900;color:#fff;text-shadow:0 0 10px #b026ff}
+.bal1{background:linear-gradient(135deg,#0f3d24,#0a2a19);border:1.5px solid #2ecc71;box-shadow:0 0 14px #2ecc7166;border-radius:16px;padding:8px 12px}
+.bal1 small{color:#7dffb0;font-size:10.5px;font-weight:800;letter-spacing:1px}
+.bal1 #lbal{color:#5dff9a;font-size:19px;font-weight:900;text-shadow:0 0 8px #2ecc7188}
+.hero{border-radius:22px}
+.hero1{height:120px;border-radius:22px;position:relative;overflow:hidden;display:flex;align-items:center;padding:0 18px;background:linear-gradient(120deg,#5b10d6,#b026ff 55%,#ff2bd6)}
+.hero1 h1{font-size:27px;line-height:.95;font-weight:900;color:#fff;margin:0}
+.hero1 h1 em{color:#ffd35a;font-style:normal}
+.hero1 p{font-size:12.5px;font-weight:700;margin:6px 0 0;color:#fff;opacity:.92}
+.hero1 svg{position:absolute;right:8px;bottom:6px;width:116px;height:108px}
+.fb1{background:linear-gradient(90deg,#1a1440,#22104a)!important;border:1px solid #6b3bff55;border-radius:20px!important;padding:14px!important}
+.fb1 .fic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none;background:linear-gradient(135deg,#6b3bff,#b026ff);box-shadow:0 0 12px #b026ff77}
+.fb1 .fic svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round}
+.fb1 .fgo{margin-left:auto;font-size:26px;color:#d9c8ff}
+.sec1{display:flex;align-items:baseline;justify-content:space-between;margin:6px 2px 10px}
+.sec1 h2{margin:0;font-size:21px;font-weight:900}.sec1 span{font-size:12px;font-weight:700;color:#c79bff}
+#games .gc{background:#15122e;border:1px solid #ffffff14;border-radius:22px;box-shadow:0 10px 24px #0008;position:relative}
+#games .gc .art{height:118px;position:relative}
+#games .gc .art svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+#games .gc .tx{padding:10px 12px 12px}
+#games .gc .tx b{font-size:16px;font-weight:900}#games .gc .tx span{color:#b7a8e6;font-size:11.5px;font-weight:600}
+.gpill{position:absolute;top:8px;left:8px;z-index:3;font-size:10px;font-weight:900;padding:3px 8px;border-radius:20px;letter-spacing:.5px;background:#2ecc71;color:#032111}
+#games .tourcard{background:radial-gradient(circle at 50% 35%,#4a1080,#140a2c 70%);border:2px solid #ff2bd6}
+#games .tourcard .tic{width:100%;height:112px;filter:none}
+#games .tourcard .tic svg{width:100%;height:100%}
+#games .tourcard .tneon{font-size:20px;letter-spacing:2px;margin-top:0}
+.nav1{left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));height:70px;border-radius:26px;padding:0 6px;border:none;
+  background:linear-gradient(90deg,#5b10d6,#9b1fe8);box-shadow:0 10px 30px #5b10d688;align-items:center}
+.nav1 button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:800;color:#e3d2ff;padding:7px 0;border-radius:18px;position:relative;background:none}
+.nav1 button.on{color:#fff;background:#ffffff26}
+.nav1 svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav1 .badge{position:absolute;top:2px;right:calc(50% - 22px);margin:0;background:#2ecc71;color:#032111}
 </style>
 </head>
 <body>
@@ -261,8 +303,8 @@ select{font:inherit;padding:11px;border-radius:12px;border:1px solid #2c3463;bac
 <section id="lobby" class="scr on">
   <div class="top">
     <div class="av" id="lav"></div>
-    <div><small style="color:var(--mut)">Olá,</small><div id="lname" style="font-weight:800"></div></div>
-    <div class="bal"><small>SALDO DE TESTE</small><span id="lbal"></span></div>
+    <div class="hello"><small>Olá,</small><div id="lname"></div></div>
+    <div class="bal bal1"><small>SALDO DE TESTE</small><span id="lbal"></span></div>
   </div>
   <div class="banner">🧪 <b>Modo teste:</b> o saldo é fictício, nenhum dinheiro real entra ou sai. Partidas valendo saldo são contra robôs de treino. Com amigos e jogadores online é grátis.</div>
   <button id="instBtn" class="pri" style="display:none;width:100%;margin-bottom:12px">📲 Instalar o app no celular</button>
@@ -270,9 +312,9 @@ select{font:inherit;padding:11px;border-radius:12px;border:1px solid #2c3463;bac
   <div class="duo"><div id="rankBox" class="rankbox"></div><div id="vitBox"></div></div>
   <div id="neonBox"></div>
   <div id="socBox"></div>
-  <button class="fbanner" id="friendBtn"><span style="font-size:34px;color:inherit">👥</span><div><b>Jogar com um amigo</b><span id="friendSub" class="finfo">Escolha o jogo e mande o link no WhatsApp</span></div></button>
+  <button class="fbanner fb1" id="friendBtn"><span class="fic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3.5-6 6.5-6s6 2 6.5 6"/><circle cx="17.5" cy="9" r="2.6"/><path d="M16.5 14c2.5 0 4.5 1.6 5 4.6"/></svg></span><div><b>Jogar com um amigo</b><span id="friendSub" class="finfo">Escolha o jogo e mande o link no WhatsApp</span></div><span class="fgo">›</span></button>
   <div id="onStrip"></div>
-  <h2>Escolha o jogo</h2>
+  <div class="sec1"><h2>Escolha o jogo</h2><span>5 jogos + torneios</span></div>
   <div class="grid" id="games"></div>
 </section>
 
@@ -438,12 +480,12 @@ select{font:inherit;padding:11px;border-radius:12px;border:1px solid #2c3463;bac
   <div id="callBtns" class="cbtns"></div>
 </div>
 
-<nav class="nav" id="nav">
-  <button data-go="lobby" class="on"><i>🎮</i>Jogos</button>
-  <button data-go="online"><i>🟢</i>Online<span class="badge" id="onBadge">0</span></button>
-  <button data-go="chats"><i>💬</i>Conversas<span class="badge" id="chBadge">0</span></button>
-  <button data-go="wallet"><i>💰</i>Carteira</button>
-  <button data-go="profile"><i>👤</i>Perfil</button>
+<nav class="nav nav1" id="nav">
+  <button data-go="lobby" class="on"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="12" rx="6"/><path d="M7 11v4M5 13h4"/><circle cx="16" cy="12" r="1"/><circle cx="18" cy="14.5" r="1"/></svg>Jogos</button>
+  <button data-go="online"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3.5-6 6.5-6s6 2 6.5 6"/><circle cx="17.5" cy="9" r="2.6"/><path d="M16.5 14c2.5 0 4.5 1.6 5 4.6"/></svg>Online<span class="badge" id="onBadge">0</span></button>
+  <button data-go="chats"><svg viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M8 10h8M8 13h5"/></svg>Conversas<span class="badge" id="chBadge">0</span></button>
+  <button data-go="wallet"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 10h18M16 15h2"/><path d="M6 6l9-3 1.5 3"/></svg>Carteira</button>
+  <button data-go="profile"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.4-7 8-7s7 2.5 8 7"/></svg>Perfil</button>
 </nav>
 
 <div class="mod" id="mod"></div>
@@ -509,40 +551,59 @@ const GAMES=[
 ];
 GAMES[2].ic=tileSVG(6,3,true,22);
 /* artes das capas */
-const ART={
-dama:(()=>{let s='<svg viewBox="0 0 200 110"><defs><linearGradient id="gd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b2310"/><stop offset="1" stop-color="#1a0f06"/></linearGradient></defs><rect width="200" height="110" fill="url(#gd)"/>';
-  for(let r=0;r<4;r++)for(let c=0;c<10;c++){const y=40+r*18,sk=(r*6),x=c*22-10+sk*0.3;s+=`<polygon points="${x},${y} ${x+22},${y} ${x+22+3},${y+18} ${x+3},${y+18}" fill="${(r+c)%2?'#9b6837':'#f0d9b5'}" opacity=".9"/>`;}
-  [[45,58,'#c0392b'],[90,76,'#f7f3ea'],[130,58,'#c0392b'],[160,94,'#f7f3ea']].forEach(([x,y,c])=>{s+=`<ellipse cx="${x}" cy="${y+5}" rx="15" ry="6" fill="#0006"/><ellipse cx="${x}" cy="${y+3}" rx="14" ry="6" fill="${c==='#c0392b'?'#7a1f16':'#bdb6a6'}"/><ellipse cx="${x}" cy="${y}" rx="14" ry="6" fill="${c}"/>`;});
-  return s+'<text x="100" y="26" text-anchor="middle" font-size="20" fill="#ffd27a">♛</text></svg>';})(),
-xadrez:'<svg viewBox="0 0 200 110"><defs><radialGradient id="gx" cx=".5" cy=".4"><stop offset="0" stop-color="#3a4a7a"/><stop offset="1" stop-color="#0e1430"/></radialGradient></defs><rect width="200" height="110" fill="url(#gx)"/>'+
-  [...Array(10)].map((_,i)=>`<rect x="${i*20}" y="88" width="20" height="22" fill="${i%2?'#769656':'#eeeed2'}"/>`).join('')+
-  '<text x="62" y="92" text-anchor="middle" font-size="78" fill="#fff" stroke="#000" stroke-width="1.5">♞︎</text><text x="140" y="92" text-anchor="middle" font-size="86" fill="#111" stroke="#ffd27a" stroke-width="1.2">♚︎</text></svg>',
-domino:'<svg viewBox="0 0 200 110"><defs><radialGradient id="gm" cx=".5" cy=".5"><stop offset="0" stop-color="#1a8a52"/><stop offset="1" stop-color="#0a4a2a"/></radialGradient></defs><rect width="200" height="110" fill="url(#gm)"/>'+
-  `<g transform="translate(20,40) rotate(-12)">${tileSVG(6,6,false,24).replace('<svg','<svg x="0" y="0"')}</g><g transform="translate(78,30) rotate(8)">${tileSVG(3,5,true,24).replace('<svg','<svg x="0" y="0"')}</g><g transform="translate(118,52) rotate(-4)">${tileSVG(5,2,false,24).replace('<svg','<svg x="0" y="0"')}</g></svg>`,
-sinuca:(()=>{let s='<svg viewBox="0 0 200 110"><rect width="200" height="110" fill="#5a3418"/><rect x="10" y="10" width="180" height="90" rx="6" fill="#0f7a43"/>';
-  [[10,10],[100,8],[190,10],[10,100],[100,102],[190,100]].forEach(([x,y])=>s+=`<circle cx="${x}" cy="${y}" r="8" fill="#000"/>`);
-  const cl=['#e53935','#fdd835','#e53935','#fdd835','#111','#e53935','#fdd835','#e53935','#fdd835','#e53935'];let k=0;
-  for(let r=0;r<4;r++)for(let i=0;i<=r;i++){const x=120+r*11,y=55+(i-r/2)*11.5;s+=`<circle cx="${x}" cy="${y}" r="5.5" fill="${cl[k++]}"/><circle cx="${x-1.6}" cy="${y-1.6}" r="1.5" fill="#fff8"/>`;}
-  return s+'<circle cx="60" cy="55" r="5.5" fill="#fff"/><line x1="8" y1="70" x2="52" y2="58" stroke="#d9a066" stroke-width="4" stroke-linecap="round"/><line x1="66" y1="54" x2="112" y2="55" stroke="#fff6" stroke-dasharray="3 3"/></svg>';})(),
-ludo:'<svg viewBox="0 0 200 110"><rect width="200" height="110" fill="#fff"/><rect width="100" height="55" fill="#e53935"/><rect x="100" width="100" height="55" fill="#43a047"/><rect y="55" width="100" height="55" fill="#1e88e5"/><rect x="100" y="55" width="100" height="55" fill="#fdd835"/>'+
-  '<polygon points="70,25 130,25 100,55" fill="#fff"/><polygon points="70,85 130,85 100,55" fill="#fff"/><polygon points="70,25 70,85 100,55" fill="#fff" opacity=".85"/><polygon points="130,25 130,85 100,55" fill="#fff" opacity=".85"/>'+
-  '<g transform="translate(100,55) rotate(15)"><rect x="-20" y="-20" width="40" height="40" rx="8" fill="#fff" stroke="#222" stroke-width="2"/>'+[[-9,-9],[9,-9],[0,0],[-9,9],[9,9]].map(([a,b])=>`<circle cx="${a}" cy="${b}" r="3.5" fill="#222"/>`).join('')+'</g>'+
-  [[25,20,'#e53935'],[175,20,'#43a047'],[25,90,'#1e88e5'],[175,90,'#fdd835']].map(([x,y,c])=>`<circle cx="${x}" cy="${y}" r="9" fill="#fff"/><circle cx="${x}" cy="${y}" r="6" fill="${c}" stroke="#222" stroke-width="1.5"/>`).join('')+'</svg>'
+const ARTF={
+dama:id=>{let sq='';for(let r=0;r<6;r++)for(let c=0;c<6;c++)sq+=`<rect x="${c*20}" y="${r*20}" width="20" height="20" fill="${(r+c)%2?'url(#dk'+id+')':'url(#lt'+id+')'}"/>`;
+ const pc=(x,y,c1,c2,cr)=>`<g transform="translate(${x},${y})"><ellipse cy="9" rx="17" ry="7" fill="#0006"/><ellipse cy="5" rx="16" ry="7" fill="${c2}"/><ellipse cy="0" rx="16" ry="7" fill="url(#${c1}${id})"/><ellipse cy="0" rx="10" ry="4" fill="none" stroke="#ffffff55" stroke-width="1.5"/>${cr?`<path d="M-7 -2 l3 -6 l4 4 l4 -4 l3 6z" fill="#ffd35a" stroke="#a06a00" stroke-width=".8"/>`:''}</g>`;
+ return `<svg viewBox="0 0 200 120" preserveAspectRatio="xMidYMid slice"><defs>
+ <linearGradient id="lt${id}"><stop offset="0" stop-color="#ffe9c7"/><stop offset="1" stop-color="#f3cf98"/></linearGradient>
+ <linearGradient id="dk${id}"><stop offset="0" stop-color="#8a4b1e"/><stop offset="1" stop-color="#5c2e10"/></linearGradient>
+ <radialGradient id="r${id}" cx=".35" cy=".3"><stop offset="0" stop-color="#ff8a80"/><stop offset=".6" stop-color="#e53935"/><stop offset="1" stop-color="#9b1c1c"/></radialGradient>
+ <radialGradient id="w${id}" cx=".35" cy=".3"><stop offset="0" stop-color="#fff"/><stop offset=".7" stop-color="#efe7d8"/><stop offset="1" stop-color="#cfc3ad"/></radialGradient>
+ <radialGradient id="g${id}" cx=".5" cy=".3" r=".8"><stop offset="0" stop-color="#ffffff22"/><stop offset="1" stop-color="#00000000"/></radialGradient></defs>
+ <rect width="200" height="120" fill="url(#g${id})"/>
+ <g transform="translate(100,64) scale(1.15,.58) rotate(45) translate(-60,-60)">${sq}</g>
+ ${pc(70,58,'r','#9b1c1c',0)}${pc(128,50,'w','#cfc3ad',0)}${pc(100,78,'r','#9b1c1c',1)}${pc(150,74,'w','#cfc3ad',0)}</svg>`;},
+xadrez:id=>`<svg viewBox="0 0 200 120" preserveAspectRatio="xMidYMid slice"><defs>
+ <linearGradient id="kw${id}" x1="0" x2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cfd6ef"/></linearGradient>
+ <linearGradient id="kb${id}" x1="0" x2="1"><stop offset="0" stop-color="#3a3f5c"/><stop offset="1" stop-color="#14162a"/></linearGradient>
+ <radialGradient id="sp${id}" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#ffffff30"/><stop offset="1" stop-color="#ffffff00"/></radialGradient></defs>
+ <ellipse cx="100" cy="108" rx="80" ry="10" fill="#0005"/><circle cx="100" cy="60" r="60" fill="url(#sp${id})"/>
+ <g transform="translate(78,10)"><rect x="-4" y="0" width="8" height="18" rx="2" fill="url(#kb${id})"/><rect x="-10" y="5" width="20" height="7" rx="2" fill="url(#kb${id})"/>
+  <path d="M-20 26 Q0 14 20 26 L14 74 H-14 Z" fill="url(#kb${id})"/><rect x="-24" y="74" width="48" height="10" rx="4" fill="url(#kb${id})"/><rect x="-28" y="84" width="56" height="10" rx="4" fill="url(#kb${id})"/>
+  <path d="M-12 30 Q0 24 12 30" stroke="#ffffff33" stroke-width="2" fill="none"/></g>
+ <g transform="translate(130,40)"><circle cy="0" r="13" fill="url(#kw${id})"/><path d="M-11 12 Q0 6 11 12 L8 42 H-8 Z" fill="url(#kw${id})"/><rect x="-16" y="42" width="32" height="9" rx="4" fill="url(#kw${id})"/><rect x="-19" y="51" width="38" height="9" rx="4" fill="url(#kw${id})"/><circle cx="-4" cy="-4" r="4" fill="#fff"/></g></svg>`,
+domino:id=>{const tile=(x,y,r,a,b)=>{const P={1:[[0,0]],2:[[-6,-6],[6,6]],3:[[-6,-6],[0,0],[6,6]],4:[[-6,-6],[6,-6],[-6,6],[6,6]],5:[[-6,-6],[6,-6],[0,0],[-6,6],[6,6]],6:[[-6,-7],[6,-7],[-6,0],[6,0],[-6,7],[6,7]]};
+  const dots=(v,oy)=>P[v].map(([dx,dy])=>`<circle cx="${dx}" cy="${oy+dy}" r="2.8" fill="#1b1d2e"/>`).join('');
+  return `<g transform="translate(${x},${y}) rotate(${r})"><rect x="-19" y="-38" width="40" height="80" rx="9" fill="#0005"/><rect x="-20" y="-40" width="40" height="80" rx="9" fill="url(#tw${id})" stroke="#ffffffaa"/><line x1="-13" y1="0" x2="13" y2="0" stroke="#b8b2a6" stroke-width="2"/>${dots(a,-20)}${dots(b,20)}</g>`;};
+ return `<svg viewBox="0 0 200 120" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="tw${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e6e0d2"/></linearGradient></defs>
+ ${tile(62,62,-24,6,3)}${tile(104,58,8,5,5)}${tile(146,64,30,2,4)}</svg>`;},
+sinuca:id=>`<svg viewBox="0 0 200 120" preserveAspectRatio="xMidYMid slice"><defs>
+ <radialGradient id="b8${id}" cx=".35" cy=".3"><stop offset="0" stop-color="#5a5f78"/><stop offset=".45" stop-color="#16182a"/><stop offset="1" stop-color="#000"/></radialGradient>
+ <radialGradient id="by${id}" cx=".35" cy=".3"><stop offset="0" stop-color="#fff59d"/><stop offset=".6" stop-color="#fbc02d"/><stop offset="1" stop-color="#b8860b"/></radialGradient>
+ <radialGradient id="br${id}" cx=".35" cy=".3"><stop offset="0" stop-color="#ff8a80"/><stop offset=".6" stop-color="#e53935"/><stop offset="1" stop-color="#8b1414"/></radialGradient>
+ <linearGradient id="cue${id}" x1="0" x2="1"><stop offset="0" stop-color="#5c3a1a"/><stop offset=".8" stop-color="#e8c38a"/><stop offset="1" stop-color="#fff"/></linearGradient></defs>
+ <ellipse cx="108" cy="104" rx="70" ry="9" fill="#0005"/>
+ <line x1="8" y1="104" x2="70" y2="70" stroke="url(#cue${id})" stroke-width="6" stroke-linecap="round"/>
+ <circle cx="150" cy="78" r="16" fill="url(#by${id})"/><circle cx="62" cy="84" r="12" fill="url(#br${id})"/>
+ <circle cx="108" cy="58" r="40" fill="url(#b8${id})"/><circle cx="102" cy="50" r="16" fill="#fff"/><text x="102" y="57" text-anchor="middle" font-size="19" font-weight="900" fill="#111" font-family="Inter,sans-serif">8</text>
+ <ellipse cx="94" cy="32" rx="12" ry="6" fill="#ffffff55" transform="rotate(-25 94 32)"/></svg>`,
+ludo:id=>{const pawn=(x,y,c1,c2)=>`<g transform="translate(${x},${y})"><ellipse cy="26" rx="13" ry="4" fill="#0005"/><path d="M-11 24 Q-9 6 0 2 Q9 6 11 24 Z" fill="${c2}"/><circle cy="-4" r="9" fill="${c1}"/><circle cx="-3" cy="-7" r="3" fill="#ffffff88"/></g>`;
+ const pip=(x,y)=>`<circle cx="${x}" cy="${y}" r="3.2" fill="#1b1d2e"/>`;
+ return `<svg viewBox="0 0 200 120" preserveAspectRatio="xMidYMid slice">
+ <g transform="translate(100,60)"><polygon points="0,-38 34,-20 0,-2 -34,-20" fill="#ffffff"/><polygon points="-34,-20 0,-2 0,38 -34,20" fill="#e3e0ef"/><polygon points="34,-20 0,-2 0,38 34,20" fill="#c9c4dd"/>
+ ${pip(0,-20)}${pip(-12,-26)}${pip(12,-14)}<g transform="skewY(27)">${pip(-24,23)}${pip(-10,24)}${pip(-24,37)}${pip(-10,38)}</g><g transform="skewY(-27)">${pip(17,6)}${pip(17,21)}</g></g>
+ ${pawn(34,60,'#ff5a5f','#c62828')}${pawn(166,58,'#4ade80','#16a34a')}${pawn(58,88,'#60a5fa','#1d4ed8')}${pawn(146,90,'#fde047','#ca8a04')}</svg>`;},
+trofeu:id=>`<svg viewBox="0 0 200 120" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="tg${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6c2"/><stop offset=".45" stop-color="#ffd35a"/><stop offset="1" stop-color="#b8860b"/></linearGradient></defs>
+ <g transform="translate(100,58)"><path d="M-30 -42 H30 V-22 A30 30 0 0 1 -30 -22 Z" fill="url(#tg${id})"/><path d="M-30 -36 H-44 A12 16 0 0 0 -30 -8 M30 -36 H44 A12 16 0 0 1 30 -8" fill="none" stroke="url(#tg${id})" stroke-width="6"/>
+ <rect x="-6" y="6" width="12" height="16" fill="url(#tg${id})"/><rect x="-22" y="22" width="44" height="10" rx="4" fill="url(#tg${id})"/><path d="M0 -38 l4 9 h10 l-8 6 3 10 -9 -6 -9 6 3 -10 -8 -6 h10z" fill="#fff8" /></g></svg>`
 };
-const HERO=`<svg viewBox="0 0 400 150"><defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a0ca3"/><stop offset=".55" stop-color="#7209b7"/><stop offset="1" stop-color="#f72585"/></linearGradient>
-<linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset=".5" stop-color="#ffc23d"/><stop offset="1" stop-color="#c47f00"/></linearGradient></defs>
-<rect width="400" height="150" fill="url(#hg)"/>
-${[...Array(14)].map((_,i)=>`<circle cx="${(i*67)%400}" cy="${(i*41)%150}" r="${1+i%3}" fill="#fff" opacity=".5"/>`).join('')}
-<g transform="translate(320,78)"><path d="M-30,-40 h60 v14 a30,30 0 0 1 -60,0z" fill="url(#gold)"/><path d="M-30,-34 h-12 a12,14 0 0 0 12,22 M30,-34 h12 a12,14 0 0 1 -12,22" fill="none" stroke="url(#gold)" stroke-width="5"/><rect x="-6" y="0" width="12" height="18" fill="url(#gold)"/><rect x="-20" y="18" width="40" height="10" rx="3" fill="url(#gold)"/><text y="-14" text-anchor="middle" font-size="18" fill="#a05f00" font-weight="900">★</text></g>
-${[[262,120],[282,128],[372,124]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="13" ry="7" fill="#c47f00"/><ellipse cx="${x}" cy="${y-3}" rx="13" ry="7" fill="url(#gold)"/>`).join('')}
-<text x="22" y="58" font-size="30" font-weight="900" fill="#fff" font-family="system-ui" style="text-shadow:0 0 8px #f72585">ARENA DOS</text>
-<text x="22" y="92" font-size="34" font-weight="900" fill="url(#gold)" font-family="system-ui">MESTRES</text>
-<text x="22" y="120" font-size="14" fill="#ffd6f2" font-family="system-ui" font-weight="600">Jogue. Desafie. Vença.</text></svg>`;
+const ART={dama:ARTF.dama('L1'),xadrez:ARTF.xadrez('L2'),domino:ARTF.domino('L3'),sinuca:ARTF.sinuca('L4'),ludo:ARTF.ludo('L5')};
+const HERO=`<div class="hero1"><div><h1>ARENA DOS<br><em>MESTRES</em></h1><p>Jogue. Desafie. Vença.</p></div>${ARTF.trofeu('HH')}</div>`;
 function renderLobby(){
   setAv($('#lav'),S.photo,S.name);$('#lname').textContent=S.name;$('#lbal').textContent=fmt(S.bal);renderCommunity();
   const g=$('#games');g.innerHTML='';
-  GAMES.forEach(x=>{const c=h('button','gc',`<div class="art">${ART[x.id]}</div><div class="tx"><b>${x.name}</b><span>${x.desc}</span></div>`);c.onclick=()=>openStake(x);g.append(c);});
-  const n=(O.tours||[]).length;const tc=h('button','gc tourcard',`<div class="tic">🏆</div><span class="tneon">TORNEIOS</span><small>${n?n+(n===1?' torneio aberto':' torneios abertos'):'Em breve'}</small>`);tc.onclick=()=>{go('torneio');};g.append(tc);
+  GAMES.forEach((x,j)=>{const c=h('button','gc',`${j===0?'<span class="gpill">MAIS JOGADO</span>':''}<div class="art">${ART[x.id]}</div><div class="tx"><b>${x.name}</b><span>${x.desc}</span></div>`);c.onclick=()=>openStake(x);g.append(c);});
+  const n=(O.tours||[]).length;const tc=h('button','gc tourcard',`<div class="tic">${ARTF.trofeu('TC')}</div><span class="tneon">TORNEIOS</span><small>${n?n+(n===1?' torneio aberto':' torneios abertos'):'Em breve'}</small>`);tc.onclick=()=>{go('torneio');};g.append(tc);
 }
 function openStake(g){
   let stake=S.lastStake||100,bo=g.bo;const body=h('div');
