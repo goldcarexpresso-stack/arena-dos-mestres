@@ -448,6 +448,13 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#b026ff!import
 .rktx{flex:1;min-width:0}.rktx small{display:block;font-size:10px;letter-spacing:1.6px;color:#ffc23d;font-weight:900}
 .rktx b{display:block;font-size:15.5px;color:#fff;line-height:1.2;text-shadow:0 0 10px #ff2bd666}.rktx span{display:block;font-size:12px;color:#e8d8ff;font-weight:600;margin-top:2px}
 .rkgo{flex:none;font-size:12px;font-weight:900;color:#2a1a00;background:linear-gradient(90deg,#ffe27a,#ffc23d);padding:7px 10px;border-radius:12px;box-shadow:0 0 12px #ffc23d77}
+
+.bub.ephb{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.bub.ephb>*:not(small):not(.owntag){filter:blur(7px);transition:filter .12s}
+.bub.ephb{color:transparent;text-shadow:0 0 9px #e9dcff}
+.bub.ephb.peek{color:inherit;text-shadow:none}.bub.ephb.peek>*{filter:none}
+.bub.ephb small,.bub.ephb .owntag{color:#ffc23d;text-shadow:none}
+body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!important}body.nopeek .bub.ephb>*{filter:blur(9px)!important}
 </style>
 </head>
 <body>
@@ -935,6 +942,9 @@ function monthId(d){d=d||new Date();return 'm'+d.getFullYear()+'-'+String(d.getM
 const RANK=new Map(),RANKM=new Map();
 function myWeek(){const w=weekId();if(!S.wk||S.wk.id!==w)S.wk={id:w,wins:0,games:0};return S.wk;}
 function myMonth(){const m=monthId();if(!S.mo||S.mo.id!==m)S.mo={id:m,wins:0,games:0};return S.mo;}
+let RKW=weekId(),RKM=monthId();
+setInterval(()=>{const w=weekId(),m=monthId();if(w!==RKW){busUnsub(TOP.rank(RKW)+'/+');RANK.clear();RKW=w;busSub(TOP.rank(w)+'/+');}
+  if(m!==RKM){busUnsub(TOP.rank(RKM)+'/+');RANKM.clear();RKM=m;busSub(TOP.rank(m)+'/+');}renderRank();},60e3);
 function addWeek(win){const k=myWeek(),m=myMonth();k.games++;m.games++;if(win){k.wins++;m.wins++;}save();pubRank();}
 function pubRank(){const k=myWeek(),m=myMonth(),base={name:S.name,thumb:thumb()};
   if(k.games)busPub(TOP.rank(k.id)+'/'+S.uid,{...base,wins:k.wins,games:k.games},true);
@@ -970,7 +980,7 @@ function openRanking(month){
     body.innerHTML=`<div class="rtabs"><button data-m="0" class="${m?'':'on'}">Semana</button><button data-m="1" class="${m?'on':''}">Mês</button></div>
       <div class="rlist">${list.length?list.map((r,i)=>`<button class="rrow ${r.id===S.uid?'me':''}" data-i="${i}"><span class="rpos">${POS[i]}</span><i class="av"></i><div class="pi"><b>${esc(r.name)}${r.id===S.uid?' (você)':''}</b><small>${r.games} ${r.games===1?'partida':'partidas'}</small></div><b class="rw">${r.wins} ${r.wins===1?'vitória':'vitórias'}</b></button>`).join('')
         :'<div style="color:var(--mut);padding:14px 0;text-align:center">Ninguém pontuou ainda. Vença uma partida e entre no ranking!</div>'}</div>
-      <small style="color:var(--mut)">Conta as vitórias de todas as partidas (contra jogadores e contra o robô). ${m?'Zera todo dia 1º.':'Zera toda segunda-feira.'}</small>`;
+      <small style="color:var(--mut)">Cada rodada vencida vale 1 vitória (contra jogadores e contra o robô). Atualiza na hora. ${m?'Zera todo dia 1º.':'Zera toda segunda-feira.'}</small>`;
     body.querySelectorAll('.rrow').forEach(b=>{const r=list[+b.dataset.i];setAv(b.querySelector('.av'),r.thumb,r.name,'#7209b7');b.onclick=()=>showPlayer(r);});
     body.querySelectorAll('.rtabs button').forEach(b=>b.onclick=()=>draw(b.dataset.m==='1'));
   };
@@ -1396,6 +1406,7 @@ function onPersonal(o){
   }
   if(o.t==='dm'){if(o.m)ownerChk([o.m]).then(ms=>addIncoming(o.from,o.name,o.thumb,ms));return;}
   if(['call','callacc','callrej','callend','callrtc'].includes(o.t)){onCallMsg(o);return;}
+  if(o.t==='ephclr'){onEphClr(o);return;}
   if(o.t==='dmdel'){if(o.id)addIncoming(o.from,null,null,[{id:o.id,del:1}]);return;}
   if(o.t==='dec'){toast((o.name||'O jogador')+' recusou o convite');return;}
   if(o.t==='busy'){toast((o.name||'O jogador')+' está numa partida agora');}
@@ -1503,7 +1514,9 @@ function onBye(id){
   const wasPlaying=M&&M.net&&!M.over;
   if(M&&M.net){if(M.cleanup)M.cleanup();M.over=true;}
   netLeave(false);
-  modal(wasPlaying?'Seu amigo saiu':'Sala encerrada',wasPlaying?'A partida acabou porque '+esc(p.name)+' saiu.':'Os outros jogadores saíram.',[{t:'Voltar ao lobby',pri:1,f:()=>go('lobby')}]);
+  if(wasPlaying){S.w++;save();addWeek(true);statGame(M.g&&M.g.id);
+    modal('🏆 Vitória por W.O.',esc(p.name)+' saiu antes do fim da partida, então a vitória é sua — e já conta no ranking.',[{t:'Voltar ao lobby',pri:1,f:()=>go('lobby')}]);return;}
+  modal('Sala encerrada','Os outros jogadores saíram.',[{t:'Voltar ao lobby',pri:1,f:()=>go('lobby')}]);
 }
 function netLeave(sendBye){
   if(sendBye&&NET.on&&NET.room)roomPub({t:'bye'});
@@ -1719,7 +1732,7 @@ function chatOf(id,name,thumb){if(!CH[id])CH[id]={name:name||'Jogador',thumb:thu
 function unreadTotal(){return Object.values(CH).reduce((a,c)=>a+(c.unread||0),0);}
 function chatBadge(){const n=unreadTotal(),b=$('#chBadge');if(b){b.textContent=n;b.style.display=n?'inline-block':'none';}}
 const showTxt=m=>m.me?m.text:(m.own&&modCheck(m.text)!==MOD_PEDO)?m.text:modShow(m.text);
-const preview=m=>{const t=showTxt(m);return m.call?m.call:m.del?'🚫 Mensagem apagada':m.aud?('🎤 Áudio ('+fmtDur(m.dur||0)+')'):m.img?('📷 Foto'+(t?' · '+t:'')):t;};
+const preview=m=>{if(m.eph&&!m.me)return '🕶️ Mensagem privada';const t=showTxt(m);return m.call?m.call:m.del?'🚫 Mensagem apagada':m.aud?('🎤 Áudio ('+fmtDur(m.dur||0)+')'):m.img?('📷 Foto'+(t?' · '+t:'')):t;};
 function addIncoming(from,name,thumb,msgs){
   const c=chatOf(from,name,thumb);let added=0,changed=0;
   (c.hidden=c.hidden||[]);
@@ -1727,7 +1740,8 @@ function addIncoming(from,name,thumb,msgs){
     const ex=c.msgs.find(x=>x.id===m.id);
     if(ex){if(m.del&&!ex.del){ex.del=true;ex.text='';ex.img=null;ex.aud=null;changed++;}return;}
     if(m.del)return;
-    c.msgs.push({id:m.id,me:false,text:String(m.text||'').slice(0,500),img:m.img||null,aud:m.aud||null,dur:m.dur||0,ts:m.ts||Date.now(),own:m.own?1:0,eph:m.eph&&m.own?1:0});added++;});
+    c.msgs.push({id:m.id,me:false,text:String(m.text||'').slice(0,500),img:m.img||null,aud:m.aud||null,dur:m.dur||0,ts:m.ts||Date.now(),own:m.own?1:0,eph:m.eph&&m.own?1:0});added++;
+    if(m.eph&&m.own){const mid0=m.id;setTimeout(()=>{const cc=CH[from];if(cc){cc.msgs=cc.msgs.filter(x=>x.id!==mid0);ephRefresh(from);}},5*60e3);}});
   if(!added&&!changed)return;
   c.msgs.sort((a,b)=>a.ts-b.ts);c.msgs=c.msgs.slice(-150);if(c.msgs.length)c.last=c.msgs[c.msgs.length-1].ts;
   const open=CUR===from&&$('#chat').classList.contains('on');
@@ -1745,7 +1759,7 @@ function sendDM(to,text,img,aud,dur){
   text=(text||'').trim().slice(0,500);if(!text&&!img&&!aud)return false;
   if(text&&!modOk(text))return false;
   const c=chatOf(to),m={id:mid(),text,ts:Date.now()};if(img)m.img=img;if(aud){m.aud=aud;m.dur=dur||0;}
-  if(OKEY&&EPH.has(to))m.eph=1;
+  if(OKEY&&EPH.has(to)){m.eph=1;EPHSENT.add(to);}
   const local={...m,me:true};c.msgs.push(local);c.msgs=c.msgs.slice(-150);c.last=m.ts;saveCH();
   const send=()=>{busPub(TOP.user(to),{t:'dm',m,name:S.name,thumb:thumb()});if(!m.eph)pubOutbox(to);};
   if(OKEY)signCfg('dm|'+m.id+'|'+(m.text||'')).then(sg=>{m.os=sg;local.os=sg;saveCH();send();}).catch(send);else send();
@@ -1766,6 +1780,14 @@ async function ownerChk(msgs){for(const m of msgs){if(m&&m.os){m.own=await verif
 function onInbox(o){if(o&&Array.isArray(o.msgs))ownerChk(o.msgs).then(ms=>addIncoming(o.from,o.name,o.thumb,ms));}
 const EPH=new Set();
 function dropEph(id){const c=CH[id];if(c&&c.msgs.some(x=>x.eph)){c.msgs=c.msgs.filter(x=>!x.eph);}}
+const EPHSENT=new Set();
+async function ephClear(to){if(!OKEY||!EPHSENT.has(to))return;EPHSENT.delete(to);const ts=Date.now();
+  try{const sig=await signCfg('ephclr|'+to+'|'+ts);busPub(TOP.user(to),{t:'ephclr',ts,sig});}catch(e){}}
+function ephRefresh(id){if(CUR===id&&$('#chat').classList.contains('on'))renderChat();if($('#chats').classList.contains('on'))renderChats();}
+async function onEphClr(o){if(!o.ts||!o.sig||Math.abs(Date.now()-o.ts)>36e5)return;if(!(await verifyCfg('ephclr|'+S.uid+'|'+o.ts,o.sig)))return;dropEph(o.from);ephRefresh(o.from);}
+addEventListener('pagehide',()=>{[...EPHSENT].forEach(ephClear);});
+document.addEventListener('visibilitychange',()=>{document.body.classList.toggle('nopeek',document.hidden);});
+addEventListener('blur',()=>document.body.classList.add('nopeek'));addEventListener('focus',()=>document.body.classList.remove('nopeek'));
 function openChat(id,name,th){if(!S.rulesOk){rulesGate(()=>openChat(id,name,th));return;}chatOf(id,name,th);CUR=id;CH[id].unread=0;saveCH();chatBadge();go('chat');renderChat();setTimeout(()=>$('#cIn').focus(),150);}
 function renderChats(){
   const l=$('#chList');l.innerHTML='';
@@ -1781,19 +1803,20 @@ function renderChat(){
   if(!CUR||!CH[CUR])return;const c=CH[CUR],on=ONLINE.get(CUR);
   const hd=$('#cHead');hd.innerHTML='';const av=h('div','av');setAv(av,c.thumb||(on&&on.thumb),c.name,'#7209b7');
   hd.append(av,h('div','pi',`<b>${esc(c.name)}</b><small>${on?ST_TXT[on.st]:'⚪ offline — recebe quando abrir o app'}</small>`));
-  if(OKEY){const pv=h('button',EPH.has(CUR)?'pri':'','🕶️');pv.title='Conversa privada';pv.onclick=()=>{if(EPH.has(CUR)){EPH.delete(CUR);toast('Conversa privada desligada');}else{EPH.add(CUR);modal('🕶️ Conversa privada ligada','As próximas mensagens <b style="color:var(--txt)">não ficam salvas</b> em nenhum dos dois celulares nem guardadas no servidor. Somem quando a pessoa sai da conversa ou fecha o app.<br><br>A outra pessoa precisa estar <b style="color:var(--txt)">online</b> pra receber.',[{t:'Entendi',pri:1}]);}renderChat();};hd.append(pv);}
+  if(OKEY){const pv=h('button',EPH.has(CUR)?'pri':'','🕶️');pv.title='Conversa privada';pv.onclick=()=>{if(EPH.has(CUR)){EPH.delete(CUR);dropEph(CUR);ephClear(CUR);toast('Conversa privada desligada — mensagens apagadas dos dois lados');}else{EPH.add(CUR);modal('🕶️ Conversa privada ligada','As próximas mensagens <b style="color:var(--txt)">não ficam salvas</b> em nenhum dos dois celulares nem guardadas no servidor. Somem dos <b style="color:var(--txt)">dois celulares</b> quando você sai da conversa ou desliga o 🕶️ (e sozinhas depois de 5 minutos). Do lado da pessoa elas aparecem embaçadas: só dá pra ler segurando o dedo em cima.<br><br>A outra pessoa precisa estar <b style="color:var(--txt)">online</b> pra receber.',[{t:'Entendi',pri:1}]);}renderChat();};hd.append(pv);}
   const cb=h('button','','📞');cb.setAttribute('aria-label','Ligar');cb.onclick=()=>startCall(CUR,c.name,c.thumb||(on&&on.thumb));hd.append(cb);
   if(on&&on.st!=='jogando'){const b=h('button','pri','🎮');b.title='Convidar pra jogar';b.onclick=()=>pickGameAndInvite(on);hd.append(b);}
   const box=$('#cMsgs');box.innerHTML='';
   if(OKEY&&EPH.has(CUR))box.append(h('div','ephbar','🕶️ Conversa privada ligada — nada fica salvo'));
   c.msgs.forEach(m=>{
     if(m.call){const b=h('div','bub callmsg',`${esc(m.call)}<small>${hhmm(m.ts)}</small>`);b.onclick=()=>msgMenu(m);box.append(b);return;}
-    const b=h('div','bub '+(m.me?'me':'ot')+(m.del?' del':''));
+    const b=h('div','bub '+(m.me?'me':'ot')+(m.del?' del':'')+(m.eph&&!m.me?' ephb':''));
+    if(m.eph&&!m.me){const pk=()=>b.classList.add('peek'),un=()=>b.classList.remove('peek');b.addEventListener('pointerdown',pk);['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,un));b.oncontextmenu=e=>e.preventDefault();}
     if(m.del)b.innerHTML=`🚫 Mensagem apagada<small>${hhmm(m.ts)}</small>`;
     else{if(m.img){const im=h('img','bimg');im.src=m.img;im.alt='Foto';im.onclick=e=>{e.stopPropagation();showImg(m);};b.append(im);}
       if(m.aud){const w=h('div','baud');const a=document.createElement('audio');a.controls=true;a.preload='metadata';a.src=m.aud;a.onclick=e=>e.stopPropagation();w.append(h('span',null,'🎤 '+fmtDur(m.dur||0).replace(/^0/,'')),a);b.append(w);}
       if(m.own&&!m.me)b.prepend(h('span','owntag','🛡️ Dono da Arena'));
-      if(m.text)b.append(document.createTextNode(showTxt(m)));b.append(h('small',null,(m.eph?'🕶️ temporária · ':'')+hhmm(m.ts)+' · ⋮'));}
+      if(m.text)b.append(document.createTextNode(showTxt(m)));b.append(h('small',null,(m.eph?(m.me?'🕶️ temporária · ':'🕶️ segure pra ler · '):'')+hhmm(m.ts)+' · ⋮'));}
     b.onclick=()=>msgMenu(m);box.append(b);});
   box.scrollTop=box.scrollHeight;
 }
@@ -1803,7 +1826,7 @@ function showImg(m){const v=h('div','imgview');const im=h('img');im.src=m.img;co
   v.onclick=e=>{if(e.target===v)v.remove();};document.body.append(v);}
 $('#cSend').onclick=()=>{const i=$('#cIn');if(CUR&&i.value.trim()){if(sendDM(CUR,i.value)!==false)i.value='';}};
 $('#cIn').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('#cSend').click();}};
-$('#cBack').onclick=()=>{if(REC.mr)recStop(true);if(CUR)dropEph(CUR);CUR=null;go('chats');};
+$('#cBack').onclick=()=>{if(REC.mr)recStop(true);if(CUR){dropEph(CUR);ephClear(CUR);}CUR=null;go('chats');};
 $('#cAtt').onclick=()=>$('#cFile').click();
 $('#cFile').onchange=e=>{
   const f=e.target.files[0];e.target.value='';if(!f||!CUR)return;
@@ -2037,14 +2060,14 @@ function startRound(){
 function roundEnd(res,label){
   if(!M||M.over)return;
   if(M.cleanup){M.cleanup();M.cleanup=null;}
-  if(res==='me'){M.me++;if(!M.net)botEmoji(pick(['😡','😭','🤬']));}
-  else if(res==='op'){M.op++;if(!M.net)botEmoji(pick(['😎','😂','🫵']));}
+  if(res==='me'){M.me++;addWeek(true);if(!M.net)botEmoji(pick(['😡','😭','🤬']));}
+  else if(res==='op'){M.op++;addWeek(false);if(!M.net)botEmoji(pick(['😎','😂','🫵']));}
   drawBars();
   if(M.me>=M.need)return finishMatch(true,label);
   if(M.op>=M.need)return finishMatch(false,label);
   const t=res==='me'?'Você venceu a rodada! 🎉':res==='op'?(M.net?'Seu amigo venceu a rodada':'Adversário venceu a rodada'):'Empate — essa rodada não conta';
   if(M.net){
-    modal(t,`Placar: <b style="color:var(--txt)">${M.me} x ${M.op}</b><br>A próxima rodada começa em instantes…`,[{t:'OK',pri:1}]);
+    modal(t,`Placar: <b style="color:var(--txt)">${M.me} x ${M.op}</b><br>${res==='me'?'+1 vitória no ranking! 🔥':''}<br>A próxima rodada começa em instantes…`,[{t:'OK',pri:1}]);
     if(NET.host)setTimeout(()=>{if(M&&!M.over&&M.net)startRound();},3000);
     return;
   }
@@ -2053,14 +2076,13 @@ function roundEnd(res,label){
 function finishMatch(win,label){
   M.over=true;const g=M.g,stake=M.stake;
   if(M.net){statGame(g&&g.id);
-    if(win)S.w++;else S.l++;save();addWeek(win);
+    if(win)S.w++;else S.l++;save();
     const multi=NET.players.length>2;
     modal(win?(multi?'🏆 Você venceu!':'🏆 Você venceu a série!'):(label?esc(label)+' venceu!':'Seu amigo venceu a série'),multi?'Partida encerrada.':`Placar final: <b style="color:var(--txt)">${M.me} x ${M.op}</b>`,
       [{t:'Sair',f:()=>{netLeave(true);go('lobby');}},{t:'🔁 Revanche',pri:1,f:()=>{NET.rm.add(S.uid);roomPub({t:'rematch'});toast('Revanche pedida! Aguardando os outros…');checkRematch();}}]);
     return;
   }
   if(win){S.bal+=prize(stake);S.w++;addHist('Prêmio: '+g.name,prize(stake));}else{S.l++;save();}
-  addWeek(win);
   modal(win?'🏆 Você venceu!':'Você perdeu',
     win?`Prêmio de <b style="color:var(--grn)">${fmt(prize(stake))}</b> creditado no saldo de teste.<br>Saldo: <b style="color:var(--txt)">${fmt(S.bal)}</b>`:`A entrada de ${fmt(stake)} ficou no pote do adversário.<br>Saldo: <b style="color:var(--txt)">${fmt(S.bal)}</b>`,
     [{t:'Lobby',f:()=>go('lobby')},{t:'Jogar de novo',pri:1,f:()=>{go('lobby');openStake(g);}}]);
