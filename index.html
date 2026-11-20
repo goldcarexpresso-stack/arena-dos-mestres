@@ -426,6 +426,28 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#b026ff!import
 .sgame i{display:block;height:100%;background:linear-gradient(90deg,#ffc23d,#ff2bd6)}.sgame b{width:30px;text-align:right;color:#ffe27a}
 .owntag{display:block;font-size:11px;font-weight:900;color:#ffc23d;margin-bottom:3px}
 .ephbar{text-align:center;font-size:12.5px;font-weight:800;color:#d9c8ff;background:#2a1350;border:1px dashed #b026ff;border-radius:12px;padding:7px;margin:4px 0 10px}
+
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;padding:14px 8px 0;border-radius:20px 20px 0 0;
+  background:radial-gradient(120% 90% at 50% 0%,#3a1670 0%,#151036 60%,#0d0b24 100%);border:1px solid #b026ff55;border-bottom:none}
+.pod{flex:1;max-width:120px;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;padding:0;position:relative;min-width:0}
+.pod .av{width:58px;height:58px;font-size:22px;border:3px solid #c0c7d6;box-shadow:0 0 14px #c0c7d655;font-style:normal;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900}
+.pod.p1 .av{width:84px;height:84px;font-size:30px;border-color:#ffc23d;box-shadow:0 0 22px #ffc23d88}
+.pod.p3 .av{border-color:#d08a4e;box-shadow:0 0 14px #d08a4e55}
+.pod.empty .av{background:#1d1745;border-style:dashed;opacity:.7}
+.pod b{font-size:13px;color:#fff;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pod.p1 b{font-size:15px}
+.pod small{font-size:11.5px;color:#ffc23d;font-weight:800}.pod.empty b,.pod.empty small{color:#9f93c9}
+.pmed{font-size:20px;line-height:1}.pod.p1 .pmed{font-size:26px}
+.step{width:100%;margin-top:6px;border-radius:10px 10px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;
+  background:linear-gradient(#5b2bb0,#2a1660);border:1px solid #b026ff88;border-bottom:none;height:46px}
+.pod.p1 .step{height:70px;background:linear-gradient(#ffcf4d,#b8860b);border-color:#ffe27a}
+.pod.p3 .step{height:34px;background:linear-gradient(#c97b3e,#6b3a17);border-color:#e0a070}
+.step em{font-style:normal;font-weight:900;font-size:18px;color:#fff;text-shadow:0 2px 6px #0008}.pod.p1 .step em{font-size:24px;color:#3a2500;text-shadow:none}
+.rkban{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:12px;border-radius:0 0 20px 20px;border:1px solid #ffc23d88;
+  background:linear-gradient(120deg,#2a0f4a 0%,#4a1a7a 45%,#7a2a5a 100%);box-shadow:0 8px 22px #b026ff33}
+.rkart{flex:none;width:64px;height:54px}.rkart svg{width:100%;height:100%}
+.rktx{flex:1;min-width:0}.rktx small{display:block;font-size:10px;letter-spacing:1.6px;color:#ffc23d;font-weight:900}
+.rktx b{display:block;font-size:15.5px;color:#fff;line-height:1.2;text-shadow:0 0 10px #ff2bd666}.rktx span{display:block;font-size:12px;color:#e8d8ff;font-weight:600;margin-top:2px}
+.rkgo{flex:none;font-size:12px;font-weight:900;color:#2a1a00;background:linear-gradient(90deg,#ffe27a,#ffc23d);padding:7px 10px;border-radius:12px;box-shadow:0 0 12px #ffc23d77}
 </style>
 </head>
 <body>
@@ -927,18 +949,19 @@ function rankList(month){
 const POS=['🥇','🥈','🥉','4º','5º','6º','7º','8º','9º','10º'];
 function renderRank(){
   const box=$('#rankBox');if(!box)return;
-  const top=rankList(false);
-  if(!top.length){box.innerHTML=`<div class="rkh">🏆 Destaques da semana</div><div class="rkempty">Ninguém pontuou ainda nesta semana. Vença uma partida e apareça aqui!<button class="rkall" style="margin-top:8px">Ver ranking do mês →</button></div>`;
-    box.querySelector('.rkall').onclick=()=>openRanking(true);return;}
-  const L=top[0],rest=top.slice(1,5);
-  box.innerHTML=`<div class="rkh">🏆 Destaques da semana</div>
-    <div class="rkduo"><button class="rk lead"><span class="rkp">🥇</span><i class="av"></i><b>${esc(L.name)}</b><small>${L.wins} ${L.wins===1?'vitória':'vitórias'}</small></button>
-    <div class="rkside">${rest.length?rest.map((r,i)=>`<button class="rkrow" data-i="${i+1}"><span>${POS[i+1]}</span><b>${esc(r.name)}</b><small>${r.wins}v</small></button>`).join(''):'<small class="rkwait">🔥 Do 2º ao 10º lugar aparecem aqui. Vença partidas e suba no ranking! 🎮</small>'}
-    <button class="rkall">Ver ranking completo →</button></div></div>`;
-  setAv(box.querySelector('.lead .av'),L.thumb,L.name,'#7209b7');
-  box.querySelector('.lead').onclick=()=>showPlayer(L);
-  box.querySelectorAll('.rkrow').forEach(b=>b.onclick=()=>showPlayer(top[+b.dataset.i]));
-  box.querySelector('.rkall').onclick=()=>openRanking(false);
+  let month=false,top=rankList(false);if(!top.length){const m=rankList(true);if(m.length){top=m;month=true;}}
+  const slot=(r,pos)=>{const cls=['','p1','p2','p3'][pos];const med=['','🥇','🥈','🥉'][pos];
+    return r?`<button class="pod ${cls}" data-p="${pos}"><span class="pmed">${med}</span><i class="av"></i><b>${esc(r.name)}</b><small>${r.wins} ${r.wins===1?'vitória':'vitórias'}</small><div class="step"><em>${pos}º</em></div></button>`
+      :`<div class="pod ${cls} empty"><span class="pmed">${med}</span><i class="av">?</i><b>Vaga aberta</b><small>vença e entre</small><div class="step"><em>${pos}º</em></div></div>`;};
+  const n=top.length;
+  box.innerHTML=`<div class="rkh">🏆 Destaques ${month?'do mês':'da semana'}</div>
+    <div class="podium">${slot(top[1],2)}${slot(top[0],1)}${slot(top[2],3)}</div>
+    <button class="rkban"><div class="rkart">${ARTF.trofeu('RK')}</div><div class="rktx"><small>RANKING ${month?'DO MÊS':'DA SEMANA'}</small>
+      <b>${n>3?'Veja quem está do 4º ao 10º lugar':'Suba no pódio da Arena!'}</b>
+      <span>${n?`${n} ${n===1?'jogador pontuando':'jogadores pontuando'} · `:''}Vença partidas e apareça aqui 🔥</span></div>
+      <div class="rkgo">Ver Top 10 →</div></button>`;
+  box.querySelectorAll('.pod[data-p]').forEach(b=>{const r=top[+b.dataset.p-1];setAv(b.querySelector('.av'),r.thumb,r.name,'#7209b7');b.onclick=()=>showPlayer(r);});
+  box.querySelector('.rkban').onclick=()=>openRanking(month);
 }
 function openRanking(month){
   const body=h('div');
