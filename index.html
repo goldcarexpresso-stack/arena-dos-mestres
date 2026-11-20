@@ -294,10 +294,10 @@ select{font:inherit;padding:11px;border-radius:12px;border:1px solid #2c3463;bac
   </div>
   <div class="card">
     <b>Voz ao vivo (Metered)</b>
-    <div class="lbl">Nome do app no Metered (ex.: arenadosmestres)</div>
-    <input type="text" id="oTApp" placeholder="nome do app" autocapitalize="off" autocorrect="off">
-    <div class="lbl">API Key da credencial TURN</div>
-    <input type="text" id="oTKey" placeholder="cole a API Key aqui" autocapitalize="off" autocorrect="off">
+    <div class="lbl">Nome de usuário (da credencial TURN)</div>
+    <input type="text" id="oTApp" placeholder="cole o nome de usuário" autocapitalize="off" autocorrect="off" spellcheck="false">
+    <div class="lbl">Senha (da credencial TURN)</div>
+    <input type="text" id="oTKey" placeholder="cole a senha" autocapitalize="off" autocorrect="off" spellcheck="false">
   </div>
   <button class="pri" id="oSave" style="width:100%">Salvar e publicar na tela de jogos</button>
 </section>
@@ -514,7 +514,7 @@ async function verifyCfg(str,sig){try{const k=await crypto.subtle.importKey('jwk
 async function onCfg(o){
   if(!o||!o.cfg||!o.sig)return;if(!(await verifyCfg(o.cfg,o.sig)))return;
   let c;try{c=JSON.parse(o.cfg);}catch(e){return;}if(!c.v||c.v<=O.v)return;
-  O=Object.assign(O,c);saveO();renderCommunity();tourSubs();if($('#lobby').classList.contains('on'))renderLobby();if($('#torneio').classList.contains('on'))renderTours();
+  O=Object.assign(O,c);saveO();renderCommunity();tourSubs();fetchIce();if($('#lobby').classList.contains('on'))renderLobby();if($('#torneio').classList.contains('on'))renderTours();
 }
 let bannerT=null,bannerI=0;
 function renderCommunity(){
@@ -543,7 +543,7 @@ function renderOwner(){
     const up=h('button',null,'↑');up.onclick=()=>{if(i>0){[d.banners[i-1],d.banners[i]]=[d.banners[i],d.banners[i-1]];renderOwner();}};
     const rm=h('button',null,'✕');rm.onclick=()=>{d.banners.splice(i,1);renderOwner();};r.append(up,rm);bl.append(r);});
   $('#oBanAdd').disabled=d.banners.length>=3;$('#oBanAdd').textContent=d.banners.length>=3?'Máximo de 3 banners':'+ Adicionar banner (foto)';
-  $('#oTApp').value=d.turn.app||'';$('#oTKey').value=d.turn.key||'';
+  $('#oTApp').value=d.turn.user||'';$('#oTKey').value=d.turn.pass||'';
 }
 $('#oNeon').oninput=e=>{oDraft.neon=e.target.value;$('#oPrev').innerHTML=neonHTML(oDraft.neon,oDraft.ncol)||'<small style="color:var(--mut)">Sem texto — o neon fica escondido.</small>';};
 $('#oAdd').onclick=()=>{const v=$('#oVal').value.trim();if(!v){toast('Digite o usuário, número ou link');return;}oDraft.soc.push({k:$('#oNet').value,v});$('#oVal').value='';renderOwner();};
@@ -553,7 +553,7 @@ $('#oBanFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)re
     const sc=Math.max(W/im.width,H/im.height),w=im.width*sc,hh=im.height*sc;c.getContext('2d').drawImage(im,(W-w)/2,(H-hh)/2,w,hh);
     oDraft.banners.push(c.toDataURL('image/jpeg',0.72));renderOwner();toast('Banner adicionado — toque em Salvar e publicar');};im.src=r.result;};r.readAsDataURL(f);};
 $('#oSave').onclick=async()=>{
-  oDraft.turn={app:$('#oTApp').value.trim().replace(/^https?:\/\//,'').replace(/\.metered\.live.*$/,''),key:$('#oTKey').value.trim()};
+  oDraft.turn={user:$('#oTApp').value.trim(),pass:$('#oTKey').value.trim()};
   oDraft.tann=$('#oTAnn').value.trim();
   const c={v:Date.now(),neon:oDraft.neon,ncol:oDraft.ncol,soc:oDraft.soc,banners:oDraft.banners,turn:oDraft.turn,tours:oDraft.tours,tann:oDraft.tann,tannImg:oDraft.tannImg};
   const str=JSON.stringify(c);
@@ -909,7 +909,12 @@ let ICE=[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']}
   {urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turn:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}];
 let iceAt=0;
 async function fetchIce(){
-  const t=O.turn||{};if(!t.app||!t.key||Date.now()-iceAt<3600e3)return;
+  const t=O.turn||{};
+  if(t.user&&t.pass){const c={username:t.user,credential:t.pass};
+    ICE=[{urls:'stun:stun.relay.metered.ca:80'},{urls:'stun:stun.l.google.com:19302'},
+      {urls:'turn:global.relay.metered.ca:80',...c},{urls:'turn:global.relay.metered.ca:80?transport=tcp',...c},
+      {urls:'turn:global.relay.metered.ca:443',...c},{urls:'turns:global.relay.metered.ca:443?transport=tcp',...c}];return;}
+  if(!t.app||!t.key||Date.now()-iceAt<3600e3)return;
   try{const r=await fetch(`https://${t.app}.metered.live/api/v1/turn/credentials?apiKey=${encodeURIComponent(t.key)}`);if(!r.ok)return;
     const list=await r.json();if(Array.isArray(list)&&list.length){ICE=list;iceAt=Date.now();}}catch(e){}
 }
