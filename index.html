@@ -295,6 +295,81 @@ body{background:radial-gradient(120% 50% at 50% 0%,#2a0e5c 0%,#0b0b1f 55%,#07070
 .nav1 button.on{color:#fff;background:#ffffff26}
 .nav1 svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .nav1 .badge{position:absolute;top:2px;right:calc(50% - 22px);margin:0;background:#2ecc71;color:#032111}
+
+/* ===== TEMA 1 · TELAS INTERNAS ===== */
+:root{--card:#15122e;--card2:#231b4f;--mut:#b4a7e0}
+.ph1{display:flex;align-items:center;gap:10px;margin:2px 0 14px}
+.ph1 h2{margin:0;font-size:24px;font-weight:900;color:#fff;text-shadow:0 0 12px #b026ff88}
+.phi{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:21px;background:linear-gradient(135deg,#6b3bff,#b026ff);box-shadow:0 0 14px #b026ff77;flex:none}
+.card{background:#15122e;border:1px solid #ffffff14;border-radius:20px;box-shadow:0 10px 24px #0007}
+.ct{display:block;font-size:17px;font-weight:900;margin-bottom:6px}
+.card>b:first-child{font-size:17px;font-weight:900;color:#ffe27a}
+button{background:#241b4f;border:1px solid #ffffff14}
+button.pri,.mod button.pri{background:linear-gradient(135deg,#7c3aed,#c026d3);color:#fff;border:none;box-shadow:0 6px 16px #b026ff55}
+input[type=text],input[type=password],input[type=number],input[type=date],textarea,select{background:#0e0b22!important;border:1.5px solid #3b2a7a!important;border-radius:14px!important;color:#fff!important}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#b026ff!important;box-shadow:0 0 0 3px #b026ff33}
+.lbl{color:#c9b8ff;font-weight:700}
+.mod{background:#05030ecc;backdrop-filter:blur(3px)}
+.mod .box{background:#15122e;border-top:2px solid #b026ff;box-shadow:0 -10px 40px #b026ff44}
+.mod h3{font-size:19px;font-weight:900}
+.toast{background:linear-gradient(135deg,#6b3bff,#b026ff);font-weight:700;box-shadow:0 6px 20px #b026ff66}
+/* carteira */
+.wcard{text-align:center;background:linear-gradient(160deg,#0f3d24,#0b1f1a 55%,#15122e)!important;border:1.5px solid #2ecc71!important;box-shadow:0 0 22px #2ecc7144,0 10px 24px #0007!important}
+.wcard small{color:#7dffb0;font-size:12px;font-weight:800;letter-spacing:1.5px}
+#wbal{font-size:40px;font-weight:900;color:#5dff9a;text-shadow:0 0 14px #2ecc7199;margin:4px 0 6px}
+#deps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+#deps button{background:#0f2a1c;border:1.5px solid #2ecc7188;color:#bfffd6;font-size:14px;padding:10px 4px;border-radius:14px}
+#saque{background:transparent!important;border:1.5px solid #ffc23d!important;color:#ffe27a!important;border-radius:14px}
+.hist div{align-items:center;gap:10px;padding:10px 0}
+.hist span{flex:1}
+.hic{font-style:normal;width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;flex:none}
+.hic.in{background:#0f3d24;color:#5dff9a}.hic.out{background:#3a1220;color:#ff7a8a}
+.empty1{color:#9ff3ff;font-weight:600;padding:8px 0}
+/* perfil */
+#pav{box-shadow:0 0 0 4px #ffc23d,0 0 30px #b026ffaa;border:none}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.st{border-radius:16px;padding:12px 6px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.st span{font-size:20px}.st b{font-size:24px;font-weight:900}.st small{font-size:11px;font-weight:700}
+.st.win{background:#0f2a1c;border:1px solid #2ecc7177}.st.win b{color:#5dff9a}.st.win small{color:#9dffc4}
+.st.lose{background:#2a0f18;border:1px solid #ff5a5f77}.st.lose b{color:#ff7a8a}.st.lose small{color:#ffb3bb}
+.st.rate{background:#1b1440;border:1px solid #b026ff77}.st.rate b{color:#e6b3ff}.st.rate small{color:#d9c8ff}
+#ownerBtn{background:linear-gradient(135deg,#3a2a00,#241b4f);border:1.5px solid #ffc23d88;color:#ffe27a}
+/* vazio bonito (online/conversas) */
+.empty2{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:30px 18px;background:#15122e;border:1px dashed #b026ff77;border-radius:22px}
+.empty2 .eic{width:76px;height:76px;border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:38px;background:linear-gradient(135deg,#6b3bff33,#ff2bd633);box-shadow:0 0 24px #b026ff55}
+.empty2>b{font-size:18px;font-weight:900}.empty2>span{color:#c9b8ff;font-size:14px}
+.empty2 button{margin-top:8px;padding:12px 20px}
+#onList.card{background:transparent;border:none;box-shadow:none;padding:0}
+#onList .prow{background:#15122e;border:1px solid #ffffff14;border-radius:18px;padding:10px 12px;margin-bottom:8px}
+/* conversas */
+#chList.card{background:transparent;border:none;box-shadow:none;padding:0}
+#chList .crow{background:#15122e;border:1px solid #ffffff14!important;border-radius:18px;padding:12px;margin-bottom:8px}
+#chNew{padding:10px 16px}
+#chats .banner{background:#10213a;border:1px solid #00e5ff44;color:#9ff3ff}
+/* conversa aberta */
+.chead{background:linear-gradient(90deg,#3a0f8a,#6b1fc4);box-shadow:0 4px 18px #0008}
+.chead>button,.chh>button{background:#ffffff1f;border:none}
+.chh>button.pri{background:#ffc23d;color:#1d1400}
+.cmsgs{background:radial-gradient(120% 60% at 50% 0%,#1a0f3a,#0a0818 70%)}
+.bub.me{background:linear-gradient(135deg,#7c3aed,#a21caf);box-shadow:0 4px 12px #7c3aed44}
+.bub.ot{background:#241f4d;border:1px solid #ffffff12}
+.bub.callmsg{background:#15122e;border:1px solid #b026ff55;color:#d9c8ff}
+.cbar{background:#110d27;border-top:1px solid #ffffff12}
+.cbar input{background:#0e0b22!important;border:1.5px solid #3b2a7a!important;border-radius:24px!important}
+.cbar #cSend{background:linear-gradient(135deg,#7c3aed,#c026d3);color:#fff}
+.mic{background:#241b4f}
+/* partida */
+.pbar{background:#15122e;border:1px solid #ffffff14;border-radius:18px}
+#status{color:#ffe27a;text-shadow:0 0 8px #ffc23d66}
+.emo button{background:#15122e;border:1px solid #ffffff14;border-radius:14px}
+.gbtn{background:#241b4f;border:1px solid #b026ff66}
+.gpanel{background:#15122e;border:1px solid #ffffff14}
+/* torneios */
+.tcard{background:#15122e;border:1px solid #b026ff55;border-radius:22px}
+/* painel do dono */
+#owner .card{border-left:3px solid #b026ff}
+#owner .card>b:first-child{color:#ffe27a}
+#oSave{padding:14px;font-size:16px}
 </style>
 </head>
 <body>
@@ -320,20 +395,20 @@ body{background:radial-gradient(120% 50% at 50% 0%,#2a0e5c 0%,#0b0b1f 55%,#07070
 
 <!-- WALLET -->
 <section id="wallet" class="scr">
-  <h2>Carteira</h2>
-  <div class="card" style="text-align:center">
-    <div style="color:var(--mut);font-size:12px">SALDO DE TESTE</div>
-    <div id="wbal" style="font-size:34px;font-weight:800;margin:6px 0"></div>
-    <div class="lbl" style="margin-top:4px">Depositar (simulado)</div>
+  <div class="ph1"><span class="phi">💰</span><h2>Carteira</h2></div>
+  <div class="card wcard">
+    <small>SALDO DE TESTE</small>
+    <div id="wbal"></div>
+    <div class="lbl">Depositar (simulado)</div>
     <div class="row" id="deps"></div>
     <button id="saque" style="width:100%;margin-top:10px">Sacar (mínimo R$ 10,00)</button>
   </div>
-  <div class="card"><b>Histórico</b><div class="hist" id="hist"></div></div>
+  <div class="card"><b class="ct">🧾 Histórico</b><div class="hist" id="hist"></div></div>
 </section>
 
 <!-- PROFILE -->
 <section id="profile" class="scr">
-  <h2 id="pTitle" style="user-select:none">Meu perfil</h2>
+  <div class="ph1"><span class="phi">👤</span><h2 id="pTitle" style="user-select:none">Meu perfil</h2></div>
   <div class="card" style="text-align:center">
     <div class="av big" id="pav"></div>
     <div class="row" style="margin-top:12px">
@@ -347,17 +422,18 @@ body{background:radial-gradient(120% 50% at 50% 0%,#2a0e5c 0%,#0b0b1f 55%,#07070
   </div>
   <button id="ownerBtn" style="width:100%;margin-bottom:12px;display:none">🔐 Painel do dono</button>
   <div class="card">
-    <b>Estatísticas</b>
-    <div class="row" style="margin-top:10px;text-align:center">
-      <div style="flex:1"><div id="sw" style="font-size:24px;font-weight:800;color:var(--grn)"></div><small style="color:var(--mut)">Vitórias</small></div>
-      <div style="flex:1"><div id="sl" style="font-size:24px;font-weight:800;color:var(--red)"></div><small style="color:var(--mut)">Derrotas</small></div>
+    <b class="ct">📊 Estatísticas</b>
+    <div class="stats3">
+      <div class="st win"><span>🏆</span><b id="sw"></b><small>Vitórias</small></div>
+      <div class="st lose"><span>💔</span><b id="sl"></b><small>Derrotas</small></div>
+      <div class="st rate"><span>🎯</span><b id="sr"></b><small>Aproveitamento</small></div>
     </div>
   </div>
 </section>
 
 <!-- OWNER -->
 <section id="owner" class="scr">
-  <div class="mtop"><button id="ownBack">← Voltar</button><h2 style="margin:0 0 0 6px">Painel do dono</h2></div>
+  <div class="mtop"><button id="ownBack">← Voltar</button><div class="ph1" style="margin:0 0 0 6px"><span class="phi">🔐</span><h2>Painel do dono</h2></div></div>
   <div class="card">
     <b>📨 Parcerias <span class="badge" id="oParcN">0</span></b>
     <div class="lbl">Pedidos enviados pelo botão "Quer fazer parceria?". Só você consegue ler.</div>
@@ -435,7 +511,7 @@ body{background:radial-gradient(120% 50% at 50% 0%,#2a0e5c 0%,#0b0b1f 55%,#07070
 
 <!-- ONLINE -->
 <section id="online" class="scr">
-  <h2>🟢 Jogadores online</h2>
+  <div class="ph1"><span class="phi">🟢</span><h2>Jogadores online</h2></div>
   <div style="color:var(--mut);font-size:13px;margin:-6px 0 12px">Convide alguém pra jogar agora. <span id="onConn"></span></div>
   <div class="card" id="onList"></div>
 </section>
@@ -449,7 +525,7 @@ body{background:radial-gradient(120% 50% at 50% 0%,#2a0e5c 0%,#0b0b1f 55%,#07070
 
 <!-- CONVERSAS -->
 <section id="chats" class="scr">
-  <div class="top"><h2 style="margin:0">💬 Conversas</h2><button id="chNew" class="pri" style="margin-left:auto">+ Nova conversa</button></div>
+  <div class="ph1"><span class="phi">💬</span><h2>Conversas</h2><button id="chNew" class="pri" style="margin-left:auto">+ Nova</button></div>
   <div class="banner" style="background:#10213a;color:#9cc4ff">🔓 As mensagens ainda passam por um servidor público. Não mande senha, documento nem dados pessoais.</div>
   <div class="card" id="chList"></div>
 </section>
@@ -624,8 +700,8 @@ function renderWallet(){
   $('#wbal').textContent=fmt(S.bal);
   const d=$('#deps');d.innerHTML='';
   [200,500,1000,2000].forEach(v=>{const b=h('button',null,'+ '+fmt(v));b.onclick=()=>{S.bal+=v;addHist('Depósito (simulado)',v);renderWallet();toast('Saldo de teste adicionado');};d.append(b);});
-  const hl=$('#hist');hl.innerHTML=S.hist.length?'':'<div style="color:var(--mut)">Nada ainda.</div>';
-  S.hist.forEach(x=>hl.append(h('div',null,`<span>${x.t}<small>${x.d}</small></span><b class="${x.v>=0?'pos':'neg'}">${x.v>=0?'+':'−'} ${fmt(Math.abs(x.v))}</b>`)));
+  const hl=$('#hist');hl.innerHTML=S.hist.length?'':'<div class="empty1">Nada por aqui ainda. Seus depósitos, entradas e prêmios aparecem aqui.</div>';
+  S.hist.forEach(x=>hl.append(h('div',null,`<i class="hic ${x.v>=0?'in':'out'}">${x.v>=0?'↓':'↑'}</i><span>${x.t}<small>${x.d}</small></span><b class="${x.v>=0?'pos':'neg'}">${x.v>=0?'+':'−'} ${fmt(Math.abs(x.v))}</b>`)));
 }
 $('#saque').onclick=()=>{
   if(S.bal<1000){modal('Saque','O saque mínimo é R$ 10,00. Seu saldo: '+fmt(S.bal)+'.',[{t:'OK',pri:1}]);return;}
@@ -633,7 +709,7 @@ $('#saque').onclick=()=>{
 };
 
 /* ========== PROFILE ========== */
-function renderProfile(){setAv($('#pav'),S.photo,S.name);$('#pname').value=S.name;$('#sw').textContent=S.w;$('#sl').textContent=S.l;}
+function renderProfile(){setAv($('#pav'),S.photo,S.name);$('#pname').value=S.name;$('#sw').textContent=S.w;$('#sl').textContent=S.l;const t=S.w+S.l;$('#sr').textContent=t?Math.round(S.w*100/t)+'%':'—';}
 $('#pickf').onclick=()=>$('#file').click();
 $('#rmf').onclick=()=>{S.photo=null;save();renderProfile();};
 $('#file').onchange=e=>{
@@ -1067,7 +1143,7 @@ function personRow(p,btnTxt,onBtn){
 function renderOnline(){
   const l=$('#onList');const ps=onlineList();l.innerHTML='';
   $('#onConn').textContent=BUS.ready?'':'Conectando…';
-  if(!ps.length){l.innerHTML='<div class="card" style="color:var(--mut);text-align:center">Ninguém online agora.<br>Chame alguém pelo link em <b style="color:var(--txt)">👥 Jogar com um amigo</b>.</div>';return;}
+  if(!ps.length){l.innerHTML='<div class="empty2"><div class="eic">🎮</div><b>Ninguém online agora</b><span>Chame um amigo pelo link e jogue junto!</span><button class="pri" onclick="go(\'lobby\');$(\'#friendBtn\').click()">👥 Convidar um amigo</button></div>';return;}
   ps.forEach(p=>l.append(personRow(p,'Convidar',q=>pickGameAndInvite(q))));
 }
 function pickGameAndInvite(p){
@@ -1405,7 +1481,7 @@ function openChat(id,name,th){if(!S.rulesOk){rulesGate(()=>openChat(id,name,th))
 function renderChats(){
   const l=$('#chList');l.innerHTML='';
   const arr=Object.entries(CH).sort((a,b)=>(b[1].last||0)-(a[1].last||0));
-  if(!arr.length){l.innerHTML='<div style="color:var(--mut);text-align:center;padding:20px 0">Nenhuma conversa ainda.<br>Toque em <b style="color:var(--txt)">+ Nova conversa</b> pra falar com quem está online.</div>';return;}
+  if(!arr.length){l.innerHTML='<div class="empty2"><div class="eic">💬</div><b>Nenhuma conversa ainda</b><span>Toque em <b>+ Nova</b> pra falar com quem está online.</span></div>';return;}
   arr.forEach(([id,c])=>{const last=c.msgs[c.msgs.length-1];const on=ONLINE.get(id);
     const r=h('button','crow');const av=h('div','av');setAv(av,c.thumb||(on&&on.thumb),c.name,'#7209b7');
     r.append(av,h('div','pi',`<b>${esc(c.name)} ${on?'<span class="dot"></span>':''}</b><small>${last?(last.me?'Você: ':'')+esc(preview(last).slice(0,45)):''}</small>`),
