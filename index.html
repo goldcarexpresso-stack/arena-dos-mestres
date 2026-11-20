@@ -393,6 +393,23 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#b026ff!import
 .adt{position:absolute;top:8px;left:8px;z-index:2;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:12px;background:#000b;color:#ffe27a;border:1px solid #ffc23d66}
 .adb{padding:10px 12px 4px}.adb b{display:block;font-size:16px;color:#fff}.adb small{color:#d9c8ff;font-size:13px;font-weight:600}
 .adwa{display:block;width:calc(100% - 24px);margin:8px 12px 12px;padding:12px;border-radius:14px;border:none;background:linear-gradient(90deg,#1fbf5b,#25d366);color:#04210f;font-weight:900;font-size:15px}
+
+.fit{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#000}
+.fit::before{content:"";position:absolute;inset:-20px;background:var(--bg) center/cover;filter:blur(18px) brightness(.55)}
+.fit .fi,.fit .fv{position:relative;display:block;width:100%;height:100%;object-fit:contain}
+.fit .fi{cursor:pointer}.fit.bad{display:none}
+.snd{position:absolute;right:8px;bottom:8px;z-index:2;width:38px;height:38px;padding:0;border-radius:50%;background:#000a;border:1px solid #fff4;font-size:17px}
+.rot{position:relative}.rsl{display:none}.rsl.on{display:block;animation:rin .45s ease}
+@keyframes rin{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+.rdots{display:flex;justify-content:center;gap:7px;margin:9px 0 2px}.rdots i{width:8px;height:8px;border-radius:5px;background:#ffffff40;transition:.3s;cursor:pointer}.rdots i.on{width:22px;background:#ffc23d}
+.rot .adc{flex:none;width:100%}
+.adhere.sm{margin-top:10px;padding:10px 14px}.adhere.sm span{font-size:22px}.adhere.sm b{font-size:14px}
+.plans{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.plan{background:#0f1328;border:1px solid #ffc23d55;border-radius:14px;padding:10px 12px}
+.plan b{display:block;color:#fff;font-size:15px}.plan b small{display:block;color:var(--mut);font-weight:600;font-size:12px}
+.plan div{display:flex;gap:14px;margin-top:6px;flex-wrap:wrap}.plan span{color:#d9c8ff;font-size:13px}.plan em{font-style:normal;color:#ffe27a;font-weight:900;font-size:18px}
+.promo{background:#103a22;color:#9dffc4;border:1px solid #25d36677;border-radius:12px;padding:9px 11px;font-weight:700;font-size:13.5px;margin-bottom:8px}
+.seeplans{width:100%;margin:10px 0 2px;background:#2a2000;border:1px solid #ffc23d88;color:#ffe27a;font-weight:800}
 </style>
 </head>
 <body>
@@ -475,7 +492,8 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#b026ff!import
       <div class="lbl">…ou cole o link de uma imagem</div><input type="text" id="oVImgUrl" placeholder="https://…" autocapitalize="off">
     </div>
     <div id="oVVid">
-      <div class="lbl">Link do vídeo (YouTube, Shorts ou link direto .mp4)</div><input type="text" id="oVVideo" placeholder="https://youtube.com/shorts/…" autocapitalize="off">
+      <div class="lbl">Vídeo: nome do arquivo que você subiu no GitHub, ou link do YouTube</div><input type="text" id="oVVideo" placeholder="Ex.: nexa.mp4" autocapitalize="off">
+      <small id="oVHelp" style="color:var(--mut)"></small><div id="oVChk"></div>
     </div>
     <div class="lbl">Título (opcional)</div><input type="text" id="oVTitle" maxlength="60">
     <div class="lbl">Descrição curta (opcional)</div><input type="text" id="oVDesc" maxlength="120">
@@ -488,6 +506,19 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#b026ff!import
     <div class="lbl">Banner com foto ou vídeo de até 30 segundos. O botão leva direto pro WhatsApp da loja. Some sozinho na data de vencimento.</div>
     <div id="oAds"></div>
     <button id="oAdAdd" style="width:100%;margin-top:10px">+ Novo anúncio</button>
+    <div class="lbl">Tempo de cada anúncio na tela (foto)</div>
+    <select id="oRot" style="width:100%"><option value="5">5 segundos</option><option value="8">8 segundos</option><option value="10">10 segundos</option><option value="15">15 segundos</option><option value="20">20 segundos</option></select>
+    <small style="color:var(--mut)">Vídeo sempre toca até o fim (no máximo 30 segundos) e depois passa pro próximo.</small>
+  </div>
+  <div class="card">
+    <b>💰 Tabela de preços (aparece pra quem quer anunciar)</b>
+    <div class="lbl">Anúncio nas ofertas — por semana</div><input type="text" data-pr="adW" placeholder="R$ 15">
+    <div class="lbl">Anúncio nas ofertas — por mês</div><input type="text" data-pr="adM" placeholder="R$ 45">
+    <div class="lbl">Banner no topo — por semana</div><input type="text" data-pr="topW" placeholder="R$ 25">
+    <div class="lbl">Banner no topo — por mês</div><input type="text" data-pr="topM" placeholder="R$ 80">
+    <div class="lbl">Patrocínio de torneio — por torneio</div><input type="text" data-pr="tour" placeholder="R$ 35">
+    <div class="lbl">Promoção (opcional)</div><input type="text" data-pr="promo" placeholder="Ex.: 1ª semana grátis pra quem fechar o mês">
+    <small style="color:var(--mut)">Deixe vazio o que você não quiser mostrar.</small>
   </div>
   <div class="card">
     <b>Mensagem em neon</b>
@@ -752,7 +783,7 @@ $('#psave').onclick=()=>{const n=$('#pname').value.trim();if(n&&modCheck(n)){mod
 
 /* ========== PAINEL DO DONO / COMUNIDADE (publicado pra todos) ========== */
 const OWNER_PUB={kty:'EC',crv:'P-256',x:'7HRTYMzFaLiUX3sO-hG2vI_3RkIWCg1k6cfUb8-a8Ys',y:'e_PXqHIvFU43PtBEt65u2AY3gTi8Wws0-5jz8sjujAs'};
-let O={v:0,neon:'Bem-vindo à nossa comunidade! 🔥',ncol:'#ff2bd6',soc:[],banners:[],turn:{app:'',key:''},tours:[],tann:'',tannImg:null,vit:{mode:'off',cat:'Torneio e Prêmios',title:'',desc:'',img:null,video:'',cta:'',url:''},ads:[]};
+let O={v:0,neon:'Bem-vindo à nossa comunidade! 🔥',ncol:'#ff2bd6',soc:[],banners:[],turn:{app:'',key:''},tours:[],tann:'',tannImg:null,vit:{mode:'off',cat:'Torneio e Prêmios',title:'',desc:'',img:null,video:'',cta:'',url:''},ads:[],rot:8,prices:{adW:'R$ 15',adM:'R$ 45',topW:'R$ 25',topM:'R$ 80',tour:'R$ 35',promo:'1ª semana grátis pra quem fechar o mês'}};
 try{const s=JSON.parse(localStorage.getItem('arena_cfg_v3'+SK));if(s)O=Object.assign(O,s);}catch(e){}
 function saveO(){try{localStorage.setItem('arena_cfg_v3'+SK,JSON.stringify(O));}catch(e){}}
 let OKEY=null;try{OKEY=localStorage.getItem('arena_owner_key'+SK);}catch(e){}
@@ -828,7 +859,7 @@ $('#oBanFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)re
 $('#oSave').onclick=async()=>{
   oDraft.turn={user:$('#oTApp').value.trim(),pass:$('#oTKey').value.trim()};
   oDraft.tann=$('#oTAnn').value.trim();readOwnerVit();
-  const c={v:Date.now(),neon:oDraft.neon,ncol:oDraft.ncol,soc:oDraft.soc,banners:oDraft.banners,turn:oDraft.turn,tours:oDraft.tours,tann:oDraft.tann,tannImg:oDraft.tannImg,vit:oDraft.vit,ads:oDraft.ads};
+  const c={v:Date.now(),neon:oDraft.neon,ncol:oDraft.ncol,soc:oDraft.soc,banners:oDraft.banners,turn:oDraft.turn,tours:oDraft.tours,tann:oDraft.tann,tannImg:oDraft.tannImg,vit:oDraft.vit,ads:oDraft.ads,rot:oDraft.rot,prices:oDraft.prices};
   const str=JSON.stringify(c);
   if(str.length>450000){toast('Imagens muito pesadas — remova um banner ou imagem de torneio');return;}
   try{const sig=await signCfg(str);busPub(TOP.cfg,{cfg:str,sig},true);O=Object.assign(O,c);saveO();renderCommunity();tourSubs();toast('Publicado pra todos os jogadores!');go('lobby');}
@@ -836,7 +867,7 @@ $('#oSave').onclick=async()=>{
 };
 $('#ownBack').onclick=()=>go('profile');
 $('#oLogout').onclick=()=>modal('Sair do modo dono?','O botão do painel some deste celular. Pra entrar de novo, toque 7 vezes em "Meu perfil" e cole a chave.',[{t:'Cancelar'},{t:'Sair',pri:1,f:()=>{OKEY=null;try{localStorage.removeItem('arena_owner_key'+SK);}catch(e){}ownerVis();go('profile');toast('Modo dono desligado neste celular');}}]);
-function openOwner(){oDraft={neon:O.neon,ncol:O.ncol,soc:O.soc.map(s=>({...s})),banners:(O.banners||[]).slice(),turn:{...(O.turn||{})},tours:(O.tours||[]).map(t=>({...t})),tann:O.tann||'',tannImg:O.tannImg||null,vit:{...(O.vit||{mode:'off'})},ads:(O.ads||[]).map(a=>({...a}))};go('owner');renderOwner();renderOwnerAds();renderOwnerTours();renderOwnerVit();renderParc();}
+function openOwner(){oDraft={neon:O.neon,ncol:O.ncol,soc:O.soc.map(s=>({...s})),banners:(O.banners||[]).slice(),turn:{...(O.turn||{})},tours:(O.tours||[]).map(t=>({...t})),tann:O.tann||'',tannImg:O.tannImg||null,vit:{...(O.vit||{mode:'off'})},ads:(O.ads||[]).map(a=>({...a})),rot:O.rot||8,prices:{...(O.prices||{})}};go('owner');renderOwner();renderOwnerAds();renderOwnerTours();renderOwnerVit();renderParc();}
 async function keyOk(k){try{const kk=await crypto.subtle.importKey('jwk',{...OWNER_PUB,d:k.replace(/^ARENA-/,''),ext:true},{name:'ECDSA',namedCurve:'P-256'},false,['sign']);
   const s=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},kk,new TextEncoder().encode('teste'));return await verifyCfg('teste',b64u.enc(s));}catch(e){return false;}}
 $('#ownerBtn').onclick=()=>{
@@ -987,6 +1018,8 @@ function editBanner(i){
     <small style="color:var(--mut)">Depois dessa data o banner some sozinho da tela dos jogadores.</small>`;
   modal('Banner '+(i+1),body,[{t:'Cancelar'},{t:'Salvar banner',pri:1,f:()=>{body.querySelectorAll('[data-k]').forEach(x=>b[x.dataset.k]=x.value.trim());renderOwner();toast('Banner salvo — toque em Salvar e publicar');}}]);
 }
+function fitContain(f,W,H,cb){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const sc=Math.min(1,W/im.width,H/im.height);const c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);
+  c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',0.72));};im.src=r.result;};r.readAsDataURL(f);}
 function fitImage(f,W,H,cb){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;
   const sc=Math.max(W/im.width,H/im.height),w=im.width*sc,hh=im.height*sc;c.getContext('2d').drawImage(im,(W-w)/2,(H-hh)/2,w,hh);cb(c.toDataURL('image/jpeg',0.7));};im.src=r.result;};r.readAsDataURL(f);}
 
@@ -1004,32 +1037,43 @@ function goLink(u){
   if(map[inn.toLowerCase()]){go(map[inn.toLowerCase()]);return;}
   const a=document.createElement('a');a.href=/^https?:\/\//i.test(u)?u:'https://'+u;a.target='_blank';a.rel='noopener';document.body.append(a);a.click();a.remove();
 }
-function vitMediaHTML(v){
-  if(v.mode==='banner'&&v.img)return `<img class="vmedia" src="${esc(fixImgUrl(v.img))}" alt="" onerror="this.classList.add('bad')">`;
-  if(v.mode==='video'&&v.video){const id=ytId(v.video);
-    if(id)return `<div class="vvid"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1&modestbranding=1" title="${esc(v.title||'Vídeo')}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`;
-    return `<video class="vmedia" src="${esc(v.video)}" controls playsinline preload="metadata"></video>`;}
+function vidSrc(u){u=String(u||'').trim();if(!u||ytId(u))return u;if(/^https?:\/\//i.test(u))return u;return u.replace(/^\/+/,'');}
+function mediaHTML(kind,img,video,label){
+  if(kind==='video'&&video){const id=ytId(video);
+    if(id)return `<div class="vvid"><iframe data-yt="${id}" src="https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1&modestbranding=1&end=30" title="${esc(label||'Vídeo')}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`;
+    return `<div class="fit vfit"><video class="fv" src="${esc(vidSrc(video))}" muted playsinline preload="metadata"></video><button class="snd" aria-label="Som">🔇</button></div>`;}
+  if(img){const u=esc(fixImgUrl(img));return `<div class="fit" style="--bg:url('${u}')"><img class="fi" src="${u}" alt="" onerror="this.closest('.fit').classList.add('bad')"></div>`;}
   return '';
 }
+function vitMediaHTML(v){return mediaHTML(v.mode==='video'?'video':'banner',v.mode==='banner'?v.img:null,v.video,v.title);}
 function waLink(num,msg){let n=String(num||'').replace(/\D/g,'');if(!n)return '';if(n.length<=11)n='55'+n;return 'https://wa.me/'+n+(msg?'?text='+encodeURIComponent(msg):'');}
 function activeAds(){return (O.ads||[]).filter(a=>(a.img||a.video)&&(!a.until||a.until>=today()));}
-function adMediaHTML(a){
-  if(a.kind==='video'&&a.video){const id=ytId(a.video);
-    if(id)return `<div class="vvid"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1&modestbranding=1&end=30" title="${esc(a.who||'Anúncio')}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`;
-    return `<video class="admv" src="${esc(a.video)}" controls playsinline preload="metadata"></video>`;}
-  if(a.img)return `<img class="admi" src="${esc(fixImgUrl(a.img))}" alt="" onerror="this.classList.add('bad')">`;
-  return '';
-}
-function adCardHTML(a,i){return `<div class="adc" data-i="${i}"><span class="adt">Anúncio</span>${adMediaHTML(a)}
+function adCardHTML(a,i){return `<div class="adc" data-i="${i}"><span class="adt">Anúncio</span>${mediaHTML(a.kind,a.img,a.video,a.who)}
   <div class="adb"><b>${esc(a.who||'Loja parceira')}</b>${a.desc?`<small>${esc(a.desc)}</small>`:''}</div>
   ${a.wa?`<button class="adwa" data-i="${i}">💬 ${esc(a.cta||'Chamar no WhatsApp')}</button>`:''}</div>`;}
+const WAMSG='Olá! Vi o anúncio de vocês na Arena dos Mestres.';
 function bindAds(box,list){
-  box.querySelectorAll('.adwa').forEach(b=>b.onclick=()=>{const a=list[+b.dataset.i];goLink(waLink(a.wa,a.msg||('Olá! Vi o anúncio de vocês na Arena dos Mestres.')));});
-  box.querySelectorAll('.adc img.admi').forEach(im=>im.onclick=()=>{const a=list[+im.closest('.adc').dataset.i];if(a.wa)goLink(waLink(a.wa,a.msg||'Olá! Vi o anúncio de vocês na Arena dos Mestres.'));});
-  box.querySelectorAll('video.admv').forEach(v=>v.addEventListener('timeupdate',()=>{if(v.currentTime>=30){v.pause();v.currentTime=0;}}));
+  box.querySelectorAll('.adwa').forEach(b=>b.onclick=()=>{const a=list[+b.dataset.i];goLink(waLink(a.wa,a.msg||WAMSG));});
+  box.querySelectorAll('.adc .fi').forEach(im=>im.onclick=()=>{const a=list[+im.closest('.adc').dataset.i];if(a.wa)goLink(waLink(a.wa,a.msg||WAMSG));});
+  box.querySelectorAll('.snd').forEach(b=>b.onclick=e=>{e.stopPropagation();const v=b.parentNode.querySelector('video');v.muted=!v.muted;b.textContent=v.muted?'🔇':'🔊';});
+}
+/* carrossel automático: cada anúncio fica X segundos; vídeo toca até o fim (máx. 30s) */
+let rotT=null,rotI=0;
+function rotShow(box,i){
+  const sl=[...box.querySelectorAll('.rsl')];if(!sl.length)return;clearTimeout(rotT);rotI=(i+sl.length)%sl.length;
+  sl.forEach((x,k)=>{x.classList.toggle('on',k===rotI);
+    const v=x.querySelector('video.fv');if(v){if(k===rotI){try{v.currentTime=0;}catch(e){}v.play().catch(()=>{});}else v.pause();}
+    const f=x.querySelector('iframe[data-yt]');if(f){const id=f.dataset.yt;const want=`https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1&modestbranding=1&end=30${k===rotI&&sl.length>1?'&autoplay=1&mute=1':''}`;if(f.src!==want)f.src=want;}});
+  box.querySelectorAll('.rdots i').forEach((d,k)=>d.classList.toggle('on',k===rotI));
+  if(sl.length<2){const v=sl[0].querySelector('video.fv');if(v){v.loop=false;v.ontimeupdate=()=>{if(v.currentTime>=30){v.currentTime=0;}};v.onended=()=>{v.currentTime=0;v.play().catch(()=>{});};v.play().catch(()=>{});}return;}
+  const cur=sl[rotI],v=cur.querySelector('video.fv'),yt=cur.querySelector('iframe[data-yt]');const sec=Math.max(3,+O.rot||8);
+  if(v){const nx=()=>{v.ontimeupdate=v.onended=null;rotShow(box,rotI+1);};v.onended=nx;v.ontimeupdate=()=>{if(v.currentTime>=30)nx();};rotT=setTimeout(nx,31000);v.onerror=()=>{clearTimeout(rotT);rotT=setTimeout(nx,sec*1000);};}
+  else rotT=setTimeout(()=>rotShow(box,rotI+1),(yt?30:sec)*1000);
 }
 function renderOwnerAds(){
   const box=$('#oAds');if(!box)return;box.innerHTML='';
+  $('#oRot').value=String(oDraft.rot||8);$('#oRot').onchange=e=>{oDraft.rot=+e.target.value;};
+  document.querySelectorAll('[data-pr]').forEach(x=>{x.value=oDraft.prices[x.dataset.pr]||'';x.oninput=()=>{oDraft.prices[x.dataset.pr]=x.value.trim();};});
   if(!oDraft.ads.length)box.innerHTML='<small style="color:var(--mut)">Nenhum anúncio ainda.</small>';
   oDraft.ads.forEach((a,i)=>{const exp=a.until&&a.until<today();
     const r=h('div','sl banrow',`<span><b>${a.kind==='video'?'🎬':'🖼️'} ${esc(a.who||'Sem nome')}</b><br><small style="color:${exp?'#ff7a8a':'#9dffc4'}">${a.wa?'💬 '+esc(a.wa):'⚠️ sem WhatsApp'}${a.until?(exp?' · VENCIDO':' · até '+fdate(a.until)):''}</small></span>`);
@@ -1043,8 +1087,8 @@ function editAd(i){
   const body=h('div','tform');
   body.innerHTML=`<div class="lbl">Tipo</div><select data-k="kind" style="width:100%"><option value="banner">🖼️ Banner (foto)</option><option value="video">🎬 Vídeo de até 30 segundos</option></select>
     <div data-ban><div class="lbl">Foto do banner</div><div class="adprev">${a.img?`<img src="${a.img}" style="width:100%;border-radius:12px">`:''}</div><button data-pick style="width:100%;margin-top:6px">📷 Escolher foto do celular</button><input type="file" accept="image/*" hidden></div>
-    <div data-vid><div class="lbl">Link do vídeo (YouTube Shorts ou link .mp4)</div><input type="text" data-k="video" placeholder="https://youtube.com/shorts/…" value="${esc(a.video||'')}" autocapitalize="off">
-      <small style="color:var(--mut)">Poste o vídeo no YouTube como Shorts (pode ser "Não listado") e cole o link aqui. Ele toca no máximo 30 segundos.</small></div>
+    <div data-vid><div class="lbl">Vídeo: nome do arquivo que você subiu no GitHub, ou link do YouTube</div><input type="text" data-k="video" placeholder="Ex.: acai.mp4" value="${esc(a.video||'')}" autocapitalize="off">
+      <small style="color:var(--mut)">${VIDHELP}</small><div class="vchk"></div></div>
     <div class="lbl">Nome da loja</div><input type="text" data-k="who" maxlength="40" placeholder="Ex.: Açaí do Gaibu" value="${esc(a.who||'')}">
     <div class="lbl">Frase curta (opcional)</div><input type="text" data-k="desc" maxlength="90" placeholder="Ex.: Açaí de 500ml por R$ 12" value="${esc(a.desc||'')}">
     <div class="lbl">WhatsApp da loja (DDD + número)</div><input type="tel" data-k="wa" placeholder="Ex.: 81 99999-9999" value="${esc(a.wa||'')}">
@@ -1052,9 +1096,10 @@ function editAd(i){
     <div class="lbl">Texto do botão</div><input type="text" data-k="cta" maxlength="30" placeholder="Chamar no WhatsApp" value="${esc(a.cta||'')}">
     <div class="lbl">Mostrar até (vencimento)</div><input type="date" data-k="until" value="${esc(a.until||'')}">`;
   const sel=body.querySelector('[data-k=kind]');sel.value=a.kind||'banner';
+  const vi=body.querySelector('[data-k=video]'),vc=body.querySelector('.vchk');vi.onchange=()=>checkVid(vi.value.trim(),vc);if(a.video)checkVid(a.video,vc);
   const sw=()=>{body.querySelector('[data-ban]').style.display=sel.value==='banner'?'':'none';body.querySelector('[data-vid]').style.display=sel.value==='video'?'':'none';};sel.onchange=sw;sw();
   const fi=body.querySelector('input[type=file]');body.querySelector('[data-pick]').onclick=()=>fi.click();
-  fi.onchange=e=>{const f=e.target.files[0];if(!f)return;fitImage(f,640,360,u=>{a.img=u;body.querySelector('.adprev').innerHTML=`<img src="${u}" style="width:100%;border-radius:12px">`;});};
+  fi.onchange=e=>{const f=e.target.files[0];if(!f)return;fitContain(f,800,800,u=>{a.img=u;body.querySelector('.adprev').innerHTML=`<img src="${u}" style="width:100%;border-radius:12px">`;});};
   modal(isNew?'Novo anúncio':'Editar anúncio',body,[{t:'Cancelar'},{t:'Salvar anúncio',pri:1,f:()=>{
     body.querySelectorAll('[data-k]').forEach(x=>a[x.dataset.k]=x.value.trim());
     if(a.kind==='banner'&&!a.img){toast('Escolha a foto do banner');return false;}
@@ -1062,23 +1107,37 @@ function editAd(i){
     if(!a.wa.replace(/\D/g,'')){toast('Coloque o WhatsApp da loja');return false;}
     if(isNew)oDraft.ads.push(a);else oDraft.ads[i]=a;renderOwnerAds();toast('Anúncio salvo — toque em Salvar e publicar');}}]);
 }
+function priceLine(){const p=O.prices||{};return p.adW?`A partir de ${esc(p.adW)} por semana`:'';}
+function openPlans(){
+  const p=O.prices||{};const row=(t,w,m)=>(w||m)?`<div class="plan"><b>${t}</b><div>${w?`<span><em>${esc(w)}</em>/semana</span>`:''}${m?`<span><em>${esc(m)}</em>/mês</span>`:''}</div></div>`:'';
+  const body=h('div');
+  body.innerHTML=`Sua loja aparece pra toda a comunidade da Arena, com botão direto pro seu WhatsApp.
+    <div class="plans">${row('📣 Anúncio nas ofertas<small>Foto ou vídeo de até 30s, passando na tela</small>',p.adW,p.adM)}${row('🖼️ Banner no topo<small>O primeiro que todo mundo vê ao abrir</small>',p.topW,p.topM)}${p.tour?`<div class="plan"><b>🏆 Patrocínio de torneio<small>Sua marca e logo no card do torneio</small></b><div><span><em>${esc(p.tour)}</em>/torneio</span></div></div>`:''}</div>
+    ${p.promo?`<div class="promo">🎁 ${esc(p.promo)}</div>`:''}
+    <small style="color:var(--mut)">Não tem a arte ou o vídeo? A gente cria pra você.</small>`;
+  modal('📣 Anuncie na Arena',body,[{t:'Fechar'},{t:'Quero anunciar',pri:1,f:()=>openParc(PTYPES[0])}]);
+}
 function renderVit(){
   const box=$('#vitBox');if(!box)return;const v=O.vit||{};
-  let html='';const AD=activeAds();
-  if(AD.length)html+=`<div class="adsec"><div class="adh">📣 Ofertas das lojas parceiras</div><div class="adrow">${AD.map((a,i)=>adCardHTML(a,i)).join('')}</div></div>`;
-  if(v.mode&&v.mode!=='off'&&(v.img||v.video)){
-    html+=`<div class="vit"><div class="vtag">${esc(v.cat||'Destaque')}</div>${vitMediaHTML(v)}
+  let html='';const AD=activeAds();const slides=[];
+  if(v.mode&&v.mode!=='off'&&(v.img||v.video))slides.push(`<div class="rsl"><div class="vit"><div class="vtag">${esc(v.cat||'Destaque')}</div>${vitMediaHTML(v)}
       ${v.title||v.desc?`<div class="vtxt">${v.title?`<b>${esc(v.title)}</b>`:''}${v.desc?`<span>${esc(v.desc)}</span>`:''}</div>`:''}
-      ${v.cta&&v.url?`<button class="vcta" id="vCta">${esc(v.cta)} →</button>`:''}</div>`;
-  }
-  else if(!AD.length)html+=`<button class="adhere" id="adHere"><span>📣</span><div><b>Anuncie sua marca aqui</b><small>Sua loja ou serviço pra toda a comunidade da Arena</small></div><em>→</em></button>`;
+      ${v.cta&&v.url?`<button class="vcta" id="vCta">${esc(v.cta)} →</button>`:''}</div></div>`);
+  AD.forEach((a,i)=>slides.push(`<div class="rsl">${adCardHTML(a,i)}</div>`));
+  if(slides.length)html+=`<div class="rot" id="rotBox">${slides.join('')}${slides.length>1?`<div class="rdots">${slides.map(()=>'<i></i>').join('')}</div>`:''}</div>`;
+  else html+=`<button class="adhere" id="adHere"><span>📣</span><div><b>Anuncie sua marca aqui</b><small>${priceLine()||'Sua loja ou serviço pra toda a comunidade da Arena'}</small></div><em>→</em></button>`;
+  if(slides.length)html+=`<button class="adhere sm" id="adHere"><span>📣</span><div><b>Anuncie aqui também</b><small>${priceLine()||'Veja os planos'}</small></div><em>→</em></button>`;
   html+=`<button class="parc" id="parcBtn">🤝 Quer fazer parceria?</button>`;
   box.innerHTML=html;
   const cta=box.querySelector('#vCta');if(cta)cta.onclick=()=>goLink(v.url);
-  const im=box.querySelector('img.vmedia');if(im&&v.url)im.onclick=()=>goLink(v.url);
+  const im=box.querySelector('.vit .fi');if(im&&v.url)im.onclick=()=>goLink(v.url);
   bindAds(box,AD);
+  const ah=box.querySelector('#adHere');if(ah)ah.onclick=()=>openPlans();
+  const rb=box.querySelector('#rotBox');if(rb){rb.querySelectorAll('.rdots i').forEach((d,k)=>d.onclick=()=>rotShow(rb,k));
+    let sx=0;rb.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;},{passive:true});
+    rb.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)rotShow(rb,rotI+(dx<0?1:-1));},{passive:true});
+    rotShow(rb,0);}else clearTimeout(rotT);
   box.querySelector('#parcBtn').onclick=()=>openParc();
-  const ah=box.querySelector('#adHere');if(ah)ah.onclick=()=>openParc(PTYPES[0]);
 }
 /* --- formulário de parceria (vai criptografado, só o dono lê) --- */
 async function encForOwner(obj){
@@ -1101,11 +1160,14 @@ const PTYPES=['Divulgar minha loja ou serviço','Patrocinar / dar prêmio em tor
 function openParc(pre){
   if(typeof pre!=='string')pre='';
   const body=h('div','tform');
+  const pp=O.prices||{};
   body.innerHTML=`Conta pra gente o que você tem em mente. Respondemos pelo contato que você deixar.
+    ${pp.adW||pp.tour?`<button class="seeplans" type="button">💰 Ver preços dos anúncios e patrocínios</button>`:''}
     <div class="lbl">Nome ou apelido</div><input type="text" data-k="nome" maxlength="60" value="${esc(S.name!=='Jogador'?S.name:'')}">
     <div class="lbl">Contato (WhatsApp, Instagram ou e-mail)</div><input type="text" data-k="contato" maxlength="100" placeholder="Ex.: 81 99999-9999 ou @seuperfil">
     <div class="lbl">Tipo de parceria</div><select data-k="tipo">${PTYPES.map(t=>`<option ${t===pre?'selected':''}>${t}</option>`).join('')}</select>
     <div class="lbl">Mensagem</div><textarea data-k="msg" maxlength="800" placeholder="O que você gostaria de fazer com a Arena dos Mestres?"></textarea>`;
+  const sp=body.querySelector('.seeplans');if(sp)sp.onclick=()=>openPlans();
   modal('🤝 Quer fazer parceria?',body,[{t:'Cancelar'},{t:'Enviar',pri:1,f:async()=>{
     const d={};body.querySelectorAll('[data-k]').forEach(x=>d[x.dataset.k]=x.value.trim());
     if(!d.nome||!d.contato||!d.msg){modal('Faltou preencher','Preencha nome, contato e mensagem pra gente conseguir te responder.',[{t:'Voltar',pri:1,f:()=>openParc(pre)}]);return;}
@@ -1150,8 +1212,14 @@ function openParcItem(p){
     {t:'🗑️ Apagar',f:()=>{busClear(p.topic);PARC.delete(p.id);delete PST[p.id];savePST();renderParc();toast('Mensagem apagada');}}]);
 }
 /* --- painel do dono: vitrine --- */
+const VIDHELP='Do celular: no GitHub, toque em Add file → Upload files, escolha o vídeo (até 30s) e Commit changes. Depois escreva aqui o nome do arquivo, ex.: acai.mp4. A foto ou vídeo se ajusta sozinho ao espaço.';
+function checkVid(u,out){out.innerHTML='';if(!u||ytId(u))return;const v=document.createElement('video');v.preload='metadata';v.muted=true;
+  v.onloadedmetadata=()=>{const d=Math.round(v.duration);out.innerHTML=d>31?`<div class="warn">⚠️ Esse vídeo tem ${d}s. Na tela vai tocar só os primeiros 30s.</div>`:`<small style="color:#9dffc4">✅ Vídeo encontrado (${d}s)</small>`;};
+  v.onerror=()=>{out.innerHTML='<div class="warn">⚠️ Não achei esse vídeo. Confira se o nome está igual ao do arquivo no GitHub (com .mp4) e se já fez o Commit.</div>';};v.src=vidSrc(u);}
 function renderOwnerVit(){
+  if($('#oVHelp'))$('#oVHelp').textContent=VIDHELP;
   const v=oDraft.vit;
+  if(v.mode==='video')checkVid(v.video||'',$('#oVChk'));else $('#oVChk').innerHTML='';
   $('#oVMode').value=v.mode||'off';$('#oVCat').value=v.cat||VCATS[0];
   $('#oVTitle').value=v.title||'';$('#oVDesc').value=v.desc||'';$('#oVCta').value=v.cta||'';$('#oVUrl').value=v.url||'';
   $('#oVVideo').value=v.video||'';$('#oVImgUrl').value=(v.img&&!v.img.startsWith('data:'))?v.img:'';
@@ -2257,7 +2325,7 @@ $('#tBack').onclick=()=>go('lobby');
 $('#oParcArc').onchange=renderParc;
 ['#oVMode','#oVCat','#oVTitle','#oVDesc','#oVCta','#oVUrl','#oVVideo','#oVImgUrl'].forEach(sel=>{$(sel).onchange=()=>{readOwnerVit();renderOwnerVit();};});
 $('#oVImgBtn').onclick=()=>$('#oVImgFile').click();
-$('#oVImgFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)fitImage(f,720,360,u=>{oDraft.vit.img=u;$('#oVImgUrl').value='';renderOwnerVit();toast('Imagem pronta — toque em Salvar e publicar');});};
+$('#oVImgFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)fitContain(f,900,900,u=>{oDraft.vit.img=u;$('#oVImgUrl').value='';renderOwnerVit();toast('Imagem pronta — toque em Salvar e publicar');});};
 $('#oTourAdd').onclick=()=>editTour(null);
 $('#oTAnn').oninput=e=>{oDraft.tann=e.target.value;};
 $('#oTAnnImg').onclick=()=>$('#oTAnnFile').click();
