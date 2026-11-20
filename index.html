@@ -370,6 +370,29 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#b026ff!import
 #owner .card{border-left:3px solid #b026ff}
 #owner .card>b:first-child{color:#ffe27a}
 #oSave{padding:14px;font-size:16px}
+
+.bnr img.lnk{cursor:pointer}
+.adtag{position:absolute;top:8px;right:8px;z-index:2;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:12px;background:#000a;color:#ffe27a;border:1px solid #ffc23d66}
+.banrow span{flex:1}
+.spon{display:flex;align-items:center;gap:10px;width:100%;margin:2px 0 10px;padding:8px 10px;border-radius:14px;background:linear-gradient(90deg,#2a2000,#1d1640);border:1px solid #ffc23d77;text-align:left}
+.spon img{width:40px;height:40px;border-radius:10px;object-fit:cover;flex:none}.spon i{font-style:normal;font-size:24px}
+.spon small{display:block;font-size:10px;letter-spacing:1.5px;color:#ffc23d;font-weight:900}.spon b{color:#fff;font-size:15px}
+.spon span{flex:1}.spon em{font-style:normal;color:#ffe27a;font-weight:800;font-size:13px}
+.adhere{display:flex;align-items:center;gap:12px;width:100%;padding:14px;border-radius:20px;text-align:left;background:linear-gradient(120deg,#1a1440,#2a0f4a);border:1.5px dashed #ffc23d99}
+.adhere span{font-size:30px}.adhere div{flex:1}.adhere b{display:block;font-size:16px;color:#ffe27a}.adhere small{color:#d9c8ff;font-size:12.5px;font-weight:600}
+.adhere em{font-style:normal;font-size:22px;color:#ffe27a}
+
+.nav1 button{border:none!important;background:none}
+.nav1 button.on{background:#ffffff26}
+
+.adsec{margin-bottom:12px}.adh{font-weight:900;font-size:16px;color:#ffe27a;margin:2px 2px 8px;text-shadow:0 0 12px #ffc23d66}
+.adrow{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}
+.adc{position:relative;flex:0 0 86%;scroll-snap-align:start;border-radius:20px;overflow:hidden;background:linear-gradient(160deg,#1d1640,#2a0f4a);border:1.5px solid #ffc23d77;box-shadow:0 0 18px #ffc23d22}
+.adrow .adc:only-child{flex-basis:100%}
+.adc .admi,.adc .admv{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#000}.adc .admi{cursor:pointer}.adc .admi.bad{display:none}
+.adt{position:absolute;top:8px;left:8px;z-index:2;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:12px;background:#000b;color:#ffe27a;border:1px solid #ffc23d66}
+.adb{padding:10px 12px 4px}.adb b{display:block;font-size:16px;color:#fff}.adb small{color:#d9c8ff;font-size:13px;font-weight:600}
+.adwa{display:block;width:calc(100% - 24px);margin:8px 12px 12px;padding:12px;border-radius:14px;border:none;background:linear-gradient(90deg,#1fbf5b,#25d366);color:#04210f;font-weight:900;font-size:15px}
 </style>
 </head>
 <body>
@@ -461,6 +484,12 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#b026ff!import
     <div class="lbl">Prévia</div><div id="oVPrev" class="vprev"></div>
   </div>
   <div class="card">
+    <b>📣 Anúncios das lojas</b>
+    <div class="lbl">Banner com foto ou vídeo de até 30 segundos. O botão leva direto pro WhatsApp da loja. Some sozinho na data de vencimento.</div>
+    <div id="oAds"></div>
+    <button id="oAdAdd" style="width:100%;margin-top:10px">+ Novo anúncio</button>
+  </div>
+  <div class="card">
     <b>Mensagem em neon</b>
     <div class="lbl">Texto que aparece no topo da tela de jogos</div>
     <textarea id="oNeon" maxlength="140" placeholder="Ex.: Bem-vindo à nossa comunidade! 🔥"></textarea>
@@ -520,6 +549,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#b026ff!import
 <section id="torneio" class="scr">
   <div class="mtop"><button id="tBack">← Jogos</button><h2 class="tneon" style="margin:0 0 0 6px">🏆 TORNEIOS</h2></div>
   <div id="tAnn"></div>
+  <button id="tSpon" class="parc" style="margin:0 0 14px">🤝 Sua empresa quer patrocinar um torneio? Fale com a gente</button>
   <div id="tList"></div>
 </section>
 
@@ -595,7 +625,7 @@ function modal(title,body,btns){
   const m=$('#mod');m.innerHTML='';const box=h('div','box');box.append(h('h3',null,title));
   if(body!=null){const mb=h('div','mb');if(typeof body==='string')mb.innerHTML=body;else mb.append(body);box.append(mb);}
   const row=h('div','row');
-  btns.forEach(b=>{const x=h('button',b.pri?'pri':'',b.t);x.onclick=()=>{m.classList.remove('on');b.f&&b.f();};row.append(x);});
+  btns.forEach(b=>{const x=h('button',b.pri?'pri':'',b.t);x.onclick=()=>{if(b.f&&b.f()===false)return;m.classList.remove('on');};row.append(x);});
   box.append(row);m.append(box);m.classList.add('on');
 }
 function fly(e,down){const s=h('div','fly'+(down?' dn':''),e);s.style[down?'top':'bottom']=down?'90px':'110px';document.body.append(s);setTimeout(()=>s.remove(),1800);}
@@ -722,7 +752,7 @@ $('#psave').onclick=()=>{const n=$('#pname').value.trim();if(n&&modCheck(n)){mod
 
 /* ========== PAINEL DO DONO / COMUNIDADE (publicado pra todos) ========== */
 const OWNER_PUB={kty:'EC',crv:'P-256',x:'7HRTYMzFaLiUX3sO-hG2vI_3RkIWCg1k6cfUb8-a8Ys',y:'e_PXqHIvFU43PtBEt65u2AY3gTi8Wws0-5jz8sjujAs'};
-let O={v:0,neon:'Bem-vindo à nossa comunidade! 🔥',ncol:'#ff2bd6',soc:[],banners:[],turn:{app:'',key:''},tours:[],tann:'',tannImg:null,vit:{mode:'off',cat:'Torneio e Prêmios',title:'',desc:'',img:null,video:'',cta:'',url:''}};
+let O={v:0,neon:'Bem-vindo à nossa comunidade! 🔥',ncol:'#ff2bd6',soc:[],banners:[],turn:{app:'',key:''},tours:[],tann:'',tannImg:null,vit:{mode:'off',cat:'Torneio e Prêmios',title:'',desc:'',img:null,video:'',cta:'',url:''},ads:[]};
 try{const s=JSON.parse(localStorage.getItem('arena_cfg_v3'+SK));if(s)O=Object.assign(O,s);}catch(e){}
 function saveO(){try{localStorage.setItem('arena_cfg_v3'+SK,JSON.stringify(O));}catch(e){}}
 let OKEY=null;try{OKEY=localStorage.getItem('arena_owner_key'+SK);}catch(e){}
@@ -751,12 +781,16 @@ async function onCfg(o){
   O=Object.assign(O,c);saveO();renderCommunity();tourSubs();fetchIce();if($('#lobby').classList.contains('on'))renderLobby();if($('#torneio').classList.contains('on'))renderTours();
 }
 let bannerT=null,bannerI=0;
+const banObj=b=>typeof b==='string'?{img:b}:(b||{});
+const today=()=>new Date().toISOString().slice(0,10);
+function activeBanners(){return (O.banners||[]).map(banObj).filter(b=>b.img&&(!b.until||b.until>=today()));}
 function renderCommunity(){
-  const hb=$('#heroBox');
-  if(O.banners&&O.banners.length){
-    hb.innerHTML=`<div class="bnr">${O.banners.map((b,i)=>`<img src="${b}" class="${i===0?'on':''}" alt="Banner ${i+1}">`).join('')}${O.banners.length>1?`<div class="bdots">${O.banners.map((_,i)=>`<i class="${i===0?'on':''}"></i>`).join('')}</div>`:''}</div>`;
+  const hb=$('#heroBox');const AB=activeBanners();
+  if(AB.length){
+    hb.innerHTML=`<div class="bnr">${AB.map((b,i)=>`<img src="${b.img}" class="${i===0?'on':''}${b.url||b.wa?' lnk':''}" data-i="${i}" alt="Banner ${i+1}">`).join('')}${AB.some(b=>b.who)?`<span class="adtag" id="adTag">${AB[0].who?'Anúncio · '+esc(AB[0].who):''}</span>`:''}${AB.length>1?`<div class="bdots">${AB.map((_,i)=>`<i class="${i===0?'on':''}"></i>`).join('')}</div>`:''}</div>`;
+    hb.querySelectorAll('.bnr img').forEach(im=>im.onclick=()=>{const b=AB[+im.dataset.i];if(!b)return;if(b.wa)goLink(waLink(b.wa,'Olá! Vi o anúncio de vocês na Arena dos Mestres.'));else if(b.url)goLink(b.url);});
     bannerI=0;clearInterval(bannerT);
-    if(O.banners.length>1)bannerT=setInterval(()=>{const im=hb.querySelectorAll('.bnr img'),dt=hb.querySelectorAll('.bdots i');if(!im.length)return;bannerI=(bannerI+1)%im.length;im.forEach((x,i)=>x.classList.toggle('on',i===bannerI));dt.forEach((x,i)=>x.classList.toggle('on',i===bannerI));},4000);
+    if(AB.length>1)bannerT=setInterval(()=>{const im=hb.querySelectorAll('.bnr img'),dt=hb.querySelectorAll('.bdots i');if(!im.length)return;bannerI=(bannerI+1)%im.length;im.forEach((x,i)=>x.classList.toggle('on',i===bannerI));const at=$('#adTag');if(at){const w=AB[bannerI].who;at.textContent=w?'Anúncio · '+w:'';at.style.display=w?'':'none';}dt.forEach((x,i)=>x.classList.toggle('on',i===bannerI));},4000);
   }else{clearInterval(bannerT);hb.innerHTML=`<div class="hero">${HERO}</div>`;}
   $('#neonBox').innerHTML=neonHTML(O.neon,O.ncol);
   const SOCACT={instagram:'Seguir',whatsapp:'Chamar',wgrupo:'Entrar no grupo',tiktok:'Seguir',youtube:'Inscrever-se',facebook:'Curtir',telegram:'Entrar',discord:'Entrar',site:'Visitar'};
@@ -774,7 +808,10 @@ function renderOwner(){
     const up=h('button',null,'↑');up.onclick=()=>{if(i>0){[d.soc[i-1],d.soc[i]]=[d.soc[i],d.soc[i-1]];renderOwner();}};
     const rm=h('button',null,'✕');rm.onclick=()=>{d.soc.splice(i,1);renderOwner();};r.append(up,rm);l.append(r);});
   const bl=$('#oBan');bl.innerHTML='';
-  d.banners.forEach((b,i)=>{const r=h('div','sl',`<img src="${b}" style="width:120px;border-radius:8px"><span></span>`);
+  d.banners=d.banners.map(banObj);
+  d.banners.forEach((b,i)=>{const exp=b.until&&b.until<today();
+    const r=h('div','sl banrow',`<img src="${b.img}" style="width:110px;border-radius:8px"><span><small style="color:${exp?'#ff7a8a':'#9dffc4'}">${b.who?esc(b.who):'Banner próprio'}${b.until?(exp?' · VENCIDO':' · até '+fdate(b.until)):''}${b.wa?' · 💬':b.url?' · 🔗':''}</small></span>`);
+    const ed=h('button',null,'✏️');ed.onclick=()=>editBanner(i);r.append(ed);
     const up=h('button',null,'↑');up.onclick=()=>{if(i>0){[d.banners[i-1],d.banners[i]]=[d.banners[i],d.banners[i-1]];renderOwner();}};
     const rm=h('button',null,'✕');rm.onclick=()=>{d.banners.splice(i,1);renderOwner();};r.append(up,rm);bl.append(r);});
   $('#oBanAdd').disabled=d.banners.length>=3;$('#oBanAdd').textContent=d.banners.length>=3?'Máximo de 3 banners':'+ Adicionar banner (foto)';
@@ -782,15 +819,16 @@ function renderOwner(){
 }
 $('#oNeon').oninput=e=>{oDraft.neon=e.target.value;$('#oPrev').innerHTML=neonHTML(oDraft.neon,oDraft.ncol)||'<small style="color:var(--mut)">Sem texto — o neon fica escondido.</small>';};
 $('#oAdd').onclick=()=>{const v=$('#oVal').value.trim();if(!v){toast('Digite o usuário, número ou link');return;}oDraft.soc.push({k:$('#oNet').value,v});$('#oVal').value='';renderOwner();};
+$('#oAdAdd').onclick=()=>editAd(null);
 $('#oBanAdd').onclick=()=>$('#oBanFile').click();
 $('#oBanFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const r=new FileReader();
   r.onload=()=>{const im=new Image();im.onload=()=>{const W=720,H=270,c=document.createElement('canvas');c.width=W;c.height=H;
     const sc=Math.max(W/im.width,H/im.height),w=im.width*sc,hh=im.height*sc;c.getContext('2d').drawImage(im,(W-w)/2,(H-hh)/2,w,hh);
-    oDraft.banners.push(c.toDataURL('image/jpeg',0.72));renderOwner();toast('Banner adicionado — toque em Salvar e publicar');};im.src=r.result;};r.readAsDataURL(f);};
+    oDraft.banners.push({img:c.toDataURL('image/jpeg',0.72),url:'',who:'',until:''});renderOwner();editBanner(oDraft.banners.length-1);};im.src=r.result;};r.readAsDataURL(f);};
 $('#oSave').onclick=async()=>{
   oDraft.turn={user:$('#oTApp').value.trim(),pass:$('#oTKey').value.trim()};
   oDraft.tann=$('#oTAnn').value.trim();readOwnerVit();
-  const c={v:Date.now(),neon:oDraft.neon,ncol:oDraft.ncol,soc:oDraft.soc,banners:oDraft.banners,turn:oDraft.turn,tours:oDraft.tours,tann:oDraft.tann,tannImg:oDraft.tannImg,vit:oDraft.vit};
+  const c={v:Date.now(),neon:oDraft.neon,ncol:oDraft.ncol,soc:oDraft.soc,banners:oDraft.banners,turn:oDraft.turn,tours:oDraft.tours,tann:oDraft.tann,tannImg:oDraft.tannImg,vit:oDraft.vit,ads:oDraft.ads};
   const str=JSON.stringify(c);
   if(str.length>450000){toast('Imagens muito pesadas — remova um banner ou imagem de torneio');return;}
   try{const sig=await signCfg(str);busPub(TOP.cfg,{cfg:str,sig},true);O=Object.assign(O,c);saveO();renderCommunity();tourSubs();toast('Publicado pra todos os jogadores!');go('lobby');}
@@ -798,7 +836,7 @@ $('#oSave').onclick=async()=>{
 };
 $('#ownBack').onclick=()=>go('profile');
 $('#oLogout').onclick=()=>modal('Sair do modo dono?','O botão do painel some deste celular. Pra entrar de novo, toque 7 vezes em "Meu perfil" e cole a chave.',[{t:'Cancelar'},{t:'Sair',pri:1,f:()=>{OKEY=null;try{localStorage.removeItem('arena_owner_key'+SK);}catch(e){}ownerVis();go('profile');toast('Modo dono desligado neste celular');}}]);
-function openOwner(){oDraft={neon:O.neon,ncol:O.ncol,soc:O.soc.map(s=>({...s})),banners:(O.banners||[]).slice(),turn:{...(O.turn||{})},tours:(O.tours||[]).map(t=>({...t})),tann:O.tann||'',tannImg:O.tannImg||null,vit:{...(O.vit||{mode:'off'})}};go('owner');renderOwner();renderOwnerTours();renderOwnerVit();renderParc();}
+function openOwner(){oDraft={neon:O.neon,ncol:O.ncol,soc:O.soc.map(s=>({...s})),banners:(O.banners||[]).slice(),turn:{...(O.turn||{})},tours:(O.tours||[]).map(t=>({...t})),tann:O.tann||'',tannImg:O.tannImg||null,vit:{...(O.vit||{mode:'off'})},ads:(O.ads||[]).map(a=>({...a}))};go('owner');renderOwner();renderOwnerAds();renderOwnerTours();renderOwnerVit();renderParc();}
 async function keyOk(k){try{const kk=await crypto.subtle.importKey('jwk',{...OWNER_PUB,d:k.replace(/^ARENA-/,''),ext:true},{name:'ECDSA',namedCurve:'P-256'},false,['sign']);
   const s=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},kk,new TextEncoder().encode('teste'));return await verifyCfg('teste',b64u.enc(s));}catch(e){return false;}}
 $('#ownerBtn').onclick=()=>{
@@ -878,6 +916,7 @@ function tourSubs(){(O.tours||[]).forEach(t=>busSub(TOP.tour(t.id)+'/+'));}
 function regs(tid){return TREG.get(tid)||new Map();}
 function renderTours(){
   const box=$('#tList');box.innerHTML='';
+  $('#tSpon').onclick=()=>openParc(PTYPES[1]);
   $('#tAnn').innerHTML=O.tann?`<div class="tann">${O.tannImg?`<img src="${O.tannImg}" alt="Anúncio">`:''}<div>${esc(O.tann)}</div></div>`:'';
   const ts=O.tours||[];
   if(!ts.length){box.innerHTML='<div class="card" style="text-align:center;color:var(--mut)">Nenhum torneio aberto agora.<br>Fique de olho — logo tem campeonato! 🏆</div>';return;}
@@ -888,9 +927,11 @@ function renderTours(){
       <div class="tbody"><div class="ttag">${esc(t.kind||'Torneio')} · ${esc(tourGame(t.game))}</div>
       <h3>${esc(t.title||'Torneio')}</h3>
       ${t.desc?`<p>${esc(t.desc)}</p>`:''}
-      <div class="tinfo"><span>🏆 <b>${esc(t.prize||'—')}</b></span><span>🎟️ ${esc(t.fee||'Grátis')}</span>
+      ${t.spName?`<button class="spon" data-sp="${esc(t.spLink||'')}">${t.spLogo?`<img src="${t.spLogo}" alt="">`:'<i>🤝</i>'}<span><small>PATROCÍNIO</small><b>${esc(t.spName)}</b></span>${t.spLink?'<em>Ver →</em>':''}</button>`:''}
+      <div class="tinfo"><span>🏆 <b>${esc(t.prize||'—')}</b></span><span>🎟️ Grátis</span>
       ${t.start||t.end?`<span>📅 ${fdate(t.start)}${t.end?' a '+fdate(t.end):''}</span>`:''}<span>👥 ${r.size}${t.max?'/'+t.max:''} inscritos</span></div>
       <div class="tpeople"></div><div class="row tbtns"></div></div>`;
+    const sp=c.querySelector('.spon');if(sp&&sp.dataset.sp)sp.onclick=()=>goLink(sp.dataset.sp);
     const pp=c.querySelector('.tpeople');[...r.values()].slice(0,12).forEach(p=>{const a=h('i','av mini');setAv(a,p.thumb,p.name,'#7209b7');a.title=p.name;pp.append(a);});
     const bt=c.querySelector('.tbtns');
     const b=h('button',inn?'':'pri',inn?'✓ Inscrito — sair':full?'Vagas esgotadas':'Quero participar');b.disabled=full;
@@ -918,18 +959,33 @@ function editTour(i){
     <div class="lbl">Tipo</div><select data-k="kind" style="width:100%">${['Torneio da semana','Torneio do mês','Campeonato','Torneio especial'].map(x=>`<option ${x===t.kind?'selected':''}>${x}</option>`).join('')}</select>
     <div class="lbl">Jogo</div><select data-k="game" style="width:100%">${GAMES.map(g=>`<option value="${g.id}" ${g.id===t.game?'selected':''}>${g.name}</option>`).join('')}<option value="todos" ${t.game==='todos'?'selected':''}>Vários jogos</option></select>
     <div class="lbl">Prêmio</div><input type="text" data-k="prize" placeholder="Ex.: Criação de um site completo" value="${esc(t.prize)}">
-    <div class="lbl">Inscrição</div><input type="text" data-k="fee" placeholder="Ex.: Grátis ou R$ 2,00" value="${esc(t.fee)}">
+    <div class="lbl">Inscrição</div><input type="text" value="Grátis" disabled style="opacity:.7"><small style="color:var(--mut)">Inscrição paga fica desligada até a parte jurídica ser resolvida.</small>
+    <div class="lbl">🤝 Patrocinador (opcional)</div><input type="text" data-k="spName" placeholder="Ex.: Açaí do Gaibu" value="${esc(t.spName||'')}">
+    <div class="lbl">Link do patrocinador (Instagram, WhatsApp, site)</div><input type="text" data-k="spLink" placeholder="https://…" value="${esc(t.spLink||'')}" autocapitalize="off">
+    <div class="lbl">Logo do patrocinador</div><div class="spprev">${t.spLogo?`<img src="${t.spLogo}" style="width:64px;height:64px;border-radius:14px;object-fit:cover">`:''}</div><button data-splogo style="width:100%;margin-top:6px">🖼️ Escolher logo</button><input type="file" accept="image/*" hidden data-spfile>
     <div class="row"><div style="flex:1"><div class="lbl">Começa</div><input type="date" data-k="start" value="${esc(t.start)}"></div><div style="flex:1"><div class="lbl">Termina</div><input type="date" data-k="end" value="${esc(t.end)}"></div></div>
     <div class="lbl">Vagas</div><input type="number" data-k="max" min="2" max="256" value="${t.max||16}">
     <div class="lbl">Descrição / regras</div><textarea data-k="desc" placeholder="Como funciona, chaves, horários…">${esc(t.desc)}</textarea>
     <div class="lbl">Link (grupo do WhatsApp, Instagram…)</div><input type="text" data-k="link" placeholder="https://…" value="${esc(t.link)}">
     <div class="lbl">Imagem do torneio</div><div class="tprev">${t.img?`<img src="${t.img}" style="width:100%;border-radius:10px">`:''}</div><button data-img style="width:100%;margin-top:6px">📷 Escolher imagem</button><input type="file" accept="image/*" hidden>`;
-  body.querySelector('[data-img]').onclick=()=>body.querySelector('input[type=file]').click();
-  body.querySelector('input[type=file]').onchange=e=>{const f=e.target.files[0];if(!f)return;fitImage(f,720,300,u=>{t.img=u;body.querySelector('.tprev').innerHTML=`<img src="${u}" style="width:100%;border-radius:10px">`;});};
+  body.querySelector('[data-splogo]').onclick=()=>body.querySelector('[data-spfile]').click();
+  body.querySelector('[data-spfile]').onchange=e=>{const f=e.target.files[0];if(!f)return;fitImage(f,160,160,u=>{t.spLogo=u;body.querySelector('.spprev').innerHTML=`<img src="${u}" style="width:64px;height:64px;border-radius:14px">`;});};
+  body.querySelector('[data-img]').onclick=()=>body.querySelector('input[type=file]:not([data-spfile])').click();
+  body.querySelector('input[type=file]:not([data-spfile])').onchange=e=>{const f=e.target.files[0];if(!f)return;fitImage(f,720,300,u=>{t.img=u;body.querySelector('.tprev').innerHTML=`<img src="${u}" style="width:100%;border-radius:10px">`;});};
   modal(i==null?'Novo torneio':'Editar torneio',body,[{t:'Cancelar'},{t:'Salvar torneio',pri:1,f:()=>{
-    body.querySelectorAll('[data-k]').forEach(x=>{t[x.dataset.k]=x.dataset.k==='max'?parseInt(x.value||'0',10):x.value.trim();});
+    body.querySelectorAll('[data-k]').forEach(x=>{t[x.dataset.k]=x.dataset.k==='max'?parseInt(x.value||'0',10):x.value.trim();});t.fee='Grátis';
     if(!t.title)t.title='Torneio';if(i==null){if(d.tours.length>=3){toast('Máximo de 3 torneios ao mesmo tempo');return;}d.tours.push(t);}else d.tours[i]=t;
     renderOwnerTours();toast('Torneio salvo — toque em Salvar e publicar');}}]);
+}
+function editBanner(i){
+  const b=oDraft.banners[i];const body=h('div','tform');
+  body.innerHTML=`<img src="${b.img}" style="width:100%;border-radius:12px;margin-bottom:6px">
+    <div class="lbl">Link ao tocar no banner (opcional)</div><input type="text" data-k="url" placeholder="https://… ou torneio" value="${esc(b.url||'')}" autocapitalize="off">
+    <div class="lbl">…ou WhatsApp da loja (DDD + número) — o toque vai direto pro WhatsApp</div><input type="tel" data-k="wa" placeholder="Ex.: 81 99999-9999" value="${esc(b.wa||'')}">
+    <div class="lbl">É anúncio de quem? (deixe vazio se for seu)</div><input type="text" data-k="who" placeholder="Ex.: Açaí do Gaibu" value="${esc(b.who||'')}">
+    <div class="lbl">Mostrar até (data em que o anúncio vence)</div><input type="date" data-k="until" value="${esc(b.until||'')}">
+    <small style="color:var(--mut)">Depois dessa data o banner some sozinho da tela dos jogadores.</small>`;
+  modal('Banner '+(i+1),body,[{t:'Cancelar'},{t:'Salvar banner',pri:1,f:()=>{body.querySelectorAll('[data-k]').forEach(x=>b[x.dataset.k]=x.value.trim());renderOwner();toast('Banner salvo — toque em Salvar e publicar');}}]);
 }
 function fitImage(f,W,H,cb){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;
   const sc=Math.max(W/im.width,H/im.height),w=im.width*sc,hh=im.height*sc;c.getContext('2d').drawImage(im,(W-w)/2,(H-hh)/2,w,hh);cb(c.toDataURL('image/jpeg',0.7));};im.src=r.result;};r.readAsDataURL(f);}
@@ -955,19 +1011,74 @@ function vitMediaHTML(v){
     return `<video class="vmedia" src="${esc(v.video)}" controls playsinline preload="metadata"></video>`;}
   return '';
 }
+function waLink(num,msg){let n=String(num||'').replace(/\D/g,'');if(!n)return '';if(n.length<=11)n='55'+n;return 'https://wa.me/'+n+(msg?'?text='+encodeURIComponent(msg):'');}
+function activeAds(){return (O.ads||[]).filter(a=>(a.img||a.video)&&(!a.until||a.until>=today()));}
+function adMediaHTML(a){
+  if(a.kind==='video'&&a.video){const id=ytId(a.video);
+    if(id)return `<div class="vvid"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1&modestbranding=1&end=30" title="${esc(a.who||'Anúncio')}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`;
+    return `<video class="admv" src="${esc(a.video)}" controls playsinline preload="metadata"></video>`;}
+  if(a.img)return `<img class="admi" src="${esc(fixImgUrl(a.img))}" alt="" onerror="this.classList.add('bad')">`;
+  return '';
+}
+function adCardHTML(a,i){return `<div class="adc" data-i="${i}"><span class="adt">Anúncio</span>${adMediaHTML(a)}
+  <div class="adb"><b>${esc(a.who||'Loja parceira')}</b>${a.desc?`<small>${esc(a.desc)}</small>`:''}</div>
+  ${a.wa?`<button class="adwa" data-i="${i}">💬 ${esc(a.cta||'Chamar no WhatsApp')}</button>`:''}</div>`;}
+function bindAds(box,list){
+  box.querySelectorAll('.adwa').forEach(b=>b.onclick=()=>{const a=list[+b.dataset.i];goLink(waLink(a.wa,a.msg||('Olá! Vi o anúncio de vocês na Arena dos Mestres.')));});
+  box.querySelectorAll('.adc img.admi').forEach(im=>im.onclick=()=>{const a=list[+im.closest('.adc').dataset.i];if(a.wa)goLink(waLink(a.wa,a.msg||'Olá! Vi o anúncio de vocês na Arena dos Mestres.'));});
+  box.querySelectorAll('video.admv').forEach(v=>v.addEventListener('timeupdate',()=>{if(v.currentTime>=30){v.pause();v.currentTime=0;}}));
+}
+function renderOwnerAds(){
+  const box=$('#oAds');if(!box)return;box.innerHTML='';
+  if(!oDraft.ads.length)box.innerHTML='<small style="color:var(--mut)">Nenhum anúncio ainda.</small>';
+  oDraft.ads.forEach((a,i)=>{const exp=a.until&&a.until<today();
+    const r=h('div','sl banrow',`<span><b>${a.kind==='video'?'🎬':'🖼️'} ${esc(a.who||'Sem nome')}</b><br><small style="color:${exp?'#ff7a8a':'#9dffc4'}">${a.wa?'💬 '+esc(a.wa):'⚠️ sem WhatsApp'}${a.until?(exp?' · VENCIDO':' · até '+fdate(a.until)):''}</small></span>`);
+    const ed=h('button',null,'✏️');ed.onclick=()=>editAd(i);
+    const rm=h('button',null,'✕');rm.onclick=()=>{oDraft.ads.splice(i,1);renderOwnerAds();};
+    r.append(ed,rm);box.append(r);});
+  $('#oAdAdd').disabled=oDraft.ads.length>=6;$('#oAdAdd').textContent=oDraft.ads.length>=6?'Máximo de 6 anúncios':'+ Novo anúncio';
+}
+function editAd(i){
+  const isNew=i==null;const a=isNew?{kind:'banner',who:'',desc:'',wa:'',msg:'',cta:'',img:null,video:'',until:''}:{...oDraft.ads[i]};
+  const body=h('div','tform');
+  body.innerHTML=`<div class="lbl">Tipo</div><select data-k="kind" style="width:100%"><option value="banner">🖼️ Banner (foto)</option><option value="video">🎬 Vídeo de até 30 segundos</option></select>
+    <div data-ban><div class="lbl">Foto do banner</div><div class="adprev">${a.img?`<img src="${a.img}" style="width:100%;border-radius:12px">`:''}</div><button data-pick style="width:100%;margin-top:6px">📷 Escolher foto do celular</button><input type="file" accept="image/*" hidden></div>
+    <div data-vid><div class="lbl">Link do vídeo (YouTube Shorts ou link .mp4)</div><input type="text" data-k="video" placeholder="https://youtube.com/shorts/…" value="${esc(a.video||'')}" autocapitalize="off">
+      <small style="color:var(--mut)">Poste o vídeo no YouTube como Shorts (pode ser "Não listado") e cole o link aqui. Ele toca no máximo 30 segundos.</small></div>
+    <div class="lbl">Nome da loja</div><input type="text" data-k="who" maxlength="40" placeholder="Ex.: Açaí do Gaibu" value="${esc(a.who||'')}">
+    <div class="lbl">Frase curta (opcional)</div><input type="text" data-k="desc" maxlength="90" placeholder="Ex.: Açaí de 500ml por R$ 12" value="${esc(a.desc||'')}">
+    <div class="lbl">WhatsApp da loja (DDD + número)</div><input type="tel" data-k="wa" placeholder="Ex.: 81 99999-9999" value="${esc(a.wa||'')}">
+    <div class="lbl">Mensagem que já vai escrita no WhatsApp</div><input type="text" data-k="msg" maxlength="120" placeholder="Olá! Vi o anúncio de vocês na Arena dos Mestres." value="${esc(a.msg||'')}">
+    <div class="lbl">Texto do botão</div><input type="text" data-k="cta" maxlength="30" placeholder="Chamar no WhatsApp" value="${esc(a.cta||'')}">
+    <div class="lbl">Mostrar até (vencimento)</div><input type="date" data-k="until" value="${esc(a.until||'')}">`;
+  const sel=body.querySelector('[data-k=kind]');sel.value=a.kind||'banner';
+  const sw=()=>{body.querySelector('[data-ban]').style.display=sel.value==='banner'?'':'none';body.querySelector('[data-vid]').style.display=sel.value==='video'?'':'none';};sel.onchange=sw;sw();
+  const fi=body.querySelector('input[type=file]');body.querySelector('[data-pick]').onclick=()=>fi.click();
+  fi.onchange=e=>{const f=e.target.files[0];if(!f)return;fitImage(f,640,360,u=>{a.img=u;body.querySelector('.adprev').innerHTML=`<img src="${u}" style="width:100%;border-radius:12px">`;});};
+  modal(isNew?'Novo anúncio':'Editar anúncio',body,[{t:'Cancelar'},{t:'Salvar anúncio',pri:1,f:()=>{
+    body.querySelectorAll('[data-k]').forEach(x=>a[x.dataset.k]=x.value.trim());
+    if(a.kind==='banner'&&!a.img){toast('Escolha a foto do banner');return false;}
+    if(a.kind==='video'&&!a.video){toast('Cole o link do vídeo');return false;}
+    if(!a.wa.replace(/\D/g,'')){toast('Coloque o WhatsApp da loja');return false;}
+    if(isNew)oDraft.ads.push(a);else oDraft.ads[i]=a;renderOwnerAds();toast('Anúncio salvo — toque em Salvar e publicar');}}]);
+}
 function renderVit(){
   const box=$('#vitBox');if(!box)return;const v=O.vit||{};
-  let html='';
+  let html='';const AD=activeAds();
+  if(AD.length)html+=`<div class="adsec"><div class="adh">📣 Ofertas das lojas parceiras</div><div class="adrow">${AD.map((a,i)=>adCardHTML(a,i)).join('')}</div></div>`;
   if(v.mode&&v.mode!=='off'&&(v.img||v.video)){
     html+=`<div class="vit"><div class="vtag">${esc(v.cat||'Destaque')}</div>${vitMediaHTML(v)}
       ${v.title||v.desc?`<div class="vtxt">${v.title?`<b>${esc(v.title)}</b>`:''}${v.desc?`<span>${esc(v.desc)}</span>`:''}</div>`:''}
       ${v.cta&&v.url?`<button class="vcta" id="vCta">${esc(v.cta)} →</button>`:''}</div>`;
   }
+  else if(!AD.length)html+=`<button class="adhere" id="adHere"><span>📣</span><div><b>Anuncie sua marca aqui</b><small>Sua loja ou serviço pra toda a comunidade da Arena</small></div><em>→</em></button>`;
   html+=`<button class="parc" id="parcBtn">🤝 Quer fazer parceria?</button>`;
   box.innerHTML=html;
   const cta=box.querySelector('#vCta');if(cta)cta.onclick=()=>goLink(v.url);
   const im=box.querySelector('img.vmedia');if(im&&v.url)im.onclick=()=>goLink(v.url);
-  box.querySelector('#parcBtn').onclick=openParc;
+  bindAds(box,AD);
+  box.querySelector('#parcBtn').onclick=()=>openParc();
+  const ah=box.querySelector('#adHere');if(ah)ah.onclick=()=>openParc(PTYPES[0]);
 }
 /* --- formulário de parceria (vai criptografado, só o dono lê) --- */
 async function encForOwner(obj){
@@ -987,16 +1098,17 @@ async function decAsOwner(p){
   return JSON.parse(new TextDecoder().decode(pt));
 }
 const PTYPES=['Divulgar minha loja ou serviço','Patrocinar / dar prêmio em torneio','Rede social / influenciador','Outro'];
-function openParc(){
+function openParc(pre){
+  if(typeof pre!=='string')pre='';
   const body=h('div','tform');
   body.innerHTML=`Conta pra gente o que você tem em mente. Respondemos pelo contato que você deixar.
     <div class="lbl">Nome ou apelido</div><input type="text" data-k="nome" maxlength="60" value="${esc(S.name!=='Jogador'?S.name:'')}">
     <div class="lbl">Contato (WhatsApp, Instagram ou e-mail)</div><input type="text" data-k="contato" maxlength="100" placeholder="Ex.: 81 99999-9999 ou @seuperfil">
-    <div class="lbl">Tipo de parceria</div><select data-k="tipo">${PTYPES.map(t=>`<option>${t}</option>`).join('')}</select>
+    <div class="lbl">Tipo de parceria</div><select data-k="tipo">${PTYPES.map(t=>`<option ${t===pre?'selected':''}>${t}</option>`).join('')}</select>
     <div class="lbl">Mensagem</div><textarea data-k="msg" maxlength="800" placeholder="O que você gostaria de fazer com a Arena dos Mestres?"></textarea>`;
   modal('🤝 Quer fazer parceria?',body,[{t:'Cancelar'},{t:'Enviar',pri:1,f:async()=>{
     const d={};body.querySelectorAll('[data-k]').forEach(x=>d[x.dataset.k]=x.value.trim());
-    if(!d.nome||!d.contato||!d.msg){modal('Faltou preencher','Preencha nome, contato e mensagem pra gente conseguir te responder.',[{t:'Voltar',pri:1,f:()=>openParc()}]);return;}
+    if(!d.nome||!d.contato||!d.msg){modal('Faltou preencher','Preencha nome, contato e mensagem pra gente conseguir te responder.',[{t:'Voltar',pri:1,f:()=>openParc(pre)}]);return;}
     d.ts=Date.now();d.uid=S.uid;d.perfil=S.name;
     try{const p=await encForOwner(d);const id=mid();busPub(TOP.parc+'/'+id,p,true);
       modal('Mensagem enviada! ✅','Recebemos seu pedido de parceria. Em breve entramos em contato.',[{t:'OK',pri:1}]);}
