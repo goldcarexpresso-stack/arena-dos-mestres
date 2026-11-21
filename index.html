@@ -897,6 +897,30 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
 .prow .folbtn{width:auto;margin:0;padding:8px 12px;font-size:13px;border-width:1px}
 .folsm{display:block;color:#ff9ad8;font-weight:800;margin-top:4px}
 .pchips .fol{cursor:pointer;color:#fff;background:linear-gradient(90deg,#7a1fd1,#c2185b);border-color:#ff9ad8}
+
+/* ===== MODO PC / NOTEBOOK (tela larga) ===== */
+@media(min-width:1000px){
+  .scr{max-width:900px;padding:22px 28px 130px}
+  #lobby.scr{max-width:1320px}
+  #lobby.pcw{display:none;grid-template-columns:minmax(0,1fr) 400px;gap:0 24px;align-items:start}
+  #lobby.pcw.on{display:grid}
+  #lobby.pcw>.lfull{grid-column:1/-1}
+  #lobby .lmain,#lobby .lside{min-width:0}
+  #lobby .lside .duo{grid-template-columns:1fr}
+  #lobby #games{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  #lobby .top{padding:6px 4px}
+  #lname{font-size:28px}
+  .chatscr{max-width:900px}
+  #match.scr,#watch.scr{max-width:1000px}
+  #owner.scr{max-width:1100px}
+  .bd{max-width:min(620px,68vh)}
+  #stage canvas{max-width:min(640px,70vh)!important}
+  .mod{align-items:center!important}
+  .mod .box{max-width:560px;border-radius:22px!important}
+  .nav{left:50%!important;right:auto!important;transform:translateX(-50%);width:min(760px,94vw)!important;bottom:14px!important}
+  .tcard2{max-width:480px}
+}
+@media(min-width:1400px){#lobby #games{grid-template-columns:repeat(3,minmax(0,1fr))}#lobby.pcw{grid-template-columns:minmax(0,1fr) 440px}}
 </style>
 </head>
 <body>
@@ -3660,6 +3684,20 @@ $('#gBtn').onclick=gchatToggle;$('#gSend').onclick=gchatSend;$('#gIn').onkeydown
 setInterval(presence,15000);setInterval(onlineUI,5000);
 renderLobby();
 joinFromLink();
+
+/* ===== MODO PC: organiza o lobby em 2 colunas ===== */
+(function(){const L=document.getElementById('lobby');if(!L)return;const orig=[...L.children];
+  const FULL=['top','banner','instBtn'],SIDE=['duo','neonBox','socBox','onStrip','bagCard'];
+  const key=e=>e.id||[...e.classList].find(c=>FULL.includes(c)||SIDE.includes(c))||'';
+  let mode='';
+  function lay(){const wide=innerWidth>=1000;if((wide?'w':'n')===mode)return;mode=wide?'w':'n';
+    L.querySelectorAll(':scope>.lmain,:scope>.lside').forEach(x=>x.remove());
+    if(!wide){L.classList.remove('pcw');orig.forEach(e=>{e.classList.remove('lfull');L.append(e);});return;}
+    L.classList.add('pcw');const m=document.createElement('div');m.className='lmain';const sd=document.createElement('div');sd.className='lside';
+    orig.forEach(e=>{const k=key(e);if(FULL.includes(k)){e.classList.add('lfull');L.append(e);}});
+    orig.forEach(e=>{const k=key(e);if(FULL.includes(k))return;(SIDE.includes(k)?sd:m).append(e);});
+    L.append(m,sd);}
+  lay();addEventListener('resize',lay);})();
 </script>
 </body>
 </html>
