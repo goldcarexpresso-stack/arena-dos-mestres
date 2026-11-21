@@ -833,6 +833,24 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
 .tipcard p{margin:8px 0 12px;color:#e8d8ff;font-size:15px;line-height:1.45}.tipcard p b{color:#ffe27a}
 .tipcard button{width:100%;padding:12px;font-size:16px;font-weight:900;border-radius:14px}.tipcard label{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:8px;color:#a9a0cc;font-size:13px}
 .tourbtn{display:block;width:100%;margin-top:10px;padding:12px;border-radius:16px;font-weight:900;background:linear-gradient(90deg,#ffe27a,#ffb627);color:#2a1200;border:none}
+
+/* perfil novo */
+.phero{position:relative;text-align:center;border-radius:24px;overflow:hidden;background:linear-gradient(180deg,#1d1640,#120d30);border:1px solid #b026ff55;box-shadow:0 12px 30px #000a;padding-bottom:14px;margin-bottom:12px}
+.pcover2{height:150px;background:var(--im) center/cover;position:relative}.pcover2::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,#1d1640)}
+.pavw{position:relative;width:max-content;margin:-78px auto 0;z-index:2}.pavw .av.big{width:112px;height:112px;font-size:40px;border-width:4px}
+.pcam{position:absolute;right:-2px;bottom:4px;width:38px;height:38px;padding:0;border-radius:50%;font-size:18px;background:linear-gradient(135deg,#b026ff,#ff2bd6);border:2px solid #fff;box-shadow:0 4px 10px #0008}
+.pnm2{margin-top:8px;font-size:24px;font-weight:900;color:#fff}
+.pchips{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:8px 10px 12px}.pchips span{font-size:12.5px;font-weight:800;color:#ffe27a;background:#2a2000;border:1px solid #ffc23d55;border-radius:12px;padding:4px 10px}
+.pchips .hot2{background:linear-gradient(90deg,#ffb627,#ff2bd6);color:#fff;border-color:#fff;animation:ctaPulse 1.4s infinite}
+.pst{margin:0 12px}.pst .st{padding:8px 4px}.pst .st b{font-size:22px}
+.ptiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.ptile{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:14px;border-radius:20px;text-align:left;border:1.5px solid #ffffff33;box-shadow:0 8px 20px #0008;min-height:96px}
+.ptile span{font-size:30px;filter:drop-shadow(0 3px 4px #0007)}.ptile b{font-size:16px;color:#fff}.ptile small{font-size:12px;color:#ffffffcc;font-weight:700}
+.ptile .badge{position:absolute;top:10px;right:10px}
+.ptile.t1{background:linear-gradient(135deg,#7a1fd1,#c2185b)}.ptile.t2{background:linear-gradient(135deg,#0b9a4a,#0277bd)}
+.ptile.t3{background:linear-gradient(135deg,#3a1f4a,#5a1a2a)}.ptile.t4{background:linear-gradient(135deg,#b8860b,#e65100)}
+.pedit summary{cursor:pointer;font-weight:900;color:#fff;font-size:16px;list-style:none}.pedit summary small{color:#a9a0cc;font-weight:600;margin-left:6px}
+.pedit summary::-webkit-details-marker{display:none}
 </style>
 </head>
 <body>
@@ -852,7 +870,7 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
   <div id="socBox"></div>
   <button class="fbanner fb1 phbg" data-img="amigo" id="friendBtn"><span class="fic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3.5-6 6.5-6s6 2 6.5 6"/><circle cx="17.5" cy="9" r="2.6"/><path d="M16.5 14c2.5 0 4.5 1.6 5 4.6"/></svg></span><div><b>Jogar com um amigo</b><span id="friendSub" class="finfo">Escolha o jogo e mande o link no WhatsApp</span></div><span class="fgo">›</span></button>
   <div id="onStrip"></div>
-  <button id="bagCard" class="bagcard phbg" data-img="bag"></button>
+  <button id="bagCard" class="bagcard phbg" data-img="bag" style="display:none!important"></button>
   <button id="bingoCard" class="bingocard phbg" data-img="bingo" style="display:none"></button>
   <div class="sec1"><h2>Escolha o jogo</h2><span>5 jogos + torneios</span></div>
   <div class="grid" id="games"></div>
@@ -874,31 +892,31 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
 <!-- PROFILE -->
 <section id="profile" class="scr">
   <div class="ph1"><span class="phi">👤</span><h2 id="pTitle" style="user-select:none">Meu perfil</h2></div>
-  <div class="card pcard" style="text-align:center">
-    <div class="pcover" data-img="perfil"></div>
-    <div class="av big" id="pav"></div>
-    <div class="row" style="margin-top:12px">
-      <button id="pickf">📷 Escolher foto</button>
-      <button id="rmf">Remover foto</button>
-    </div>
-    <input type="file" id="file" accept="image/*" hidden>
-    <div class="lbl" style="text-align:left">Nome no jogo</div>
-    <input type="text" id="pname" maxlength="18">
-    <button class="pri" id="psave" style="width:100%;margin-top:12px">Salvar perfil</button>
-    <button id="pBag" class="bagbig">🎒 Meus acessórios</button>
-    <button id="pFr" class="frbig" style="margin-top:12px">👥 Meus amigos</button>
-    <button id="pBlk" style="width:100%;margin-top:10px">🚫 Contatos bloqueados</button>
-    <button id="pTour" class="tourbtn">💡 Ver o tutorial de novo</button>
-  </div>
-  <button id="ownerBtn" style="width:100%;margin-bottom:12px;display:none">🔐 Painel do dono</button>
-  <div class="card">
-    <b class="ct">📊 Estatísticas</b>
-    <div class="stats3">
+  <div class="phero">
+    <div class="pcover2" data-img="perfil"></div>
+    <div class="pavw"><div class="av big" id="pav"></div><button id="pickf" class="pcam" aria-label="Trocar foto">📷</button></div>
+    <div class="pnm2" id="pNm"></div>
+    <div class="pchips" id="pChips"></div>
+    <div class="stats3 pst">
       <div class="st win"><span>🏆</span><b id="sw"></b><small>Vitórias</small></div>
       <div class="st lose"><span>💔</span><b id="sl"></b><small>Derrotas</small></div>
       <div class="st rate"><span>🎯</span><b id="sr"></b><small>Aproveitamento</small></div>
     </div>
   </div>
+  <div class="ptiles">
+    <button id="pBag" class="ptile t1"><span>🎒</span><b>Acessórios</b><small id="pBagS"></small></button>
+    <button id="pFr" class="ptile t2"><span>👥</span><b>Amigos</b><small id="pFrS"></small><i class="badge" id="pFrN" style="display:none">0</i></button>
+    <button id="pBlk" class="ptile t3"><span>🚫</span><b>Bloqueados</b><small id="pBlkS"></small></button>
+    <button id="pTour" class="ptile t4"><span>💡</span><b>Tutorial</b><small>ver de novo</small></button>
+  </div>
+  <details class="card pedit"><summary>✏️ Editar perfil <small>foto e nome</small></summary>
+    <div class="row" style="margin-top:12px"><button id="pickf2">📷 Escolher foto</button><button id="rmf">Remover foto</button></div>
+    <input type="file" id="file" accept="image/*" hidden>
+    <div class="lbl">Nome no jogo</div>
+    <input type="text" id="pname" maxlength="18">
+    <button class="pri" id="psave" style="width:100%;margin-top:12px">Salvar perfil</button>
+  </details>
+  <button id="ownerBtn" style="width:100%;margin-bottom:12px;display:none">🔐 Painel do dono</button>
 </section>
 
 <!-- OWNER -->
@@ -1415,8 +1433,12 @@ $('#saque').onclick=()=>{
 };
 
 /* ========== PROFILE ========== */
-function renderProfile(){setAv($('#pav'),S.photo,S.name,null,S.uid);$('#pname').value=S.name;$('#sw').textContent=S.w;$('#sl').textContent=S.l;const t=S.w+S.l;$('#sr').textContent=t?Math.round(S.w*100/t)+'%':'—';}
-$('#pickf').onclick=()=>$('#file').click();
+function renderProfile(){setAv($('#pav'),S.photo,S.name,null,S.uid);$('#pname').value=S.name;
+  $('#pNm').innerHTML=nmHTML(S.name,S.uid);const t0=S.w+S.l;
+  $('#pChips').innerHTML=`<span>✨ ${S.bri||0} brilhos</span><span>👥 ${Object.keys(S.fr||{}).length} amigos</span>${S.chestRdy?'<span class="hot2">🎁 baú pronto</span>':''}`;
+  const tot=Object.keys(ITEMS).filter(k=>ITEMS[k].c!=='ut').length,mine=Object.keys(S.inv||{}).filter(k=>ITEMS[k]&&ITEMS[k].c!=='ut').length,nw=Object.keys(S.newI||{}).length;
+  $('#pBagS').textContent=`${mine}/${tot} coletados${nw?' · '+nw+(nw>1?' novos':' novo'):''}`;$('#pFrS').textContent=`${Object.keys(S.fr||{}).length} amigos`;$('#pBlkS').textContent=`${Object.keys(S.blk||{}).length} pessoas`;frBadge();$('#sw').textContent=S.w;$('#sl').textContent=S.l;const t=S.w+S.l;$('#sr').textContent=t?Math.round(S.w*100/t)+'%':'—';}
+$('#pickf').onclick=()=>$('#file').click();$('#pickf2').onclick=()=>$('#file').click();
 $('#rmf').onclick=()=>{S.photo=null;save();renderProfile();};
 $('#file').onchange=e=>{
   const f=e.target.files[0];if(!f)return;const r=new FileReader();
@@ -1758,12 +1780,12 @@ const TOUR=[
  {sel:'#bagCard',ic:'🎁',t:'Ganhe acessórios',d:'A cada <b>3 minutos jogando</b> um baú fica pronto. <b>Vença a rodada</b> pra abrir e ganhar molduras, entradas, emojis e mesas.'},
  {sel:'#nav [data-go="online"]',ic:'🟢',t:'Quem está online',d:'Veja quem está no app agora, convide pra jogar e <b>assista partidas ao vivo</b>.'},
  {sel:'#nav [data-go="chats"]',ic:'💬',t:'Conversas',d:'Mande mensagem, foto, áudio e faça ligação de voz com outros jogadores.'},
- {sel:'#nav [data-go="profile"]',ic:'👤',t:'Seu perfil',d:'Coloque sua <b>foto e seu nome</b>, veja seus amigos e equipe seus acessórios. Esse tutorial fica aqui pra ver de novo.'}];
+ {sel:'#nav [data-go="profile"]',ic:'👤',t:'Seu perfil',d:'Coloque sua <b>foto e seu nome</b>, veja seus <b>amigos</b> e seus <b>🎒 acessórios</b> — molduras, entradas e emojis que você ganha nos baús. O tutorial também fica aqui.'}];
 const TIPS={
  online:{ic:'🟢',t:'Jogadores online',d:'Toque em <b>Convidar</b> pra chamar alguém pra jogar. Em <b>🔴 Ao vivo</b> você assiste partidas e pode entrar na fila pra jogar a próxima.'},
  chats:{ic:'💬',t:'Conversas',d:'Toque em <b>+ Nova</b> pra falar com alguém. Segure o 🎤 pra gravar áudio, use 📎 pra foto e 📞 pra ligar. No 🚫 você bloqueia quem incomodar.'},
  wallet:{ic:'💰',t:'Carteira de teste',d:'Esse saldo é <b>de mentira</b>, só pra testar. Toque em <b>+ R$ 10,00</b> (ou outro) pra adicionar mais moedas sempre que precisar.'},
- profile:{ic:'👤',t:'Seu perfil',d:'Toque em <b>📷 Escolher foto</b>, digite seu nome e toque em <b>Salvar perfil</b>. Em <b>🎒 Meus acessórios</b> você equipa o que ganhou.'},
+ profile:{ic:'👤',t:'Seu perfil',d:'Toque no <b>📷</b> da sua foto pra trocar, ou em <b>✏️ Editar perfil</b> pra mudar o nome. Em <b>🎒 Acessórios</b> você equipa o que ganhou nos baús.'},
  bingo:{ic:'🎱',t:'Como jogar o Bingo',d:'Escolha quantas cartelas quer antes do sorteio. As bolas são marcadas sozinhas. Quando fechar uma <b>linha</b> ou a <b>cartela cheia</b>, toque rápido em <b>BINGO!</b>'},
  bag:{ic:'🎒',t:'Seus acessórios',d:'Toque em <b>Equipar</b> pra usar. Os bloqueados mostram em qual jogo saem. Itens repetidos viram <b>✨ brilhos</b> pra trocar pelo que quiser.'},
  torneio:{ic:'🏆',t:'Torneios',d:'Toque em <b>Quero participar</b> pra se inscrever. É grátis! O prêmio aparece em cada card.'},
@@ -2121,7 +2143,7 @@ function frAsk(from){const o=FRQ.get(from);if(!o)return;if($('#mod').classList.c
 function frAnswer(from,ok){const o=FRQ.get(from)||{};FRQ.delete(from);busClear(TOP.freq+'/'+S.uid+'/'+from);
   if(ok){frMake(from,o.name,o.thumb);busPub(TOP.user(from),{t:'facc',name:S.name,thumb:thumb()});toast('🤝 Agora você e '+(o.name||'jogador')+' são amigos!');}frBadge();}
 function frBadge(){const b=$('#pFrN');if(b){const n=FRQ.size;b.textContent=n;b.style.display=n?'inline-block':'none';}}
-function frRefresh(){frBadge();const pc=$('#pFr');if(pc)pc.innerHTML=`👥 Meus amigos (${Object.keys(S.fr||{}).length}) <span class="badge" id="pFrN" style="display:none">0</span>`;frBadge();
+function frRefresh(){frBadge();const pc=$('#pFrS');if(pc)pc.textContent=`${Object.keys(S.fr||{}).length} amigos`;frBadge();
   if($('#match').classList.contains('on'))frStrip();if($('#online').classList.contains('on'))renderOnline();if(CUR&&$('#chat').classList.contains('on'))renderChat();}
 function frStrip(){const el=$('#frStrip');if(!el)return;if(!M||!M.net){el.style.display='none';return;}
   const L=NET.players.filter(p=>p.id!==S.uid);el.style.display=L.length?'':'none';
