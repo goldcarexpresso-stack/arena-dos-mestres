@@ -508,6 +508,23 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
   box-shadow:0 0 0 3px #b026ff33,0 6px 22px #b026ff66;animation:ctaPulse 2.4s ease-in-out infinite 1.2s}
 @keyframes ctaPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
 
+/* neon dos anúncios e torneio */
+.adneon{text-align:center;margin:2px 0 10px;padding:10px 8px;border-radius:16px;border:2px solid #ffe27a;background:#14062ccc;animation:neonBlink 1.6s infinite}
+.adneon b{display:block;font-size:28px;font-weight:900;letter-spacing:3px;color:#fff;text-shadow:0 0 6px #fff,0 0 14px #ffc23d,0 0 28px #ff7a2f,0 0 46px #ff2bd6}
+.adneon small{display:block;color:#ffe27a;font-weight:800;font-size:13px;margin-top:2px}
+@keyframes neonBlink{0%,100%{box-shadow:0 0 10px #ffc23d,0 0 26px #ff2bd6aa;opacity:1}45%{box-shadow:0 0 18px #ffc23d,0 0 44px #ff2bd6;opacity:1}50%{opacity:.55}55%{opacity:1}}
+.adhere b,.adhere.sm b{font-size:22px!important;letter-spacing:1px}
+.adhere{animation:ctaPulse 2.4s ease-in-out infinite,neonBtn 1.6s infinite!important}
+.parc{font-size:20px!important;letter-spacing:.5px;animation:ctaPulse 2.4s ease-in-out infinite,neonBtn2 1.6s infinite .8s!important}
+.parc small{display:block;font-size:13px;font-weight:800;color:#fff;opacity:.95;letter-spacing:0;margin-top:2px}
+@keyframes neonBtn{0%,100%{box-shadow:0 0 0 3px #ffc23d55,0 0 18px #ffb627}50%{box-shadow:0 0 0 3px #fff3b0,0 0 38px #ffb627,0 0 60px #ff7a2f}}
+@keyframes neonBtn2{0%,100%{box-shadow:0 0 0 3px #b026ff55,0 0 18px #b026ff}50%{box-shadow:0 0 0 3px #e9f8ff,0 0 38px #ff2bd6,0 0 60px #00e5ff}}
+#games .tourcard .tcta{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;gap:3px;margin-top:6px;width:100%}
+#games .tourcard .tcta .tcbig{display:block;font-size:14px;font-weight:900;color:#1a0a00;background:linear-gradient(110deg,#fff36b,#ffc23d,#ff7a2f);border-radius:12px;padding:7px 8px;width:92%;line-height:1.15;box-shadow:0 0 14px #ffc23d;animation:neonBtn 1.4s infinite}
+#games .tourcard .tcta.in .tcbig{background:linear-gradient(110deg,#2ecc71,#25d366);color:#032111;box-shadow:0 0 14px #25d366;animation:none}
+#games .tourcard .tcta span{font-size:11.5px;font-weight:800;color:#fff;text-shadow:0 1px 3px #000;line-height:1.25}
+#games .tourcard .tcta.off small{color:#ffd6f2;font-size:12.5px;font-weight:700}
+
 /* ===== BINGO ===== */
 .bingocard{display:flex;align-items:center;gap:12px;width:100%;margin:4px 0 14px;padding:12px 14px;border-radius:22px;text-align:left;border:2px solid #ffe27a;
   background:radial-gradient(120% 140% at 0% 0%,#ff2bd6 0%,#7a1fd1 40%,#1b0f45 100%);box-shadow:0 0 26px #ff2bd666,inset 0 0 30px #00e5ff22;position:relative;overflow:hidden}
@@ -1084,7 +1101,7 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
   <div class="mtop"><button id="tBack">← Jogos</button><h2 class="tneon" style="margin:0 0 0 6px">🏆 TORNEIOS</h2></div>
   <div id="tAnn"></div>
   <button id="tLive" class="livebtn">🔴 Assistir partidas ao vivo</button>
-  <button id="tSpon" class="parc" style="margin:0 0 14px">🤝 Sua empresa quer patrocinar um torneio? Fale com a gente</button>
+  <button id="tSpon" class="parc" style="margin:0 0 14px">🤝 PATROCINE UM TORNEIO<small>Sua empresa em destaque · fale com a gente</small></button>
   <div id="tList"></div>
 </section>
 
@@ -1421,7 +1438,7 @@ function renderLobby(){
   const g=$('#games');g.innerHTML='';
   GAMES.forEach((x,j)=>{const c=h('button','gc'+(PHOTO[x.id]?' phc':''),`${j===0?'<span class="gpill">MAIS JOGADO</span>':''}${PHOTO[x.id]?`<div class="art ph"><img src="${PHOTO[x.id]}" alt="" style="animation-delay:-${j*2.3}s"><i class="shine"></i></div>`:`<div class="art">${ART[x.id]}</div>`}<div class="tx"><b>${x.name}</b><span>${x.desc}</span><span class="bcppl gppl" data-g="${x.id}">👥 0 na mesa · comece agora</span></div><button class="glive" data-g="${x.id}" style="display:none"></button>`);c.onclick=()=>openStake(x);g.append(c);});
   liveBadges();
-  const n=(O.tours||[]).length;const tc=h('button','gc tourcard'+(PHOTO.torneio?' phc tph':''),`${PHOTO.torneio?`<img class="tbg" src="${PHOTO.torneio}" alt=""><i class="shine"></i>`:`<div class="tic">${ARTF.trofeu('TC')}</div>`}<span class="tneon">TORNEIOS</span><small>${n?n+(n===1?' torneio aberto':' torneios abertos'):'Em breve'}</small>`);tc.onclick=()=>{go('torneio');};g.append(tc);
+  const n=(O.tours||[]).length;const tc=h('button','gc tourcard'+(PHOTO.torneio?' phc tph':''),`${PHOTO.torneio?`<img class="tbg" src="${PHOTO.torneio}" alt=""><i class="shine"></i>`:`<div class="tic">${ARTF.trofeu('TC')}</div>`}<span class="tneon">TORNEIOS</span><div class="tcta" id="tcCta"></div>`);tc.id='tourCard';tc.onclick=()=>{go('torneio');setTimeout(()=>{const f=document.querySelector('#torneio .tcard');if(f)f.scrollIntoView({block:'start',behavior:'smooth'});},250);};g.append(tc);try{tourCardFill();}catch(e){setTimeout(()=>{try{tourCardFill();}catch(_){}},0);}
 }
 function noFunds(stake,g){
   const fx=document.createElement('div');fx.className='nofx';
@@ -1660,15 +1677,22 @@ function tourGame(id){const g=GAMES.find(x=>x.id===id);return g?g.name:'Vários 
 const fdate=d=>d?new Date(d+'T12:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'';
 function onTourReg(t,o){const tid=t.split('/')[3];if(!tid)return;if(!TREG.has(tid))TREG.set(tid,new Map());
   if(o.off)TREG.get(tid).delete(o.from);else TREG.get(tid).set(o.from,{id:o.from,name:o.name||'Jogador',thumb:o.thumb});
-  if($('#torneio').classList.contains('on'))renderTours();}
+  if($('#torneio').classList.contains('on'))renderTours();tourCardFill();}
 function tourSubs(){(O.tours||[]).forEach(t=>busSub(TOP.tour(t.id)+'/+'));}
+function tourCardFill(){const el=$('#tcCta');if(!el)return;const ts=O.tours||[];
+  if(!ts.length){el.className='tcta off';el.innerHTML='<small>Em breve</small>';return;}
+  const t=ts[0],r=regs(t.id),inn=r.has(S.uid),full=t.max&&r.size>=t.max&&!inn;
+  el.className='tcta'+(inn?' in':'');
+  el.innerHTML=`<b class="tcbig">${inn?'✓ VOCÊ ESTÁ INSCRITO':full?'VAGAS ESGOTADAS':'📝 INSCREVA-SE AGORA'}</b>
+    ${t.start?`<span>📅 Início ${fdate(t.start)}</span>`:''}${t.prize?`<span>🏆 ${esc(t.prize)}</span>`:''}
+    <span>👥 ${r.size}${t.max?'/'+t.max:''} inscritos${ts.length>1?` · +${ts.length-1} torneio${ts.length>2?'s':''}`:''}</span>`;}
 function regs(tid){return TREG.get(tid)||new Map();}
 function renderTours(){
   const box=$('#tList');box.innerHTML='';
   $('#tSpon').onclick=()=>openParc(PTYPES[1]);
   $('#tLive').onclick=openLive;
   $('#tAnn').innerHTML=O.tann?`<div class="tann">${O.tannImg?`<img src="${O.tannImg}" alt="Anúncio">`:''}<div>${esc(O.tann)}</div></div>`:'';
-  const ts=O.tours||[];
+  tourCardFill();const ts=O.tours||[];
   if(!ts.length){box.innerHTML='<div class="card" style="text-align:center;color:var(--mut)">Nenhum torneio aberto agora.<br>Fique de olho — logo tem campeonato! 🏆</div>';return;}
   ts.forEach(t=>{
     const r=regs(t.id),inn=r.has(S.uid),full=t.max&&r.size>=t.max&&!inn;
@@ -1932,10 +1956,11 @@ function renderVit(){
       ${v.title||v.desc?`<div class="vtxt">${v.title?`<b>${esc(v.title)}</b>`:''}${v.desc?`<span>${esc(v.desc)}</span>`:''}</div>`:''}
       ${v.cta&&v.url?`<button class="vcta" id="vCta">${esc(v.cta)} →</button>`:''}</div></div>`);
   AD.forEach((a,i)=>slides.push(`<div class="rsl">${adCardHTML(a,i)}</div>`));
+  html+=`<div class="adneon"><b>📣 ANÚNCIOS</b><small>Sua marca aqui pra toda a Arena</small></div>`;
   if(slides.length)html+=`<div class="rot" id="rotBox">${slides.join('')}${slides.length>1?`<div class="rdots">${slides.map(()=>'<i></i>').join('')}</div>`:''}</div>`;
-  else html+=`<button class="adhere" id="adHere"><span>📣</span><div><b>Anuncie sua marca aqui</b><small>${priceLine()||'Sua loja ou serviço pra toda a comunidade da Arena'}</small></div><em>→</em></button>`;
-  if(slides.length)html+=`<button class="adhere sm" id="adHere"><span>📣</span><div><b>Anuncie aqui também</b><small>${priceLine()||'Veja os planos'}</small></div><em>→</em></button>`;
-  html+=`<button class="parc" id="parcBtn">🤝 Quer fazer parceria?</button>`;
+  else html+=`<button class="adhere" id="adHere"><span>📣</span><div><b>ANUNCIE AQUI</b><small>${priceLine()||'Sua loja ou serviço pra toda a comunidade da Arena'}</small></div><em>→</em></button>`;
+  if(slides.length)html+=`<button class="adhere sm" id="adHere"><span>📣</span><div><b>ANUNCIE AQUI TAMBÉM</b><small>${priceLine()||'Veja os planos'}</small></div><em>→</em></button>`;
+  html+=`<button class="parc" id="parcBtn">🤝 QUER FAZER PARCERIA?</button>`;
   box.innerHTML=html;
   const cta=box.querySelector('#vCta');if(cta)cta.onclick=()=>goLink(v.url);
   const im=box.querySelector('.vit .fi');if(im&&v.url)im.onclick=()=>goLink(v.url);
