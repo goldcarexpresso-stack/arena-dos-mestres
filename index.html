@@ -799,8 +799,8 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
 .stk .chip.on{background:linear-gradient(135deg,#ffe27a,#ffb627);color:#2a1200;border-color:#fff3b0;box-shadow:0 0 14px #ffc23d88}
 .stk .sum{border-radius:16px;background:linear-gradient(135deg,#0d2a1a,#141033);border:1px solid #25d36655}
 
-.vvid.vert{aspect-ratio:4/5;overflow:hidden}
-.vvid.vert iframe{inset:auto;width:316%;height:142.2%;left:-108%;top:-21.1%}
+.vvid.vert{aspect-ratio:1/1;overflow:hidden;background:radial-gradient(circle,#2a1660,#05031a)}
+.vvid.vert iframe{inset:auto;top:0;height:100%;width:177.8%;left:-38.9%}
 
 .nofx{position:fixed;inset:0;z-index:130;display:flex;align-items:center;justify-content:center;padding:16px;background:#05031ae8;animation:fadeIn .2s}
 @keyframes fadeIn{from{opacity:0}}
@@ -813,6 +813,8 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
 .nobox button{display:block;width:100%;margin-top:8px;padding:14px;font-size:16px;font-weight:900;border-radius:16px}
 .nogo{background:linear-gradient(90deg,#1fbf5b,#25d366)!important;color:#04210f!important;border:2px solid #fff!important;animation:ctaPulse 1.6s infinite}
 .nofr{background:#1d1640;border:1px solid #b026ff88;color:#fff}.nox{background:none;border:none;color:#a9a0cc;font-weight:700!important;padding:8px!important}
+
+.vvid .ytsnd{z-index:3}
 </style>
 </head>
 <body>
@@ -1680,7 +1682,7 @@ function goLink(u){
 function vidSrc(u){u=String(u||'').trim();if(!u||ytId(u))return u;if(/^https?:\/\//i.test(u))return u;return u.replace(/^\/+/,'');}
 function mediaHTML(kind,img,video,label,fmt){
   if(kind==='video'&&video){const id=ytId(video);const vert=fmt==='v'||(fmt!=='h'&&/shorts\//i.test(video));
-    if(id)return `<div class="vvid${vert?' vert':''}"><iframe data-yt="${id}" src="https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1&modestbranding=1&end=30" title="${esc(label||'Vídeo')}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`;
+    if(id)return `<div class="vvid${vert?' vert':''}"><iframe data-yt="${id}" src="https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1&modestbranding=1&end=30" title="${esc(label||'Vídeo')}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe><button class="snd ytsnd" aria-label="Som">🔊</button></div>`;
     return `<div class="fit vfit"><video class="fv" src="${esc(vidSrc(video))}" muted playsinline preload="metadata"></video><button class="snd" aria-label="Som">🔇</button></div>`;}
   if(img){const u=esc(fixImgUrl(img));return `<div class="fit" style="--bg:url('${u}')"><img class="fi" src="${u}" alt="" onerror="this.closest('.fit').classList.add('bad')"></div>`;}
   return '';
@@ -1710,15 +1712,25 @@ const WAMSG='Olá! Vi o anúncio de vocês na Arena dos Mestres.';
 function bindAds(box,list){
   box.querySelectorAll('.adbtn').forEach(b=>b.onclick=()=>{const a=list[+b.dataset.i];const B=adBtns(a)[+b.dataset.k];if(B)openBtn(B,a);});
   box.querySelectorAll('.adc .fi').forEach(im=>im.onclick=()=>{const a=list[+im.closest('.adc').dataset.i];const B=adBtns(a)[0];if(B)openBtn(B,a);});
-  box.querySelectorAll('.snd').forEach(b=>b.onclick=e=>{e.stopPropagation();const v=b.parentNode.querySelector('video');v.muted=!v.muted;b.textContent=v.muted?'🔇':'🔊';});
+  box.querySelectorAll('.snd').forEach(b=>b.onclick=e=>{e.stopPropagation();ADSND=!ADSND;try{localStorage.setItem('adm_adsnd',ADSND?'1':'0');}catch(x){}adAudio();});
 }
 /* carrossel automático: cada anúncio fica X segundos; vídeo toca até o fim (máx. 30s) */
 let rotT=null,rotI=0;
+let ADSND=(()=>{try{return localStorage.getItem('adm_adsnd')!=='0';}catch(e){return true;}})();
+const hasTap=()=>!!(navigator.userActivation&&navigator.userActivation.hasBeenActive)||hasTap.v;
+function ytCmd(f,fn){try{f.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:[]}),'*');}catch(e){}}
+function adAudio(){const on=ADSND&&hasTap();
+  document.querySelectorAll('#vitBox .rsl').forEach(x=>{const act=x.classList.contains('on')||!x.parentNode.querySelector('.rsl.on');
+    const v=x.querySelector('video.fv');if(v)v.muted=!(on&&act);
+    const f=x.querySelector('iframe[data-yt]');if(f&&act){ytCmd(f,on?'unMute':'mute');ytCmd(f,'playVideo');}});
+  document.querySelectorAll('#vitBox .snd').forEach(b=>b.textContent=ADSND?'🔊':'🔇');}
+['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,()=>{if(!hasTap.v){hasTap.v=1;setTimeout(adAudio,50);}},{capture:true,passive:true}));
+function ytSrc(id,play){const m=ADSND&&hasTap()?0:1;return `https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1&modestbranding=1&end=30&enablejsapi=1${play?`&autoplay=1&mute=${m}`:''}`;}
 function rotShow(box,i){
   const sl=[...box.querySelectorAll('.rsl')];if(!sl.length)return;clearTimeout(rotT);rotI=(i+sl.length)%sl.length;
   sl.forEach((x,k)=>{x.classList.toggle('on',k===rotI);
-    const v=x.querySelector('video.fv');if(v){if(k===rotI){try{v.currentTime=0;}catch(e){}v.play().catch(()=>{});}else v.pause();}
-    const f=x.querySelector('iframe[data-yt]');if(f){const id=f.dataset.yt;const want=`https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1&modestbranding=1&end=30${k===rotI&&sl.length>1?'&autoplay=1&mute=1':''}`;if(f.src!==want)f.src=want;}});
+    const v=x.querySelector('video.fv');if(v){if(k===rotI){try{v.currentTime=0;}catch(e){}v.muted=!(ADSND&&hasTap());v.play().catch(()=>{v.muted=true;v.play().catch(()=>{});});}else v.pause();}
+    const f=x.querySelector('iframe[data-yt]');if(f){const id=f.dataset.yt;const want=ytSrc(id,k===rotI);if(f.src!==want){f.src=want;if(k===rotI)f.onload=()=>setTimeout(adAudio,600);}}});
   box.querySelectorAll('.rdots i').forEach((d,k)=>d.classList.toggle('on',k===rotI));
   if(sl.length<2){const v=sl[0].querySelector('video.fv');if(v){v.loop=false;v.ontimeupdate=()=>{if(v.currentTime>=30){v.currentTime=0;}};v.onended=()=>{v.currentTime=0;v.play().catch(()=>{});};v.play().catch(()=>{});}return;}
   const cur=sl[rotI],v=cur.querySelector('video.fv'),yt=cur.querySelector('iframe[data-yt]');const sec=Math.max(3,+O.rot||8);
