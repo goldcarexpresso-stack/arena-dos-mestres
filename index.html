@@ -851,6 +851,22 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
 .ptile.t3{background:linear-gradient(135deg,#3a1f4a,#5a1a2a)}.ptile.t4{background:linear-gradient(135deg,#b8860b,#e65100)}
 .pedit summary{cursor:pointer;font-weight:900;color:#fff;font-size:16px;list-style:none}.pedit summary small{color:#a9a0cc;font-weight:600;margin-left:6px}
 .pedit summary::-webkit-details-marker{display:none}
+
+/* painel do dono organizado */
+.ohero{position:relative;border-radius:24px;overflow:hidden;padding:18px 16px 14px;margin-bottom:10px;background:var(--im) center/cover;border:1px solid #ffc23d66;box-shadow:0 12px 28px #000a}
+.ohero::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0b0820aa,#0b0820ee)}
+.ohero>*{position:relative}.ohero2{display:flex;align-items:center;gap:12px}.ohero2>span{font-size:40px;filter:drop-shadow(0 3px 6px #000)}
+.ohero2 small{display:block;font-size:11px;font-weight:900;letter-spacing:2px;color:#ffc23d}.ohero2 b{font-size:24px;color:#fff}
+.ochips{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.ochips span{font-size:12.5px;font-weight:800;color:#e8d8ff;background:#0b0820cc;border:1px solid #b026ff66;border-radius:12px;padding:4px 10px}
+.ochips .hot2{background:linear-gradient(90deg,#ffb627,#ff2bd6);color:#fff;border-color:#fff}
+.otabs{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:repeat(5,1fr);gap:5px;padding:6px;margin:0 0 12px;border-radius:18px;background:#0b0820ee;backdrop-filter:blur(8px);border:1px solid #3b2a7a}
+.otabs button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px;font-size:20px;border-radius:13px;background:none;border:none}
+.otabs button b{font-size:10.5px;color:#a9a0cc}.otabs button.on{background:linear-gradient(135deg,#b026ff,#ff2bd6);box-shadow:0 0 14px #b026ff88}.otabs button.on b{color:#fff}
+#owner .ocard{animation:fadeIn .25s}
+.osavebar{position:sticky;bottom:96px;z-index:20;display:flex;gap:8px;margin-top:8px;padding:8px;border-radius:18px;background:#0b0820ee;border:1px solid #3b2a7a;backdrop-filter:blur(8px)}
+.osavebar button{padding:14px;font-weight:900;border-radius:14px}.osavebar .pri{flex:1;font-size:16px}
+/* topo da tela inicial com espaço pro acessório */
+#lobby>.top{padding-top:16px;overflow:visible}
 </style>
 </head>
 <body>
@@ -921,25 +937,27 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
 
 <!-- OWNER -->
 <section id="owner" class="scr">
-  <div class="mtop"><button id="ownBack">← Voltar</button><div class="ph1" style="margin:0 0 0 6px"><span class="phi">🔐</span><h2>Painel do dono</h2></div></div>
-  <div class="card">
+  <div class="ohero" data-img="perfil"><div class="ohero2"><span>🔐</span><div><small>ÁREA DO DONO</small><b>Painel de controle</b></div></div><div class="ochips" id="oChips"></div></div>
+  <div class="otabs" id="oTabs"><button data-t="geral" class="on">📊<b>Geral</b></button><button data-t="anun">📣<b>Anúncios</b></button><button data-t="jogos">🎮<b>Jogos</b></button><button data-t="comu">✨<b>Comunidade</b></button><button data-t="conf">⚙️<b>Config.</b></button></div>
+  <div class="mtop" style="display:none"><button id="ownBack">← Voltar</button><div class="ph1" style="margin:0 0 0 6px"><span class="phi">🔐</span><h2>Painel do dono</h2></div></div>
+  <div class="card ocard" data-tab="geral">
     <b>📊 Visão geral do app</b>
     <div class="lbl">Números de quem abriu o app neste e nos outros celulares. Atualiza sozinho.</div>
     <div id="oStats"></div>
   </div>
-  <div class="card">
-    <b>🚫 Pessoas bloqueadas nas mensagens</b>
+  <div class="card ocard" data-tab="geral">
+    <b>🚫 Bloqueados nas mensagens</b>
     <div class="lbl">Bloqueio automático por palavra proibida. Toque em Liberar se foi bobagem.</div>
     <div id="oBlk"></div>
   </div>
-  <div class="card">
-    <b>📨 Parcerias <span class="badge" id="oParcN">0</span></b>
+  <div class="card ocard" data-tab="geral">
+    <b>📨 Pedidos de parceria <span class="badge" id="oParcN">0</span></b>
     <div class="lbl">Pedidos enviados pelo botão "Quer fazer parceria?". Só você consegue ler.</div>
     <div id="oParc"></div>
     <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-size:13px;color:var(--mut)"><input type="checkbox" id="oParcArc"> Mostrar arquivados</label>
   </div>
-  <div class="card">
-    <b>🎬 Vitrine / Destaque & Anúncios</b>
+  <div class="card ocard" data-tab="anun">
+    <b>⭐ Destaque principal (seu anúncio)</b>
     <div class="lbl">Modalidade</div>
     <select id="oVMode" style="width:100%"><option value="off">Desativado</option><option value="banner">Banner (imagem)</option><option value="video">Vídeo</option></select>
     <div class="lbl">Categoria</div>
@@ -959,7 +977,7 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
     <div class="lbl">Link de destino (site, rede social ou "torneio")</div><input type="text" id="oVUrl" placeholder="https://… ou torneio" autocapitalize="off">
     <div class="lbl">Prévia</div><div id="oVPrev" class="vprev"></div>
   </div>
-  <div class="card">
+  <div class="card ocard" data-tab="jogos">
     <b>🎱 Bingo da Arena</b>
     <div class="lbl">Bingo grátis ao vivo, rodadas automáticas o dia todo. Ninguém paga pra jogar.</div>
     <label class="tgl"><input type="checkbox" id="obOn"> <span><b>Bingo ligado</b><small>Aparece na tela de jogos pra todo mundo</small></span></label>
@@ -971,7 +989,7 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
     <div class="lbl">Link do patrocinador</div><input type="text" id="obSpL" placeholder="https://… ou @instagram" autocapitalize="off">
     <div class="lbl">Logo do patrocinador</div><div id="obLogoP"></div><button id="obLogo" style="width:100%;margin-top:6px">🖼️ Escolher logo</button><input type="file" id="obLogoF" accept="image/*" hidden>
   </div>
-  <div class="card">
+  <div class="card ocard" data-tab="anun">
     <b>📣 Anúncios das lojas</b>
     <div class="lbl">Banner com foto ou vídeo de até 30 segundos. O botão leva direto pro WhatsApp da loja. Some sozinho na data de vencimento.</div>
     <div id="oAds"></div>
@@ -980,8 +998,8 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
     <select id="oRot" style="width:100%"><option value="5">5 segundos</option><option value="8">8 segundos</option><option value="10">10 segundos</option><option value="15">15 segundos</option><option value="20">20 segundos</option></select>
     <small style="color:var(--mut)">Vídeo sempre toca até o fim (no máximo 30 segundos) e depois passa pro próximo.</small>
   </div>
-  <div class="card">
-    <b>💰 Tabela de preços (aparece pra quem quer anunciar)</b>
+  <div class="card ocard" data-tab="anun">
+    <b>💰 Tabela de preços</b>
     <div class="lbl">Anúncio nas ofertas — por semana</div><input type="text" data-pr="adW" placeholder="R$ 15">
     <div class="lbl">Anúncio nas ofertas — por mês</div><input type="text" data-pr="adM" placeholder="R$ 45">
     <div class="lbl">Banner no topo — por semana</div><input type="text" data-pr="topW" placeholder="R$ 25">
@@ -991,8 +1009,8 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
     <div class="lbl">Promoção (opcional)</div><input type="text" data-pr="promo" placeholder="Ex.: 1ª semana grátis pra quem fechar o mês">
     <small style="color:var(--mut)">Deixe vazio o que você não quiser mostrar.</small>
   </div>
-  <div class="card">
-    <b>Mensagem em neon</b>
+  <div class="card ocard" data-tab="comu">
+    <b>✨ Mensagem em neon</b>
     <div class="lbl">Texto que aparece no topo da tela de jogos</div>
     <textarea id="oNeon" maxlength="140" placeholder="Ex.: Bem-vindo à nossa comunidade! 🔥"></textarea>
     <div class="lbl">Cor do neon</div>
@@ -1000,8 +1018,8 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
     <div class="lbl">Prévia</div>
     <div id="oPrev"></div>
   </div>
-  <div class="card">
-    <b>Redes sociais da comunidade</b>
+  <div class="card ocard" data-tab="comu">
+    <b>📱 Redes sociais da comunidade</b>
     <div class="lbl">Rede</div>
     <div class="row">
       <select id="oNet" style="flex:1"></select>
@@ -1011,15 +1029,15 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
     <button id="oAdd" style="width:100%;margin-top:10px">+ Adicionar rede</button>
     <div id="oList" style="margin-top:8px"></div>
   </div>
-  <div class="card">
-    <b>Banners da tela de jogos</b>
-    <div class="lbl">Até 3 imagens. Elas aparecem no topo e passam sozinhas. Formato ideal: deitado (como 1080×400).</div>
+  <div class="card ocard" data-tab="anun">
+    <b>🖼️ Banners do topo</b>
+    <div class="lbl">Até 15 imagens. Elas aparecem no topo e passam sozinhas. Formato ideal: deitado (como 1080×400).</div>
     <div id="oBan"></div>
     <button id="oBanAdd" style="width:100%;margin-top:10px">+ Adicionar banner (foto)</button>
     <input type="file" id="oBanFile" accept="image/*" hidden>
   </div>
-  <div class="card">
-    <b>Torneios</b>
+  <div class="card ocard" data-tab="jogos">
+    <b>🏆 Torneios</b>
     <div class="lbl">Anúncio no topo da área de torneios</div>
     <textarea id="oTAnn" maxlength="200" placeholder="Ex.: Inscrições abertas pra Copa da Dama! Prêmio: um site completo 🔥"></textarea>
     <div id="oTAnnPrev"></div>
@@ -1029,15 +1047,15 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
     <div id="oTours"></div>
     <button id="oTourAdd" style="width:100%;margin-top:10px">+ Criar torneio</button>
   </div>
-  <div class="card">
-    <b>Voz ao vivo (Metered)</b>
+  <div class="card ocard" data-tab="conf">
+    <b>🎙️ Voz ao vivo (Metered)</b>
     <div class="lbl">Nome de usuário (da credencial TURN)</div>
     <input type="text" id="oTApp" placeholder="cole o nome de usuário" autocapitalize="off" autocorrect="off" spellcheck="false">
     <div class="lbl">Senha (da credencial TURN)</div>
     <input type="text" id="oTKey" placeholder="cole a senha" autocapitalize="off" autocorrect="off" spellcheck="false">
   </div>
   <button id="oLogout" style="width:100%;margin-bottom:10px">🔒 Sair do modo dono neste celular</button>
-  <button class="pri" id="oSave" style="width:100%">Salvar e publicar na tela de jogos</button>
+  <div class="osavebar"><button id="ownBack2">← Sair</button><button class="pri" id="oSave">💾 Salvar e publicar</button></div>
 </section>
 
 <!-- ONLINE -->
@@ -1546,7 +1564,7 @@ $('#oSave').onclick=async()=>{
 };
 $('#ownBack').onclick=()=>go('profile');
 $('#oLogout').onclick=()=>modal('Sair do modo dono?','O botão do painel some deste celular. Pra entrar de novo, toque 7 vezes em "Meu perfil" e cole a chave.',[{t:'Cancelar'},{t:'Sair',pri:1,f:()=>{OKEY=null;try{localStorage.removeItem('arena_owner_key'+SK);}catch(e){}ownerVis();go('profile');toast('Modo dono desligado neste celular');}}]);
-function openOwner(){oDraft={neon:O.neon,ncol:O.ncol,soc:O.soc.map(s=>({...s})),banners:(O.banners||[]).slice(),turn:{...(O.turn||{})},tours:(O.tours||[]).map(t=>({...t})),tann:O.tann||'',tannImg:O.tannImg||null,vit:{...(O.vit||{mode:'off'})},ads:(O.ads||[]).map(a=>({...a})),rot:O.rot||8,prices:{...(O.prices||{})},bingo:{...(O.bingo||{})}};go('owner');renderOwnerBingo();busSub(TOP.st+'/+');renderStats();renderOwner();renderOwnerAds();renderOwnerTours();renderOwnerVit();renderParc();}
+function openOwner(){oDraft={neon:O.neon,ncol:O.ncol,soc:O.soc.map(s=>({...s})),banners:(O.banners||[]).slice(),turn:{...(O.turn||{})},tours:(O.tours||[]).map(t=>({...t})),tann:O.tann||'',tannImg:O.tannImg||null,vit:{...(O.vit||{mode:'off'})},ads:(O.ads||[]).map(a=>({...a})),rot:O.rot||8,prices:{...(O.prices||{})},bingo:{...(O.bingo||{})}};go('owner');ownerTab(oTab);renderOwnerBingo();busSub(TOP.st+'/+');renderStats();renderOwner();renderOwnerAds();renderOwnerTours();renderOwnerVit();renderParc();}
 async function keyOk(k){try{const kk=await crypto.subtle.importKey('jwk',{...OWNER_PUB,d:k.replace(/^ARENA-/,''),ext:true},{name:'ECDSA',namedCurve:'P-256'},false,['sign']);
   const s=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},kk,new TextEncoder().encode('teste'));return await verifyCfg('teste',b64u.enc(s));}catch(e){return false;}}
 $('#ownerBtn').onclick=()=>{
@@ -2584,6 +2602,7 @@ $('#bgSnd').onclick=()=>{BG.snd=!BG.snd;$('#bgSnd').textContent=BG.snd?'🔊':'�
 $('#bgShout').onclick=bShout;$('#bgSend').onclick=bChatSend;$('#bgIn').onkeydown=e=>{if(e.key==='Enter')bChatSend();};
 $('#bingoCard').onclick=()=>go('bingo');
 setInterval(bTick,250);
+document.querySelectorAll('#oTabs button').forEach(b=>b.onclick=()=>ownerTab(b.dataset.t));$('#ownBack2').onclick=()=>$('#ownBack').click();
 document.querySelectorAll('[data-img]').forEach(el=>{const u=IMG[el.dataset.img];if(u)el.style.setProperty('--im',`url(${u})`);});
 /* painel do dono — bingo */
 function renderOwnerBingo(){const b=oDraft.bingo=Object.assign({on:true,ms:3500,max:3,rew:'',spName:'',spLink:'',spLogo:null},oDraft.bingo||{});
@@ -2708,7 +2727,12 @@ const STATS=new Map();let statT=null;
 function onStat(t,o){const id=t.split('/').pop();if(!o){STATS.delete(id);}else STATS.set(id,o);
   if(OKEY&&$('#owner').classList.contains('on')){clearTimeout(statT);statT=setTimeout(renderStats,300);}}
 let statMode='ativos';
-function renderStats(){
+let oTab='geral';
+function ownerTab(t){oTab=t;document.querySelectorAll('#oTabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  document.querySelectorAll('#owner .ocard').forEach(c=>c.style.display=c.dataset.tab===t?'':'none');window.scrollTo({top:0,behavior:'smooth'});}
+function ownerChips(){const el=$('#oChips');if(!el)return;const L=[...STATS.values()],now=Date.now(),td=dkey(now),pn=+(($('#oParcN')||{}).textContent||0);
+  el.innerHTML=`<span>🟢 ${ONLINE.size} online</span><span>📅 ${L.filter(x=>(x.days||[]).includes(td)).length} hoje</span><span>👥 ${L.length} total</span>${pn?`<span class="hot2">📨 ${pn} parceria</span>`:''}`;}
+function renderStats(){ownerChips();
   const box=$('#oStats');if(!box)return;const L=[...STATS.values()];const now=Date.now(),td=dkey(now);
   const act=n=>L.filter(x=>now-(x.last||0)<n*864e5).length;
   const games=L.reduce((a,x)=>a+(x.n||0),0);const inst=L.filter(x=>x.inst).length;
