@@ -872,6 +872,7 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
 .glive i{font-style:normal;font-size:10px;font-weight:900;color:#fff;background:#ff3b5c;border-radius:8px;padding:2px 6px;animation:blink 1.2s infinite}
 .glive span{font-size:11px;font-weight:800;color:#fff;white-space:nowrap}.glive em{font-style:normal;font-size:11px;font-weight:900;color:#ffe27a}
 #games .gc{position:relative}#games .gc .gpill{z-index:5}
+.bcppl.on{border-color:#ff3b5c;background:#ff3b5c33;box-shadow:0 0 10px #ff3b5c55}.bcppl u{text-decoration:none;color:#ffe27a}#games .gc .tx .gppl{display:inline-block;font-size:11px;margin-top:6px;color:#fff;white-space:normal;line-height:1.35}
 .bcppl{display:inline-block;margin-top:4px;font-size:12px;font-weight:900;color:#fff;background:#0b0820aa;border:1px solid #ffffff44;border-radius:10px;padding:2px 8px}
 
 .folbtn{display:block;width:100%;margin:12px 0 2px;padding:12px;border-radius:16px;font-weight:900;font-size:16px;color:#fff;border:2px solid #fff;background:linear-gradient(100deg,#ff2bd6,#b026ff);box-shadow:0 0 16px #ff2bd655}
@@ -1418,7 +1419,7 @@ const HERO=`<div class="hero1"><div><h1>ARENA DOS<br><em>MESTRES</em></h1><p>Jog
 function renderLobby(){
   setAv($('#lav'),S.photo,S.name,null,S.uid);$('#lname').innerHTML=nmHTML(S.name,S.uid);bagCardUI();$('#lbal').textContent=fmt(S.bal);renderCommunity();
   const g=$('#games');g.innerHTML='';
-  GAMES.forEach((x,j)=>{const c=h('button','gc'+(PHOTO[x.id]?' phc':''),`${j===0?'<span class="gpill">MAIS JOGADO</span>':''}${PHOTO[x.id]?`<div class="art ph"><img src="${PHOTO[x.id]}" alt="" style="animation-delay:-${j*2.3}s"><i class="shine"></i></div>`:`<div class="art">${ART[x.id]}</div>`}<div class="tx"><b>${x.name}</b><span>${x.desc}</span></div><button class="glive" data-g="${x.id}" style="display:none"></button>`);c.onclick=()=>openStake(x);g.append(c);});
+  GAMES.forEach((x,j)=>{const c=h('button','gc'+(PHOTO[x.id]?' phc':''),`${j===0?'<span class="gpill">MAIS JOGADO</span>':''}${PHOTO[x.id]?`<div class="art ph"><img src="${PHOTO[x.id]}" alt="" style="animation-delay:-${j*2.3}s"><i class="shine"></i></div>`:`<div class="art">${ART[x.id]}</div>`}<div class="tx"><b>${x.name}</b><span>${x.desc}</span><span class="bcppl gppl" data-g="${x.id}">👥 0 na mesa · comece agora</span></div><button class="glive" data-g="${x.id}" style="display:none"></button>`);c.onclick=()=>openStake(x);g.append(c);});
   liveBadges();
   const n=(O.tours||[]).length;const tc=h('button','gc tourcard'+(PHOTO.torneio?' phc tph':''),`${PHOTO.torneio?`<img class="tbg" src="${PHOTO.torneio}" alt=""><i class="shine"></i>`:`<div class="tic">${ARTF.trofeu('TC')}</div>`}<span class="tneon">TORNEIOS</span><small>${n?n+(n===1?' torneio aberto':' torneios abertos'):'Em breve'}</small>`);tc.onclick=()=>{go('torneio');};g.append(tc);
 }
@@ -2144,7 +2145,12 @@ function liveBadges(){
     const rooms=liveList().filter(p=>p.live.g===gid),play=onlineList().filter(p=>p.st==='jogando'&&G&&p.game===G.name).length,watch=rooms.reduce((a,p)=>a+(p.live.w||0),0);
     const gp=b.parentNode.querySelector('.gpill');if(gp)gp.style.display=(rooms.length||play)?'none':'';if(!rooms.length&&!play){b.style.display='none';return;}
     b.style.display='';b.innerHTML=`<i>● AO VIVO</i><span>🎮 ${Math.max(play,rooms.length*2)} jogando${watch?` · 👀 ${watch}`:''}</span>${rooms.length?'<em>Assistir ›</em>':''}`;
-    b.onclick=e=>{e.stopPropagation();if(rooms.length===1)watchRoom(rooms[0].live.room,gid);else if(rooms.length)openLive(gid);else toast('Essa partida não liberou plateia');};});}
+    b.onclick=e=>{e.stopPropagation();if(rooms.length===1)watchRoom(rooms[0].live.room,gid);else if(rooms.length)openLive(gid);else toast('Essa partida não liberou plateia');};})
+  document.querySelectorAll('.gppl').forEach(pl=>{const gid=pl.dataset.g,G=GAMES.find(x=>x.id===gid);
+    const rooms=liveList().filter(p=>p.live.g===gid),play=onlineList().filter(p=>p.st==='jogando'&&G&&p.game===G.name).length,watch=rooms.reduce((a,p)=>a+(p.live.w||0),0);
+    const n=Math.max(play,rooms.length*2);pl.classList.toggle('on',!!n);
+    pl.innerHTML=n?`🔴 ${n} jogando${watch?` · 👀 ${watch}`:''} · <u>entre pra assistir e participar ›</u>`:'👥 0 na mesa · comece agora';
+    pl.onclick=n?(e=>{e.stopPropagation();if(rooms.length===1)watchRoom(rooms[0].live.room,gid);else if(rooms.length)openLive(gid);else toast('Essa partida não liberou plateia');}):null;});}
 function openLive(only){const body=h('div');const n=liveCards(body,typeof only==='string'?only:null);if(!n)body.innerHTML='<div style="text-align:center;padding:10px"><div style="font-size:40px">📺</div><b style="color:var(--txt)">Nenhuma partida ao vivo agora</b><br><small style="color:var(--mut)">Quando alguém estiver jogando online, aparece aqui pra você assistir.</small></div>';modal('🔴 Partidas ao vivo',body,[{t:'Fechar',pri:1}]);}
 function renderOnline(){
   const l=$('#onList');const ps=onlineList();l.innerHTML='';
@@ -2540,7 +2546,7 @@ function bPhase(N){const ph=$('#bgPhase');if(!ph)return;const f=s=>Math.floor(s/
   else ph.innerHTML=`<b>Bola ${BG.shown} de 75</b><span>${BG.ks.length?'Boa sorte! 🍀':'Você entra na próxima rodada'}</span>`;}
 function bLobbyCard(N){const b=$('#bingoCard');if(!b)return;const on=BCFG().on;b.style.display=on?'':'none';if(!on)return;
   const live=N.el>=BJOIN&&N.n<75,f=s=>Math.floor(s/60000)+':'+String(Math.floor(s%60000/1000)).padStart(2,'0');
-  b.innerHTML=`<div class="bcball">${live&&N.n?`<i>${bLet(bBalls(N.r)[N.n-1])}</i>${bBalls(N.r)[N.n-1]}`:'🎱'}</div><div class="bctx"><span class="bclive">${live?'● AO VIVO':'GRÁTIS'}</span><b>BINGO DA ARENA</b><small>${N.el<BJOIN?`Cartelas abertas · sorteio em ${f(N.toDraw)}`:live?`Bola ${N.n} de 75 — entre e assista`:`Próxima rodada em ${f(N.toNext)}`}</small><span class="bcppl">👥 ${BG.joins.size} na sala · entre!</span></div><em>JOGAR ›</em>`;}
+  b.innerHTML=`<div class="bcball">${live&&N.n?`<i>${bLet(bBalls(N.r)[N.n-1])}</i>${bBalls(N.r)[N.n-1]}`:'🎱'}</div><div class="bctx"><span class="bclive">${live?'● AO VIVO':'GRÁTIS'}</span><b>BINGO DA ARENA</b><small>${N.el<BJOIN?`Cartelas abertas · sorteio em ${f(N.toDraw)}`:live?`Bola ${N.n} de 75 — entre e assista`:`Próxima rodada em ${f(N.toNext)}`}</small><span class="bcppl${BG.joins.size?' on':''}">${BG.joins.size?`👥 ${BG.joins.size} na sala · <u>entre pra assistir e participar ›</u>`:'👥 0 na sala · seja o primeiro a entrar!'}</span></div><em>JOGAR ›</em>`;}
 let bAC=null;function bDing(){if(!BG.snd)return;try{bAC=bAC||new (window.AudioContext||window.webkitAudioContext)();const o=bAC.createOscillator(),g=bAC.createGain();o.type='sine';o.frequency.setValueAtTime(880,bAC.currentTime);o.frequency.exponentialRampToValueAtTime(1320,bAC.currentTime+.12);
   g.gain.setValueAtTime(.18,bAC.currentTime);g.gain.exponentialRampToValueAtTime(.001,bAC.currentTime+.35);o.connect(g);g.connect(bAC.destination);o.start();o.stop(bAC.currentTime+.36);}catch(e){}}
 function bAnnounce(n){bDing();const bb=$('#bgBall');if(bb){bb.className='bball c'+bLet(n);void bb.offsetWidth;bb.classList.add('drop');}
