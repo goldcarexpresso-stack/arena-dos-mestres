@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<!--
+  Arena dos Mestres — © 2026 Arena dos Mestres. Todos os direitos reservados.
+  Código, marca, layout e imagens protegidos pela Lei 9.610/98 (direitos autorais) e Lei 9.609/98 (software).
+  É proibido copiar, redistribuir, modificar ou usar este código, no todo ou em parte, sem autorização por escrito.
+-->
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
@@ -921,6 +926,20 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
   .tcard2{max-width:480px}
 }
 @media(min-width:1400px){#lobby #games{grid-template-columns:repeat(3,minmax(0,1fr))}#lobby.pcw{grid-template-columns:minmax(0,1fr) 440px}}
+
+/* ===== TERMOS / PRIVACIDADE ===== */
+.lfoot{text-align:center;color:#9a8cc8;font-size:11.5px;line-height:1.6;margin:22px 0 6px}.lfoot a{color:#d9c8ff;text-decoration:underline;cursor:pointer}
+.plegal{display:grid;grid-template-columns:1fr 1fr;gap:8px}.plegal .ct{grid-column:1/-1}.plegal button{font-size:13px;padding:10px 8px}.plegal .lgdel{color:#ff8a9a;border-color:#ff3b5c66}
+.legtx{max-height:58vh;overflow:auto;font-size:13.5px;line-height:1.55;color:#d9d3f0;text-align:left;padding-right:4px}
+.legtx h4{color:#ffe27a;font-size:14.5px;margin:14px 0 4px}.legtx p,.legtx li{margin:4px 0}.legtx ul{padding-left:18px}.legtx small{color:#9a8cc8}
+#legalGate{position:fixed;inset:0;z-index:99999;background:radial-gradient(120% 60% at 50% 0,#2a0e5c,#07070f 70%);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+#legalGate .lgbox{width:100%;max-width:460px;background:linear-gradient(160deg,#1d1245,#120d30);border:2px solid #b026ff;border-radius:24px;padding:20px 18px;box-shadow:0 0 40px #b026ff66;color:#fff}
+#legalGate h2{font-size:22px;margin:0 0 4px;text-align:center}#legalGate .lgsub{text-align:center;color:#d9c8ff;font-size:13px;margin-bottom:12px}
+#legalGate ul{padding-left:18px;font-size:13.5px;line-height:1.5;color:#e8e2ff}#legalGate li{margin:5px 0}
+#legalGate .lglinks{display:flex;gap:8px;margin:12px 0}#legalGate .lglinks button{flex:1;font-size:13px}
+#legalGate label{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;margin:8px 0;line-height:1.4;cursor:pointer}#legalGate input{width:22px;height:22px;flex:none;margin-top:1px}
+body:has(#legalGate) #mod{z-index:100000!important}
+#legalGate .lgok{width:100%;margin-top:10px;padding:14px;font-size:16px}#legalGate .lgok:disabled{opacity:.45}
 </style>
 </head>
 <body>
@@ -944,6 +963,7 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
   <button id="bingoCard" class="bingocard phbg" data-img="bingo" style="display:none"></button>
   <div class="sec1"><h2>Escolha o jogo</h2><span>5 jogos + torneios</span></div>
   <div class="grid" id="games"></div>
+  <div class="lfoot">© 2026 Arena dos Mestres · Todos os direitos reservados<br><a id="lfT">Termos de Uso</a> · <a id="lfP">Privacidade</a> · Proibido para menores de 18 anos</div>
 </section>
 
 <!-- WALLET -->
@@ -986,6 +1006,9 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
     <input type="text" id="pname" maxlength="18">
     <button class="pri" id="psave" style="width:100%;margin-top:12px">Salvar perfil</button>
   </details>
+  <div class="card plegal"><b class="ct">🛡️ Segurança e privacidade</b>
+    <button id="lgTerms">📜 Termos de Uso</button><button id="lgPriv">🔒 Política de Privacidade</button>
+    <button id="lgReq">✉️ Pedido sobre meus dados / denúncia</button><button id="lgDel" class="lgdel">🗑️ Apagar meus dados</button></div>
   <button id="ownerBtn" style="width:100%;margin-bottom:12px;display:none">🔐 Painel do dono</button>
 </section>
 
@@ -1890,7 +1913,7 @@ function tourNext(){
 function tipCard(k,tp){const fx=document.createElement('div');fx.className='tipfx';
   fx.innerHTML=`<div class="tipcard"><div class="tiph"><span>${tp.ic}</span><div><small>💡 DICA</small><b>${tp.t}</b></div></div><p>${tp.d}</p><button class="pri">Entendi 👍</button><label><input type="checkbox"> Não mostrar mais dicas</label></div>`;
   document.body.append(fx);fx.querySelector('button').onclick=()=>{if(fx.querySelector('input').checked){S.tips=S.tips||{};S.tips.off=1;save();}fx.remove();};}
-function tipScreen(id){S.tips=S.tips||{};if(S.tips.off||tourI>=0)return;
+function tipScreen(id){S.tips=S.tips||{};if(S.tips.off||tourI>=0||document.getElementById('legalGate'))return;
   if(id==='lobby'){if(!S.tips.tour&&!$('#chestFx').offsetParent&&!$('#mod').classList.contains('on')){S.tips.tour=1;save();startTour();}return;}
   const tp=TIPS[id];if(!tp||S.tips[id])return;if(!$('#'+id)||!$('#'+id).classList.contains('on'))return;
   S.tips[id]=1;save();tipCard(id,tp);}
@@ -2013,7 +2036,7 @@ async function decAsOwner(p){
   const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64u.dec(p.iv)},key,b64u.dec(p.ct));
   return JSON.parse(new TextDecoder().decode(pt));
 }
-const PTYPES=['Divulgar minha loja ou serviço','Patrocinar / dar prêmio em torneio','Rede social / influenciador','Outro'];
+const PTYPES=['Divulgar minha loja ou serviço','Patrocinar / dar prêmio em torneio','Rede social / influenciador','Privacidade / meus dados (LGPD)','Denunciar conteúdo ou jogador','Outro'];
 function openParc(pre){
   if(typeof pre!=='string')pre='';
   const body=h('div','tform');
@@ -3687,7 +3710,7 @@ joinFromLink();
 
 /* ===== MODO PC: organiza o lobby em 2 colunas ===== */
 (function(){const L=document.getElementById('lobby');if(!L)return;const orig=[...L.children];
-  const FULL=['top','banner','instBtn'],SIDE=['duo','neonBox','socBox','onStrip','bagCard'];
+  const FULL=['top','banner','instBtn','lfoot'],SIDE=['duo','neonBox','socBox','onStrip','bagCard'];
   const key=e=>e.id||[...e.classList].find(c=>FULL.includes(c)||SIDE.includes(c))||'';
   let mode='';
   function lay(){const wide=innerWidth>=1000;if((wide?'w':'n')===mode)return;mode=wide?'w':'n';
@@ -3698,6 +3721,55 @@ joinFromLink();
     orig.forEach(e=>{const k=key(e);if(FULL.includes(k))return;(SIDE.includes(k)?sd:m).append(e);});
     L.append(m,sd);}
   lay();addEventListener('resize',lay);})();
+
+/* ===================== TERMOS DE USO / PRIVACIDADE (LGPD) ===================== */
+const LEGAL_V='2026-11-21';
+const LG_TERMS=`<p><small>Versão de 21/11/2026</small></p>
+<p>Bem-vindo à <b>Arena dos Mestres</b>, uma plataforma de jogos de tabuleiro e salão (dama, xadrez, dominó, sinuca, ludo e bingo) com bate-papo e comunidade. Ao usar a plataforma você concorda com estes Termos e com a Política de Privacidade.</p>
+<h4>1. Quem pode usar</h4><ul><li>Somente pessoas com <b>18 anos ou mais</b>.</li><li>Você é responsável pelo seu apelido, sua foto e tudo o que publicar.</li></ul>
+<h4>2. Saldo de teste — não é dinheiro</h4><ul><li>O saldo exibido é <b>fictício</b>, serve só para testar e se divertir.</li><li>Ele <b>não pode ser comprado, vendido, sacado nem trocado</b> por dinheiro, bens ou serviços.</li><li>A plataforma <b>não realiza apostas</b> nem jogos de azar com dinheiro real. Partidas valendo saldo de teste são contra robôs de treino.</li><li>O Bingo é <b>gratuito</b> e não exige nenhuma compra.</li></ul>
+<h4>3. Torneios e prêmios</h4><ul><li>A inscrição nos torneios é gratuita.</li><li>Prêmios (como serviços ou acessos) são oferecidos pelo organizador ou patrocinador indicado em cada torneio, conforme as regras publicadas nele.</li><li>Fraude, uso de robôs, combinação de resultados ou contas falsas levam à desclassificação.</li></ul>
+<h4>4. Acessórios e brilhos</h4><p>Molduras, entradas, emojis, mesas e brilhos são itens cosméticos ganhos jogando, sem valor em dinheiro, e podem mudar ou ser removidos.</p>
+<h4>5. Regras de convivência</h4><p>É proibido: ofensas, assédio, ameaças, discriminação, conteúdo sexual, golpes, pedir dados bancários ou senhas, divulgar dados de outras pessoas, spam e qualquer conteúdo ilegal. Quem descumprir pode ter mensagens bloqueadas e o acesso suspenso. Use 🚫 Bloquear e o botão de denúncia no Perfil.</p>
+<h4>6. Mensagens temporárias e voz</h4><p>Mensagens temporárias somem da tela, mas <b>não é possível impedir</b> que alguém fotografe a tela. Não envie nada que não enviaria a um desconhecido. A voz nas partidas é ao vivo e <b>não é gravada</b> pela plataforma.</p>
+<h4>7. Anúncios de terceiros</h4><p>Anúncios e patrocínios são de responsabilidade dos próprios anunciantes. Negociações feitas com eles (inclusive pelo WhatsApp) são entre você e o anunciante.</p>
+<h4>8. Propriedade intelectual</h4><p>A marca Arena dos Mestres, o código, o layout, as artes e as imagens pertencem à plataforma e são protegidos pelas Leis 9.610/98 e 9.609/98. É proibido copiar, reproduzir, modificar, distribuir ou explorar comercialmente qualquer parte sem autorização por escrito.</p>
+<h4>9. Funcionamento e responsabilidade</h4><p>A plataforma está em <b>fase de testes</b> e pode ficar fora do ar, mudar ou ter erros. Não nos responsabilizamos por perda de saldo de teste, acessórios ou dados guardados no seu aparelho, nem por condutas de outros usuários.</p>
+<h4>10. Alterações e contato</h4><p>Estes Termos podem ser atualizados; quando isso acontecer, pediremos seu aceite de novo. Dúvidas e pedidos: Perfil → ✉️ Pedido sobre meus dados / denúncia.</p>
+<h4>11. Lei e foro</h4><p>Vale a lei brasileira. Fica eleito o foro da comarca de Cabo de Santo Agostinho – PE, sem prejuízo do direito do consumidor de usar o foro do seu domicílio.</p>`;
+const LG_PRIV=`<p><small>Versão de 21/11/2026 · de acordo com a Lei Geral de Proteção de Dados (Lei 13.709/2018)</small></p>
+<h4>1. Quais dados usamos</h4><ul><li><b>Perfil:</b> apelido e foto que você escolher (não pedimos nome completo, CPF, endereço nem dados bancários).</li><li><b>Atividade no jogo:</b> vitórias, ranking, torneios em que se inscreveu, amigos, quem você segue, acessórios.</li><li><b>Conversas:</b> mensagens, fotos e áudios que você enviar no chat.</li><li><b>Formulário de parceria/pedidos:</b> nome e contato que você mesmo informar.</li></ul>
+<h4>2. Para que usamos</h4><p>Só para fazer a plataforma funcionar: mostrar seu perfil, partidas, ranking, chat, torneios e responder seus pedidos. <b>Não vendemos seus dados</b> e não usamos para propaganda direcionada.</p>
+<h4>3. Base legal</h4><p>Execução do serviço que você pediu ao usar a plataforma e o seu consentimento, dado ao aceitar esta política.</p>
+<h4>4. Onde ficam os dados</h4><ul><li>Seu perfil, saldo de teste e acessórios ficam <b>guardados no seu próprio aparelho</b>.</li><li>Para funcionar em tempo real, mensagens, presença online e ranking passam por <b>serviços de comunicação de terceiros</b>; a voz usa conexão direta entre os jogadores (com servidor de apoio de terceiros quando necessário). O site é hospedado na Vercel; vídeos de anúncios podem vir do YouTube.</li><li>Formulários de parceria são enviados <b>criptografados</b> e só o administrador consegue ler.</li><li>Recomendamos não enviar no chat documentos, senhas ou dados sensíveis.</li></ul>
+<h4>5. Por quanto tempo</h4><p>Enquanto você usar a plataforma. Ranking semanal e mensal é renovado a cada período. Você pode apagar seus dados quando quiser.</p>
+<h4>6. Seus direitos</h4><p>Você pode pedir confirmação, acesso, correção, exclusão, portabilidade e revogar o consentimento (art. 18 da LGPD). Pelo Perfil você pode usar <b>🗑️ Apagar meus dados</b> ou enviar um pedido em <b>✉️ Pedido sobre meus dados</b>; respondemos em até 15 dias.</p>
+<h4>7. Segurança</h4><p>Usamos conexões criptografadas (HTTPS/WSS), assinatura digital nas configurações oficiais e filtro de palavras. Nenhum sistema é 100% seguro; se houver incidente relevante, avisaremos os usuários.</p>
+<h4>8. Menores de idade</h4><p>A plataforma é proibida para menores de 18 anos. Se identificarmos uma conta de menor, ela será removida.</p>
+<h4>9. Alterações</h4><p>Esta política pode mudar; você será avisado e precisará aceitar a nova versão.</p>`;
+function openLegal(k){const b=h('div','legtx');b.innerHTML=k==='p'?LG_PRIV:LG_TERMS;modal(k==='p'?'🔒 Política de Privacidade':'📜 Termos de Uso',b,[{t:'Fechar',pri:1}]);}
+function legalGate(){if(S.terms===LEGAL_V||document.getElementById('legalGate'))return;
+  const g=document.createElement('div');g.id='legalGate';
+  g.innerHTML=`<div class="lgbox"><h2>🛡️ Antes de entrar</h2><div class="lgsub">Arena dos Mestres é séria com você e com seus dados</div>
+   <ul><li>🎮 Jogos de habilidade e bingo <b>grátis</b> — o saldo é <b>de teste</b> e não vale dinheiro.</li><li>🔞 Uso permitido só para <b>maiores de 18 anos</b>.</li><li>🤝 Respeito no chat: ofensa, golpe ou assédio = bloqueio.</li><li>🔒 Não vendemos seus dados. Você pode apagá-los quando quiser.</li></ul>
+   <div class="lglinks"><button data-k="t">📜 Termos de Uso</button><button data-k="p">🔒 Privacidade</button></div>
+   <label><input type="checkbox" id="lgAge"> Tenho 18 anos ou mais.</label>
+   <label><input type="checkbox" id="lgAcc"> Li e aceito os Termos de Uso e a Política de Privacidade.</label>
+   <button class="pri lgok" disabled>Aceitar e entrar</button></div>`;
+  document.body.append(g);const ok=g.querySelector('.lgok'),a=g.querySelector('#lgAge'),c=g.querySelector('#lgAcc');
+  const chk=()=>ok.disabled=!(a.checked&&c.checked);a.onchange=chk;c.onchange=chk;
+  g.querySelectorAll('.lglinks button').forEach(b=>b.onclick=()=>openLegal(b.dataset.k));
+  ok.onclick=()=>{S.terms=LEGAL_V;S.termsAt=Date.now();save();g.remove();setTimeout(()=>tipScreen('lobby'),300);};}
+function wipeMyData(){
+  modal('🗑️ Apagar meus dados','Isso apaga do app o seu perfil, foto, saldo de teste, acessórios, amigos, conversas guardadas neste aparelho e tira você do ranking, das inscrições em torneios e da lista de quem você segue.<br><br><b>Não dá pra desfazer.</b>',[{t:'Cancelar'},{t:'Apagar tudo',pri:1,f:()=>{
+    try{const u=S.uid;
+      [weekId(),monthId()].forEach(w=>busClear(TOP.rank(w)+'/'+u));try{busClear(TOP.brank+'/'+weekId()+'/'+u);}catch(e){}
+      Object.keys(S.fol||{}).forEach(id=>busClear(TOP.fol+'/'+id+'/'+u));Object.keys(S.frOut||{}).forEach(id=>busClear(TOP.freq+'/'+id+'/'+u));
+      (O.tours||[]).forEach(t=>busClear(TOP.tour(t.id)+'/'+u));busClear(TOP.me());busPub(TOP.lobby,{t:'off'});}catch(e){}
+    setTimeout(()=>{try{Object.keys(localStorage).filter(k=>/^(arena|adm)/.test(k)&&!/^adm_bimg/.test(k)).forEach(k=>localStorage.removeItem(k));}catch(e){}location.reload();},900);}}]);}
+$('#lgTerms').onclick=()=>openLegal('t');$('#lgPriv').onclick=()=>openLegal('p');$('#lgDel').onclick=wipeMyData;
+$('#lgReq').onclick=()=>openParc(PTYPES[3]);$('#lfT').onclick=()=>openLegal('t');$('#lfP').onclick=()=>openLegal('p');
+setTimeout(legalGate,200);
 </script>
 </body>
 </html>
