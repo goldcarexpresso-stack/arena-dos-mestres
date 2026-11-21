@@ -507,6 +507,80 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
   font-size:18px!important;font-weight:900!important;padding:15px!important;border-radius:18px!important;text-shadow:0 1px 4px #0007;
   box-shadow:0 0 0 3px #b026ff33,0 6px 22px #b026ff66;animation:ctaPulse 2.4s ease-in-out infinite 1.2s}
 @keyframes ctaPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+
+/* ===== BINGO ===== */
+.bingocard{display:flex;align-items:center;gap:12px;width:100%;margin:4px 0 14px;padding:12px 14px;border-radius:22px;text-align:left;border:2px solid #ffe27a;
+  background:radial-gradient(120% 140% at 0% 0%,#ff2bd6 0%,#7a1fd1 40%,#1b0f45 100%);box-shadow:0 0 26px #ff2bd666,inset 0 0 30px #00e5ff22;position:relative;overflow:hidden}
+.bingocard::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,#ffffff22 50%,transparent 70%);animation:shine 3.2s infinite}
+@keyframes shine{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.bcball{flex:none;width:62px;height:62px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:#1b0f45;
+  background:radial-gradient(circle at 32% 28%,#fff 0%,#ffe27a 35%,#ffb627 70%,#b8730b 100%);box-shadow:0 6px 16px #0008,inset -4px -6px 10px #0004;animation:bob 2.4s ease-in-out infinite}
+.bcball i{font-style:normal;font-size:11px;line-height:1}@keyframes bob{50%{transform:translateY(-4px) rotate(8deg)}}
+.bctx{flex:1;min-width:0}.bclive{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:1px;color:#fff;background:#ff3b5c;border-radius:8px;padding:2px 8px}
+.bctx b{display:block;font-size:20px;color:#fff;letter-spacing:.5px;text-shadow:0 0 12px #ff2bd6}.bctx small{color:#ffe9b0;font-weight:800;font-size:13px}
+.bingocard>em{font-style:normal;font-weight:900;color:#2a1200;background:linear-gradient(90deg,#ffe27a,#ffb627);padding:9px 12px;border-radius:14px;box-shadow:0 0 14px #ffc23d88;z-index:1}
+#bingo{padding-bottom:110px}
+.bgtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.bgtop button{width:44px;height:44px;padding:0;font-size:18px}
+.bglogo{display:flex;align-items:flex-end;gap:2px}.bglogo span{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:19px;box-shadow:inset -3px -4px 6px #0005,0 3px 8px #0006}
+.bglogo span:nth-child(1){background:#2b7bff}.bglogo span:nth-child(2){background:#ff3b5c}.bglogo span:nth-child(3){background:#c9c9d9;color:#1b0f45}.bglogo span:nth-child(4){background:#1fbf5b}.bglogo span:nth-child(5){background:#ff9500}
+.bglogo small{font-size:10px;font-weight:900;color:#ffe27a;letter-spacing:1.5px;margin:0 0 4px 6px}
+.bgspon{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 10px;padding:8px 12px;border-radius:14px;background:linear-gradient(90deg,#2a2000,#1d1640);border:1px solid #ffc23d88;text-align:left}
+.bgspon img{width:40px;height:40px;border-radius:10px;object-fit:cover}.bgspon span{flex:1}.bgspon small{display:block;font-size:9.5px;letter-spacing:1.4px;color:#ffc23d;font-weight:900}.bgspon b{color:#fff}.bgspon em{font-style:normal;color:#ffe27a;font-weight:800;font-size:13px}
+.bgstage{display:flex;align-items:center;gap:14px;padding:14px;border-radius:24px;background:radial-gradient(120% 120% at 30% 0%,#3a1670,#120d30 70%);border:1px solid #b026ff66;box-shadow:inset 0 0 40px #00e5ff18}
+.globe{position:relative;flex:none;width:128px;height:140px}
+.glass{position:absolute;left:4px;top:0;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#ffffff55,#ffffff10 30%,#00e5ff10 60%,#ffffff22 100%);border:2px solid #ffffff44;box-shadow:inset 0 0 20px #00e5ff44,0 0 24px #00e5ff33;z-index:2}
+.minis{position:absolute;left:4px;top:0;width:120px;height:120px;border-radius:50%;overflow:hidden}
+.minis i{position:absolute;left:var(--x);top:var(--y);width:20px;height:20px;border-radius:50%;font-style:normal;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;color:#fff;animation:tumble 1.6s ease-in-out var(--d) infinite alternate}
+@keyframes tumble{0%{transform:translate(0,0) rotate(0)}33%{transform:translate(26px,-30px) rotate(120deg)}66%{transform:translate(-22px,18px) rotate(240deg)}100%{transform:translate(14px,28px) rotate(360deg)}}
+.gbase{position:absolute;left:34px;bottom:0;width:60px;height:26px;border-radius:8px 8px 14px 14px;background:linear-gradient(#ffcf4d,#b8860b);box-shadow:0 4px 10px #0007}
+.cB{background:radial-gradient(circle at 32% 28%,#9cc4ff,#2b7bff 55%,#0b3b99)}.cI{background:radial-gradient(circle at 32% 28%,#ffb3c0,#ff3b5c 55%,#9a0f2a)}
+.cN{background:radial-gradient(circle at 32% 28%,#fff,#c9c9d9 55%,#6d6d85);color:#1b0f45!important}.cG{background:radial-gradient(circle at 32% 28%,#a8f5c4,#1fbf5b 55%,#0b6b31)}.cO{background:radial-gradient(circle at 32% 28%,#ffd59a,#ff9500 55%,#9a5200)}
+.bgcur{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0}
+.bball{width:104px;height:104px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 10px 26px #000a,inset -8px -10px 18px #0005}
+.bball span{width:62px;height:62px;border-radius:50%;background:#fff;color:#1b0f45;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:28px;line-height:1;box-shadow:inset 0 -3px 6px #0002}
+.bball span i{font-style:normal;font-size:13px;color:#7a1fd1}.bball.idle{background:radial-gradient(circle at 32% 28%,#6b5aa8,#2a1f5c)}.bball.idle span{font-size:30px;color:#7a6aa8}
+.bball.drop{animation:drop .9s cubic-bezier(.2,1.4,.4,1)}
+@keyframes drop{0%{transform:translate(-90px,-40px) scale(.25) rotate(-360deg);opacity:.3}60%{transform:translate(0,6px) scale(1.12) rotate(10deg);opacity:1}100%{transform:none}}
+.bgphase{text-align:center}.bgphase b{display:block;color:#fff;font-size:15px}.bgphase span{color:#d9c8ff;font-size:12.5px;font-weight:700}.bgphase em{font-style:normal;color:#ffe27a;font-weight:900;font-size:16px}
+.blast{display:flex;gap:6px;justify-content:center;margin:10px 0;min-height:34px}
+.lb{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13px;box-shadow:inset -3px -4px 6px #0005}
+.lb:nth-child(n+4){opacity:.7;transform:scale(.88)}
+.bgprz{display:flex;gap:8px}.prz{flex:1;text-align:center;padding:8px;border-radius:14px;background:#141033;border:1px dashed #b026ff88}
+.prz b{display:block;color:#ffe27a;font-size:15px;letter-spacing:1px}.prz small{color:#d9c8ff;font-size:11.5px;font-weight:700}
+.prz.done{border-style:solid;border-color:#25d366;background:#0d2a1a}.prz.done b{color:#25d366}
+.bgrew{text-align:center;color:#ffe27a;font-weight:800;font-size:13px;margin:8px 0}
+.bgpeople{display:flex;align-items:center;gap:10px;justify-content:center;margin:6px 0 10px;color:#d9c8ff;font-size:13px}
+.bgav{display:flex}.bgav .av{width:26px;height:26px;font-size:11px;margin-left:-8px;border:2px solid #120d30}.bgav .av:first-child{margin-left:0}
+.bgcards{display:grid;grid-template-columns:1fr;gap:12px}
+.bcard{border-radius:18px;padding:10px;background:linear-gradient(160deg,#fff8e6,#ffe9b0);box-shadow:0 8px 20px #0007;border:3px solid #ffc23d}
+.bch{display:flex;align-items:center;gap:8px;margin-bottom:6px}.bch b{color:#4a1a7a;font-size:14px}.bch button{margin-left:auto;padding:5px 10px;font-size:12px}
+.hot{font-style:normal;font-size:11.5px;font-weight:900;color:#fff;background:#ff3b5c;border-radius:10px;padding:2px 8px;animation:blink 1s infinite}.hot.win{background:#1fbf5b}
+.bhd{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:4px}.bhd span{text-align:center;font-weight:900;color:#fff;border-radius:8px;padding:3px 0;font-size:16px}
+.bhd span:nth-child(1){background:#2b7bff}.bhd span:nth-child(2){background:#ff3b5c}.bhd span:nth-child(3){background:#8a8aa3}.bhd span:nth-child(4){background:#1fbf5b}.bhd span:nth-child(5){background:#ff9500}
+.bgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.bc{aspect-ratio:1;padding:0;border-radius:10px;border:1.5px solid #e0c98a;background:#fff;color:#2a1660;font-weight:900;font-size:19px;position:relative;box-shadow:none}
+.bc.mk{color:#fff;background:radial-gradient(circle,#ff2bd6 0%,#b026ff 70%);border-color:#b026ff;animation:dab .35s ease-out}
+.bc.fr{background:radial-gradient(circle,#ffe27a,#ffb627);color:#7a3b00;font-size:22px}.bc.nl{box-shadow:0 0 0 3px #ff3b5c inset;animation:blink 1s infinite}
+@keyframes dab{0%{transform:scale(.6)}70%{transform:scale(1.12)}100%{transform:none}}
+.bgctl{margin:10px 0}.bpick{text-align:center;padding:12px;border-radius:16px;background:#141033;border:1px solid #b026ff66}
+.bpick b{display:block;color:#fff;font-size:16px}.bpick div{display:flex;gap:8px;justify-content:center;margin:10px 0 6px;flex-wrap:wrap}.bpick div button{min-width:56px;font-size:17px;font-weight:900}.bpick small{color:var(--mut)}
+.bauto{margin:4px 0}
+.bshout{position:sticky;bottom:96px;z-index:20;width:100%;margin:8px 0;padding:16px;border-radius:20px;border:3px solid #fff;font-size:24px;font-weight:900;letter-spacing:2px;color:#fff;
+  background:linear-gradient(90deg,#7a1fd1,#b026ff);box-shadow:0 8px 24px #0009;opacity:.9}
+.bshout.ready{background:linear-gradient(90deg,#ff3b5c,#ff2bd6,#ffb627);animation:shout .7s ease-in-out infinite;opacity:1;box-shadow:0 0 30px #ff2bd6,0 8px 24px #0009}
+@keyframes shout{50%{transform:scale(1.04)}}.bshout.shake{animation:shk .45s}@keyframes shk{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.bgboard{margin:12px 0;border-radius:14px;background:#141033;border:1px solid #3b2a7a;padding:8px 10px}.bgboard summary{color:#d9c8ff;font-weight:800;cursor:pointer}
+#bgBoard{display:grid;grid-template-columns:repeat(15,1fr);gap:3px;margin-top:8px}#bgBoard span{font-size:10px;text-align:center;padding:4px 0;border-radius:5px;background:#0b0e20;color:#5b5480;font-weight:800}
+#bgBoard span.on{background:#ffc23d;color:#2a1200}
+.bgrank{margin:10px 0}.bgrh{font-weight:900;color:#ffe27a;margin-bottom:6px}.bgrr{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:12px;background:#141033;margin-bottom:5px}
+.bgrr .av{width:28px;height:28px;font-size:12px}.bgrr b{flex:1;color:#fff}.bgrr em{font-style:normal;color:#ffe27a;font-weight:900}
+.bglegal{display:block;text-align:center;color:var(--mut);margin-top:10px}
+.bgwin{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:#05031acc}
+.bgwin canvas{position:absolute;inset:0;pointer-events:none}
+.bgwbox{position:relative;text-align:center;padding:24px 22px;border-radius:26px;background:radial-gradient(circle at 50% 0%,#5b1fa8,#1b0f45);border:3px solid #ffe27a;box-shadow:0 0 50px #ff2bd6;min-width:260px;animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{transform:scale(.3);opacity:0}}
+.bgwk{font-size:46px;font-weight:900;letter-spacing:3px;background:linear-gradient(90deg,#ffe27a,#ff2bd6,#00e5ff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 12px #ff2bd6)}
+.bgwbox .av{margin:10px auto}.bgwbox b{display:block;color:#fff;font-size:20px}.bgwbox small{display:block;color:#ffe27a;font-weight:800;margin:4px 0 14px}
 </style>
 </head>
 <body>
@@ -526,6 +600,7 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
   <div id="socBox"></div>
   <button class="fbanner fb1" id="friendBtn"><span class="fic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3.5-6 6.5-6s6 2 6.5 6"/><circle cx="17.5" cy="9" r="2.6"/><path d="M16.5 14c2.5 0 4.5 1.6 5 4.6"/></svg></span><div><b>Jogar com um amigo</b><span id="friendSub" class="finfo">Escolha o jogo e mande o link no WhatsApp</span></div><span class="fgo">›</span></button>
   <div id="onStrip"></div>
+  <button id="bingoCard" class="bingocard" style="display:none"></button>
   <div class="sec1"><h2>Escolha o jogo</h2><span>5 jogos + torneios</span></div>
   <div class="grid" id="games"></div>
 </section>
@@ -610,6 +685,18 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
     <div class="lbl">Prévia</div><div id="oVPrev" class="vprev"></div>
   </div>
   <div class="card">
+    <b>🎱 Bingo da Arena</b>
+    <div class="lbl">Bingo grátis ao vivo, rodadas automáticas o dia todo. Ninguém paga pra jogar.</div>
+    <label class="tgl"><input type="checkbox" id="obOn"> <span><b>Bingo ligado</b><small>Aparece na tela de jogos pra todo mundo</small></span></label>
+    <div class="lbl">Tempo entre uma bola e outra</div><select id="obMs" style="width:100%"><option value="3000">3 segundos (rápido)</option><option value="3500">3,5 segundos</option><option value="4500">4,5 segundos</option><option value="5500">5,5 segundos (calmo)</option></select>
+    <div class="lbl">Cartelas por pessoa</div><select id="obMax" style="width:100%"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+    <div class="lbl">Recompensa (aparece na tela do Bingo)</div><input type="text" id="obRew" maxlength="80" placeholder="Ex.: Troféu no perfil + pontos no ranking">
+    <small style="color:var(--mut)">Não prometa dinheiro. Prêmio de valor só se for do patrocinador, por conta dele.</small>
+    <div class="lbl">🤝 Patrocinador do Bingo (opcional)</div><input type="text" id="obSp" placeholder="Ex.: Açaí do Gaibu">
+    <div class="lbl">Link do patrocinador</div><input type="text" id="obSpL" placeholder="https://… ou @instagram" autocapitalize="off">
+    <div class="lbl">Logo do patrocinador</div><div id="obLogoP"></div><button id="obLogo" style="width:100%;margin-top:6px">🖼️ Escolher logo</button><input type="file" id="obLogoF" accept="image/*" hidden>
+  </div>
+  <div class="card">
     <b>📣 Anúncios das lojas</b>
     <div class="lbl">Banner com foto ou vídeo de até 30 segundos. O botão leva direto pro WhatsApp da loja. Some sozinho na data de vencimento.</div>
     <div id="oAds"></div>
@@ -625,6 +712,7 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
     <div class="lbl">Banner no topo — por semana</div><input type="text" data-pr="topW" placeholder="R$ 25">
     <div class="lbl">Banner no topo — por mês</div><input type="text" data-pr="topM" placeholder="R$ 80">
     <div class="lbl">Patrocínio de torneio — por torneio</div><input type="text" data-pr="tour" placeholder="R$ 35">
+    <div class="lbl">Patrocínio do Bingo — por semana</div><input type="text" data-pr="bingo" placeholder="R$ 30">
     <div class="lbl">Promoção (opcional)</div><input type="text" data-pr="promo" placeholder="Ex.: 1ª semana grátis pra quem fechar o mês">
     <small style="color:var(--mut)">Deixe vazio o que você não quiser mostrar.</small>
   </div>
@@ -705,6 +793,29 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
   <div class="cbar"><button id="cAtt" class="att" aria-label="Enviar foto">📎</button><input type="file" id="cFile" accept="image/*,video/*" hidden><input type="text" id="cIn" placeholder="Mensagem" maxlength="500" autocomplete="off"><button id="cMic" class="mic" aria-label="Segure para gravar áudio">🎤</button><button id="cSend" class="pri" aria-label="Enviar">➤</button></div>
   <div id="cRec" class="crec" style="display:none"><span class="rdot"></span><b id="cRecT">0:00</b><span id="cRecH">Gravando… solte pra enviar · arraste pro lado pra cancelar</span></div>
 </section>
+
+<!-- BINGO -->
+<section id="bingo" class="scr">
+  <div class="bgtop"><button id="bgBack">←</button><div class="bglogo"><span>B</span><span>I</span><span>N</span><span>G</span><span>O</span><small>DA ARENA</small></div><button id="bgSnd" title="Som">🔊</button></div>
+  <div id="bgSp"></div>
+  <div class="bgstage">
+    <div class="globe"><div class="glass"></div><div id="bgMini" class="minis"></div><div class="gbase"></div></div>
+    <div class="bgcur"><div id="bgBall" class="bball idle"><span>?</span></div><div id="bgPhase" class="bgphase"></div></div>
+  </div>
+  <div id="bgLast" class="blast"></div>
+  <div class="bgprz"><div id="bgPL" class="prz"><b>LINHA</b><small>aberta</small></div><div id="bgPF" class="prz full"><b>BINGO!</b><small>cartela cheia</small></div></div>
+  <div id="bgRew" class="bgrew"></div>
+  <div id="bgPeople" class="bgpeople"></div>
+  <div id="bgCards" class="bgcards"></div>
+  <div id="bgCtl" class="bgctl"></div>
+  <button id="bgShout" class="bshout" style="display:none">BINGO!</button>
+  <details class="bgboard"><summary>📋 Painel com todas as bolas</summary><div id="bgBoard"></div></details>
+  <div id="bgRank" class="bgrank"></div>
+  <div class="gpanel wpanel"><div id="bgChat" class="gmsgs"></div><div class="emo" id="bgEmo"></div>
+    <div class="cbar2"><input type="text" id="bgIn" placeholder="Fale com a galera do Bingo…" maxlength="160" autocomplete="off"><button id="bgSend" class="pri">➤</button></div></div>
+  <small class="bglegal">Bingo grátis por diversão: ninguém paga pra jogar e não há prêmio em dinheiro.</small>
+</section>
+<div id="bgWin" class="bgwin" style="display:none"></div>
 
 <!-- ASSISTIR -->
 <section id="watch" class="scr">
@@ -792,7 +903,7 @@ function go(id){
   document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id===id));
   document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.go===id));
   $('#nav').style.display=(id==='match'||id==='chat')?'none':'flex';
-  if(id==='lobby')renderLobby();if(id==='wallet')renderWallet();if(id==='profile')renderProfile();if(id==='online')renderOnline();if(id==='chats')renderChats();if(id==='torneio')renderTours();
+  if(id==='lobby')renderLobby();if(id==='wallet')renderWallet();if(id==='profile')renderProfile();if(id==='online')renderOnline();if(id==='chats')renderChats();if(id==='torneio')renderTours();if(id==='bingo')bingoOpen();
   window.scrollTo(0,0);
 }
 document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>go(b.dataset.go));
@@ -908,7 +1019,7 @@ $('#psave').onclick=()=>{const n=$('#pname').value.trim();if(n&&modCheck(n)){mod
 
 /* ========== PAINEL DO DONO / COMUNIDADE (publicado pra todos) ========== */
 const OWNER_PUB={kty:'EC',crv:'P-256',x:'7HRTYMzFaLiUX3sO-hG2vI_3RkIWCg1k6cfUb8-a8Ys',y:'e_PXqHIvFU43PtBEt65u2AY3gTi8Wws0-5jz8sjujAs'};
-let O={v:0,neon:'Bem-vindo à nossa comunidade! 🔥',ncol:'#ff2bd6',soc:[],banners:[],turn:{app:'',key:''},tours:[],tann:'',tannImg:null,vit:{mode:'off',cat:'Torneio e Prêmios',title:'',desc:'',img:null,video:'',cta:'',url:''},ads:[],rot:8,prices:{adW:'R$ 15',adM:'R$ 45',topW:'R$ 25',topM:'R$ 80',tour:'R$ 35',promo:'1ª semana grátis pra quem fechar o mês'}};
+let O={v:0,neon:'Bem-vindo à nossa comunidade! 🔥',ncol:'#ff2bd6',soc:[],banners:[],turn:{app:'',key:''},tours:[],tann:'',tannImg:null,vit:{mode:'off',cat:'Torneio e Prêmios',title:'',desc:'',img:null,video:'',cta:'',url:''},ads:[],rot:8,prices:{adW:'R$ 15',adM:'R$ 45',topW:'R$ 25',topM:'R$ 80',tour:'R$ 35',bingo:'R$ 30',promo:'1ª semana grátis pra quem fechar o mês'},bingo:{on:true,ms:3500,max:3,rew:'🏆 Troféu no perfil + pontos no ranking do Bingo',spName:'',spLink:'',spLogo:null}};
 try{const s=JSON.parse(localStorage.getItem('arena_cfg_v3'+SK));if(s)O=Object.assign(O,s);}catch(e){}
 function saveO(){try{localStorage.setItem('arena_cfg_v3'+SK,JSON.stringify(O));}catch(e){}}
 let OKEY=null;try{OKEY=localStorage.getItem('arena_owner_key'+SK);}catch(e){}
@@ -996,7 +1107,7 @@ $('#oSave').onclick=async()=>{
   const bans=[];for(const b0 of oDraft.banners.map(banObj)){const img=banImg(b0);if(!img)continue;const hh=await sha16(img);BIMG.set(hh,img);busPub(TOP.bimg+'/'+hh,{img},true);
     bans.push({h:hh,url:b0.url||'',wa:b0.wa||'',who:b0.who||'',until:b0.until||''});}
   oDraft.banners=bans.map(x=>({...x}));
-  const c={v:Date.now(),neon:oDraft.neon,ncol:oDraft.ncol,soc:oDraft.soc,banners:bans,turn:oDraft.turn,tours:oDraft.tours,tann:oDraft.tann,tannImg:oDraft.tannImg,vit:oDraft.vit,ads:oDraft.ads,rot:oDraft.rot,prices:oDraft.prices};
+  const c={v:Date.now(),neon:oDraft.neon,ncol:oDraft.ncol,soc:oDraft.soc,banners:bans,turn:oDraft.turn,tours:oDraft.tours,tann:oDraft.tann,tannImg:oDraft.tannImg,vit:oDraft.vit,ads:oDraft.ads,rot:oDraft.rot,prices:oDraft.prices,bingo:readOwnerBingo()};
   const str=JSON.stringify(c);
   if(str.length>450000){toast('Imagens muito pesadas — remova um banner ou imagem de torneio');return;}
   try{const sig=await signCfg(str);busPub(TOP.cfg,{cfg:str,sig},true);O=Object.assign(O,c);saveO();bimgCache();renderCommunity();tourSubs();toast('Publicado pra todos os jogadores!');go('lobby');}
@@ -1004,7 +1115,7 @@ $('#oSave').onclick=async()=>{
 };
 $('#ownBack').onclick=()=>go('profile');
 $('#oLogout').onclick=()=>modal('Sair do modo dono?','O botão do painel some deste celular. Pra entrar de novo, toque 7 vezes em "Meu perfil" e cole a chave.',[{t:'Cancelar'},{t:'Sair',pri:1,f:()=>{OKEY=null;try{localStorage.removeItem('arena_owner_key'+SK);}catch(e){}ownerVis();go('profile');toast('Modo dono desligado neste celular');}}]);
-function openOwner(){oDraft={neon:O.neon,ncol:O.ncol,soc:O.soc.map(s=>({...s})),banners:(O.banners||[]).slice(),turn:{...(O.turn||{})},tours:(O.tours||[]).map(t=>({...t})),tann:O.tann||'',tannImg:O.tannImg||null,vit:{...(O.vit||{mode:'off'})},ads:(O.ads||[]).map(a=>({...a})),rot:O.rot||8,prices:{...(O.prices||{})}};go('owner');busSub(TOP.st+'/+');renderStats();renderOwner();renderOwnerAds();renderOwnerTours();renderOwnerVit();renderParc();}
+function openOwner(){oDraft={neon:O.neon,ncol:O.ncol,soc:O.soc.map(s=>({...s})),banners:(O.banners||[]).slice(),turn:{...(O.turn||{})},tours:(O.tours||[]).map(t=>({...t})),tann:O.tann||'',tannImg:O.tannImg||null,vit:{...(O.vit||{mode:'off'})},ads:(O.ads||[]).map(a=>({...a})),rot:O.rot||8,prices:{...(O.prices||{})},bingo:{...(O.bingo||{})}};go('owner');renderOwnerBingo();busSub(TOP.st+'/+');renderStats();renderOwner();renderOwnerAds();renderOwnerTours();renderOwnerVit();renderParc();}
 async function keyOk(k){try{const kk=await crypto.subtle.importKey('jwk',{...OWNER_PUB,d:k.replace(/^ARENA-/,''),ext:true},{name:'ECDSA',namedCurve:'P-256'},false,['sign']);
   const s=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},kk,new TextEncoder().encode('teste'));return await verifyCfg('teste',b64u.enc(s));}catch(e){return false;}}
 $('#ownerBtn').onclick=()=>{
@@ -1285,6 +1396,7 @@ function openPlans(){
   const body=h('div');
   body.innerHTML=`Sua loja aparece pra toda a comunidade da Arena, com botão direto pro seu WhatsApp.
     <div class="plans">${row('📣 Anúncio nas ofertas<small>Foto ou vídeo de até 30s, passando na tela</small>',p.adW,p.adM)}${row('🖼️ Banner no topo<small>O primeiro que todo mundo vê ao abrir</small>',p.topW,p.topM)}${p.tour?`<div class="plan"><b>🏆 Patrocínio de torneio<small>Sua marca e logo no card do torneio</small></b><div><span><em>${esc(p.tour)}</em>/torneio</span></div></div>`:''}</div>
+    ${p.bingo?`<div class="plan"><b>🎱 Patrocínio do Bingo<small>Sua marca no globo do Bingo ao vivo, rodada após rodada</small></b><div><span><em>${esc(p.bingo)}</em>/semana</span></div></div>`:''}
     ${p.promo?`<div class="promo">🎁 ${esc(p.promo)}</div>`:''}
     <small style="color:var(--mut)">Não tem a arte ou o vídeo? A gente cria pra você.</small>`;
   modal('📣 Anuncie na Arena',body,[{t:'Fechar'},{t:'Quero anunciar',pri:1,f:()=>openParc(PTYPES[0])}]);
@@ -1408,7 +1520,7 @@ const QS=new URLSearchParams(location.search);
 const LOCAL=QS.get('local')==='1';
 if(!S.uid){S.uid='u'+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-3);save();}
 const BROKERS=['wss://broker.hivemq.com:8884/mqtt','wss://broker.emqx.io:8084/mqtt'];
-const TOP={bimg:'arenadm/v3/bimg',st:'arenadm/v3/st',unb:'arenadm/v3/unb',lobby:'arenadm/v2/lobby',me:()=>'arenadm/v2/u/'+S.uid,user:id=>'arenadm/v2/u/'+id,room:r=>'arenadm/v2/r/'+r,cfg:'arenadm/v3/cfg',tour:id=>'arenadm/v3/tour/'+id,parc:'arenadm/v3/parc',rank:w=>'arenadm/v3/rank/'+w,ib:id=>'arenadm/v3/ib/'+id};
+const TOP={bingo:'arenadm/v3/bingo',brank:'arenadm/v3/brank',bimg:'arenadm/v3/bimg',st:'arenadm/v3/st',unb:'arenadm/v3/unb',lobby:'arenadm/v2/lobby',me:()=>'arenadm/v2/u/'+S.uid,user:id=>'arenadm/v2/u/'+id,room:r=>'arenadm/v2/r/'+r,cfg:'arenadm/v3/cfg',tour:id=>'arenadm/v3/tour/'+id,parc:'arenadm/v3/parc',rank:w=>'arenadm/v3/rank/'+w,ib:id=>'arenadm/v3/ib/'+id};
 const BUS={subs:new Set(),cli:null,bc:null,ready:false,q:[]};
 function busConnect(){
   if(LOCAL){BUS.bc=new BroadcastChannel('adm_bus');BUS.bc.onmessage=e=>busRecv(e.data.t,e.data.s);[...BUS.subs].forEach(localRetained);BUS.ready=true;busFlush();setTimeout(()=>{presence();busPub(TOP.lobby,{t:'who'});},50);return;}
@@ -1447,6 +1559,8 @@ function busClear(t){
 }
 function busRecv(t,s){
   if(![...BUS.subs].some(x=>topicMatch(x,t)))return;
+  if(t.startsWith('arenadm/v3/brank/')){let o=null;try{o=s?JSON.parse(s):null;}catch(e){}onBRank(t,o);return;}
+  if(t.startsWith('arenadm/v3/bingo/')){let o=null;try{o=JSON.parse(s);}catch(e){}if(o)onBingo(t,o);return;}
   if(t.startsWith('arenadm/v3/bimg/')){let o=null;try{o=s?JSON.parse(s):null;}catch(e){}onBimg(t,o);return;}
   if(t.startsWith('arenadm/v3/st/')){let o=null;try{o=s?JSON.parse(s):null;}catch(e){}onStat(t,o);return;}
   if(t.startsWith('arenadm/v3/unb/')){let o=null;try{o=s?JSON.parse(s):null;}catch(e){}if(o)onUnblock(o);return;}
@@ -1789,6 +1903,157 @@ function watchUI(){if(!NET.spec)return;const o=WT.last||{};const g=GAMES.find(x=
   qb.style.display=g&&g.id==='ludo'?'none':'';voiceUI();renderSeats();}
 function wchatAdd(who,text){const l=$('#wChat');const d=h('div','gm',`<b>${esc(who)}:</b> ${esc(text)}`);l.append(d);while(l.children.length>60)l.firstChild.remove();l.scrollTop=l.scrollHeight;}
 function wchatSend(){const i=$('#wIn');const t=i.value.trim();if(!t||!NET.spec)return;if(!modOk(t))return;i.value='';wchatAdd('Você',t);roomPub({t:'chat',text:t,name:S.name});}
+/* ====================== BINGO DA ARENA ======================
+   Grátis. Rodadas fixas no relógio; bolas e cartelas saem de sementes iguais pra todos,
+   então qualquer celular confere sozinho se o BINGO de alguém é verdadeiro. */
+const BJOIN=40000;
+const BCFG=()=>Object.assign({on:true,ms:3500,max:3,rew:''},O.bingo||{});
+const bSlot=()=>BJOIN+75*BCFG().ms+20000;
+function xm(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19;}
+  return()=>{h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);h^=h>>>16;let t=(h+=0x6D2B79F5)>>>0;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
+const BBC={};function bBalls(r){if(BBC[r])return BBC[r];const a=[...Array(75)].map((_,i)=>i+1),R=xm('arena-bingo|'+r);for(let i=74;i>0;i--){const j=Math.floor(R()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  for(const k in BBC)delete BBC[k];return BBC[r]=a;}
+function bCard(uid,r,k){const c=Array(25);for(let col=0;col<5;col++){const R=xm(uid+'|'+r+'|'+k+'|'+col),pool=[...Array(15)].map((_,i)=>col*15+i+1);
+  for(let row=0;row<5;row++){const j=Math.floor(R()*pool.length);c[row*5+col]=pool.splice(j,1)[0];}}c[12]=0;return c;}
+const BLINES=(()=>{const L=[];for(let i=0;i<5;i++){L.push([0,1,2,3,4].map(c=>i*5+c));L.push([0,1,2,3,4].map(r=>r*5+i));}L.push([0,6,12,18,24],[4,8,12,16,20]);return L;})();
+const bLet=n=>'BINGO'[Math.floor((n-1)/15)];
+function bEval(card,set){const hit=i=>card[i]===0||set.has(card[i]);let lineMiss=9,best=null;
+  for(const L of BLINES){const m=L.filter(i=>!hit(i)).length;if(m<lineMiss){lineMiss=m;best=L;}}
+  const fullMiss=card.filter((n,i)=>!hit(i)).length;return{lineMiss,fullMiss,best};}
+const BG={round:-1,ks:[],next:0,auto:true,snd:true,joins:new Map(),win:{line:[],full:[]},first:{line:null,full:null},shown:-1,manual:new Set(),
+  lastSpoken:-1,iv:null,pend:0,rank:new Map(),said:{}};
+function bNow(){const sl=bSlot(),t=Date.now(),r=Math.floor(t/sl),el=t-r*sl;const ms=BCFG().ms;
+  let n=el<BJOIN?0:Math.min(75,Math.floor((el-BJOIN)/ms)+1);return{r,el,sl,n,ms,toDraw:BJOIN-el,toNext:sl-el};}
+function bDrawn(){const N=bNow();let n=N.n;if(BG.round===N.r&&BG.first.full)n=Math.min(n,BG.first.full.idx);return n;}
+function bTopic(r){return TOP.bingo+'/'+r;}
+function bResetRound(r){
+  if(BG.round>=0)busUnsub(bTopic(BG.round));BG.round=r;BG.joins=new Map();BG.win={line:[],full:[]};BG.first={line:null,full:null};BG.manual=new Set();BG.lastSpoken=-1;BG.said={};
+  BG.seenStart=bNow().el<BJOIN;
+  BG.ks=[];if(BG.pend){const m=Math.min(BG.pend,BCFG().max);BG.ks=[...Array(m)].map((_,i)=>i);BG.pend=0;}
+  busSub(bTopic(r));if(BG.ks.length)bJoinPub();bRender(true);
+}
+function bJoinPub(){if(!BG.ks.length)return;busPub(bTopic(BG.round),{t:'j',ks:BG.ks,name:S.name,thumb:thumb()});}
+function bTick(){
+  const N=bNow();const open=$('#bingo').classList.contains('on');
+  if(N.r!==BG.round&&(open||BG.ks.length||BG.pend))bResetRound(N.r);
+  if($('#lobby').classList.contains('on'))bLobbyCard(N);
+  if(!open&&!BG.ks.length)return;
+  const n=bDrawn();
+  if(n!==BG.shown){const was=BG.shown;BG.shown=n;if(n>0&&was>=0&&n>was&&open)bAnnounce(bBalls(BG.round)[n-1]);bRender(false);bCheckMine();}
+  else if(open)bPhase(N);
+  if(open&&N.el%10000<300&&BG.ks.length)bJoinPub();
+}
+function bPhase(N){const ph=$('#bgPhase');if(!ph)return;const f=s=>Math.floor(s/60000)+':'+String(Math.floor(s%60000/1000)).padStart(2,'0');
+  if(N.el<BJOIN)ph.innerHTML=`<b>Pegue suas cartelas!</b><span>Sorteio começa em <em>${f(N.toDraw)}</em></span>`;
+  else if(BG.first.full||N.n>=75)ph.innerHTML=`<b>Rodada encerrada</b><span>Próxima rodada em <em>${f(N.toNext)}</em></span>`;
+  else ph.innerHTML=`<b>Bola ${BG.shown} de 75</b><span>${BG.ks.length?'Boa sorte! 🍀':'Você entra na próxima rodada'}</span>`;}
+function bLobbyCard(N){const b=$('#bingoCard');if(!b)return;const on=BCFG().on;b.style.display=on?'':'none';if(!on)return;
+  const live=N.el>=BJOIN&&N.n<75,f=s=>Math.floor(s/60000)+':'+String(Math.floor(s%60000/1000)).padStart(2,'0');
+  b.innerHTML=`<div class="bcball">${live&&N.n?`<i>${bLet(bBalls(N.r)[N.n-1])}</i>${bBalls(N.r)[N.n-1]}`:'🎱'}</div><div class="bctx"><span class="bclive">${live?'● AO VIVO':'GRÁTIS'}</span><b>BINGO DA ARENA</b><small>${N.el<BJOIN?`Cartelas abertas · sorteio em ${f(N.toDraw)}`:live?`Bola ${N.n} de 75 — entre e assista`:`Próxima rodada em ${f(N.toNext)}`}</small></div><em>JOGAR ›</em>`;}
+let bAC=null;function bDing(){if(!BG.snd)return;try{bAC=bAC||new (window.AudioContext||window.webkitAudioContext)();const o=bAC.createOscillator(),g=bAC.createGain();o.type='sine';o.frequency.setValueAtTime(880,bAC.currentTime);o.frequency.exponentialRampToValueAtTime(1320,bAC.currentTime+.12);
+  g.gain.setValueAtTime(.18,bAC.currentTime);g.gain.exponentialRampToValueAtTime(.001,bAC.currentTime+.35);o.connect(g);g.connect(bAC.destination);o.start();o.stop(bAC.currentTime+.36);}catch(e){}}
+function bAnnounce(n){bDing();const bb=$('#bgBall');if(bb){bb.className='bball c'+bLet(n);void bb.offsetWidth;bb.classList.add('drop');}
+  if(BG.snd&&'speechSynthesis' in window){try{const u=new SpeechSynthesisUtterance(bLet(n)+', '+n);u.lang='pt-BR';u.rate=1.05;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}}
+function bRender(full){
+  if(!$('#bingo').classList.contains('on'))return;const N=bNow(),r=BG.round,balls=bBalls(r),n=BG.shown<0?bDrawn():BG.shown,set=new Set(balls.slice(0,n)),cfg=BCFG();
+  const cur=n?balls[n-1]:null;const bb=$('#bgBall');
+  if(cur){bb.querySelector('span').innerHTML=`<i>${bLet(cur)}</i>${cur}`;if(!bb.classList.contains('drop'))bb.className='bball c'+bLet(cur);}else{bb.className='bball idle';bb.querySelector('span').textContent='?';}
+  $('#bgLast').innerHTML=balls.slice(Math.max(0,n-6),Math.max(0,n-1)).reverse().map(x=>`<span class="lb c${bLet(x)}">${x}</span>`).join('');
+  bPhase(N);
+  const pz=(id,w,lbl)=>{const e=$(id);const W=BG.win[w];e.classList.toggle('done',!!W.length);e.querySelector('small').textContent=W.length?'🏆 '+W.map(x=>x.name).join(', '):lbl;};
+  pz('#bgPL','line','aberta');pz('#bgPF','full','cartela cheia');
+  $('#bgRew').innerHTML=cfg.rew?`🎁 ${esc(cfg.rew)}`:'';
+  const sp=$('#bgSp');sp.innerHTML=cfg.spName?`<button class="bgspon">${cfg.spLogo?`<img src="${cfg.spLogo}" alt="">`:'🤝'}<span><small>RODADA PATROCINADA POR</small><b>${esc(cfg.spName)}</b></span>${cfg.spLink?'<em>Ver →</em>':''}</button>`:'';
+  const spb=sp.querySelector('button');if(spb&&cfg.spLink)spb.onclick=()=>goLink(cfg.spLink);
+  const J=[...BG.joins.values()];$('#bgPeople').innerHTML=`<div class="bgav">${J.slice(0,8).map(()=>'<i class="av"></i>').join('')}</div><span>👥 <b>${J.length+(BG.ks.length&&!BG.joins.has(S.uid)?1:0)}</b> jogando nesta rodada</span>`;
+  $('#bgPeople').querySelectorAll('.av').forEach((a,i)=>setAv(a,J[i].thumb,J[i].name,'#4a1a7a'));
+  // cartelas
+  const box=$('#bgCards'),ctl=$('#bgCtl');box.innerHTML='';ctl.innerHTML='';const joinOpen=N.el<BJOIN;
+  BG.ks.forEach((k,ci)=>{const card=bCard(S.uid,r,k),ev=bEval(card,set);const el=h('div','bcard');
+    const tag=ev.fullMiss===0?'<em class="hot win">CARTELA CHEIA!</em>':ev.lineMiss===0&&!BG.win.line.length?'<em class="hot win">LINHA!</em>':ev.fullMiss<=2?`<em class="hot">🔥 Falta ${ev.fullMiss} pro BINGO</em>`:ev.lineMiss===1&&!BG.win.line.length?'<em class="hot">🔥 Falta 1 pra LINHA</em>':'';
+    el.innerHTML=`<div class="bch"><b>Cartela ${ci+1}</b>${tag}${joinOpen?`<button data-sw="${ci}">🔄 Trocar</button>`:''}</div><div class="bhd"><span>B</span><span>I</span><span>N</span><span>G</span><span>O</span></div>
+      <div class="bgrid">${card.map((v,i)=>{const mk=v===0||(BG.auto?set.has(v):BG.manual.has(ci+':'+v)&&set.has(v));const nl=ev.lineMiss<=1&&ev.best&&ev.best.includes(i)&&!mk&&!BG.win.line.length;
+        return `<button class="bc${mk?' mk':''}${v===0?' fr':''}${nl?' nl':''}" data-c="${ci}" data-v="${v}">${v===0?'★':v}</button>`;}).join('')}</div>`;
+    box.append(el);});
+  box.querySelectorAll('[data-sw]').forEach(b=>b.onclick=()=>{const ci=+b.dataset.sw;let k=BG.ks[ci];do{k=(k+1)%30;}while(BG.ks.includes(k));BG.ks[ci]=k;bJoinPub();bRender(true);});
+  box.querySelectorAll('.bc').forEach(b=>b.onclick=()=>{if(BG.auto)return;const v=+b.dataset.v;if(!v||!set.has(v)){if(v)toast('Esse número ainda não saiu');return;}BG.manual.add(b.dataset.c+':'+v);b.classList.add('mk');});
+  const N2=N;
+  if(!BG.ks.length){
+    if(joinOpen){ctl.innerHTML=`<div class="bpick"><b>Quantas cartelas?</b><div>${[...Array(cfg.max)].map((_,i)=>`<button class="pri" data-n="${i+1}">${i+1}</button>`).join('')}</div><small>Grátis · trocar cartela até o sorteio começar</small></div>`;
+      ctl.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{if(!S.rulesOk){rulesGate(()=>b.click());return;}BG.ks=[...Array(+b.dataset.n)].map((_,i)=>i);bJoinPub();toast('🎱 Cartelas garantidas! Boa sorte');bRender(true);});}
+    else ctl.innerHTML=`<div class="bpick"><b>${BG.pend?'✅ Você está na próxima rodada':'Rodada em andamento'}</b><small>${BG.pend?`Com ${BG.pend} cartela(s)`:'Assista e garanta lugar na próxima'}</small>${BG.pend?'':`<div>${[...Array(cfg.max)].map((_,i)=>`<button data-p="${i+1}">${i+1} cartela${i?'s':''}</button>`).join('')}</div>`}</div>`;
+    ctl.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{BG.pend=+b.dataset.p;toast('✅ Lugar garantido na próxima rodada');bRender(true);});
+  }else ctl.innerHTML=`<label class="tgl bauto"><input type="checkbox" id="bgAuto" ${BG.auto?'checked':''}> <span><b>Marcar sozinho</b><small>Desligue pra marcar no dedo, como no bingo de verdade</small></span></label>`;
+  const au=$('#bgAuto');if(au)au.onchange=()=>{BG.auto=au.checked;bRender(true);};
+  // botão BINGO
+  const sh=$('#bgShout');const can=BG.ks.length&&N2.el>=BJOIN&&!BG.first.full;sh.style.display=can?'':'none';
+  const ready=can&&BG.ks.some(k=>{const e=bEval(bCard(S.uid,r,k),set);return e.fullMiss===0||(e.lineMiss===0&&!BG.first.line);});sh.classList.toggle('ready',!!ready);
+  sh.textContent=ready?'🎉 BINGO! — TOQUE AGORA':'BINGO!';
+  // painel
+  if(full||$('#bgBoard').childElementCount!==75)$('#bgBoard').innerHTML=[...Array(75)].map((_,i)=>`<span data-b="${i+1}">${i+1}</span>`).join('');
+  $('#bgBoard').querySelectorAll('span').forEach(x=>x.classList.toggle('on',set.has(+x.dataset.b)));
+}
+function bCheckMine(){if(!BG.ks.length||!BG.shown)return;const set=new Set(bBalls(BG.round).slice(0,BG.shown));
+  const any=BG.ks.some(k=>{const e=bEval(bCard(S.uid,BG.round,k),set);return e.fullMiss===0||(e.lineMiss===0&&!BG.first.line);});
+  if(any&&!BG.said[BG.shown]){BG.said[BG.shown]=1;if(!$('#bingo').classList.contains('on'))toast('🎱 Você bateu no Bingo! Corre lá e toque em BINGO!');else if(navigator.vibrate)navigator.vibrate([80,40,80]);}}
+function bShout(){
+  const n=bDrawn(),r=BG.round,set=new Set(bBalls(r).slice(0,n));let claim=null;
+  for(const k of BG.ks){const e=bEval(bCard(S.uid,r,k),set);if(e.fullMiss===0){claim={kind:'full',k};break;}if(e.lineMiss===0&&!BG.first.line&&!claim)claim={kind:'line',k};}
+  if(!claim){const sh=$('#bgShout');sh.classList.remove('shake');void sh.offsetWidth;sh.classList.add('shake');toast('Ainda não bateu! Confira sua cartela 😉');return;}
+  const msg={t:'c',kind:claim.kind,k:claim.k,idx:n,name:S.name,thumb:thumb()};busPub(bTopic(r),msg);onBingo(bTopic(r),Object.assign({from:S.uid},msg),true);
+  setTimeout(()=>busPub(bTopic(r),msg),2500);
+}
+function bValid(o,r,mine){
+  if(!['line','full'].includes(o.kind)||!(o.idx>=1&&o.idx<=75)||!(o.k>=0&&o.k<30))return false;
+  const j=BG.joins.get(o.from);if(j&&!j.late&&!j.ks.includes(o.k))return false;if(j&&j.late)return false;
+  if(!mine){const cur=bNow();if(cur.r===r&&cur.n&&(o.idx>cur.n+3||o.idx<cur.n-4))return false;}
+  const e=bEval(bCard(o.from,r,o.k),new Set(bBalls(r).slice(0,o.idx)));return o.kind==='full'?e.fullMiss===0:e.lineMiss===0;}
+function onBingo(t,o,mine){
+  const r=+t.split('/').pop();if(r!==BG.round)return;if(isBlk(o.from))return;
+  if(o.t==='j'){const N=bNow();if(!Array.isArray(o.ks))return;const prev=BG.joins.get(o.from);
+    BG.joins.set(o.from,{name:String(o.name||'Jogador').slice(0,20),thumb:o.thumb,ks:o.ks.slice(0,4).map(Number),late:prev?prev.late:(N.el>=BJOIN&&N.r===r&&o.from!==S.uid&&BG.seenStart)});
+    bRender(false);return;}
+  if(o.t==='chat'){wcBingo('👤 '+(o.name||'Jogador'),modShow(String(o.text||'').slice(0,160)));return;}
+  if(o.t==='emo'){fly(o.e,true);return;}
+  if(o.t==='c'){if(!bValid(o,r,mine))return;const w=BG.win[o.kind];if(w.some(x=>x.uid===o.from))return;
+    const f=BG.first[o.kind];if(f&&(o.idx>f.idx||Date.now()-f.at>9000))return;
+    if(!f||o.idx<f.idx){BG.first[o.kind]={idx:o.idx,at:Date.now()};BG.win[o.kind]=w.filter(x=>x.idx<=o.idx);}
+    BG.win[o.kind].push({uid:o.from,name:String(o.name||'Jogador').slice(0,20),thumb:o.thumb,idx:o.idx});
+    if(o.kind==='full'&&!BG.first.line){BG.first.line={idx:o.idx,at:Date.now()};}
+    bCelebrate(o.kind,o.from===S.uid,o.name,o.thumb);if(o.from===S.uid)bScore(o.kind);bRender(false);}
+}
+function bScore(kind){const w=weekId();S.bgw=S.bgw&&S.bgw.w===w?S.bgw:{w,pts:0,lines:0,fulls:0};S.bgw.pts+=kind==='full'?3:1;S.bgw[kind==='full'?'fulls':'lines']++;
+  S.bgTot=(S.bgTot||0)+1;save();busPub(TOP.brank+'/'+w+'/'+S.uid,{name:S.name,thumb:thumb(),pts:S.bgw.pts,f:S.bgw.fulls,l:S.bgw.lines},true);}
+function onBRank(t,o){const id=t.split('/').pop();if(!o)BG.rank.delete(id);else BG.rank.set(id,o);bRankUI();}
+function bRankUI(){const el=$('#bgRank');if(!el)return;const L=[...BG.rank.values()].filter(x=>x&&x.pts).sort((a,b)=>b.pts-a.pts).slice(0,5);
+  el.innerHTML=L.length?`<div class="bgrh">👑 Reis do Bingo da semana</div>${L.map((x,i)=>`<div class="bgrr"><span>${['🥇','🥈','🥉','4º','5º'][i]}</span><i class="av"></i><b>${esc(x.name)}</b><em>${x.pts} pts</em></div>`).join('')}`:'';
+  el.querySelectorAll('.av').forEach((a,i)=>setAv(a,L[i].thumb,L[i].name,'#4a1a7a'));}
+function bCelebrate(kind,me,name,th){
+  const w=$('#bgWin');w.innerHTML=`<canvas id="bgConf"></canvas><div class="bgwbox ${kind}"><div class="bgwk">${kind==='full'?'BINGO!':'LINHA!'}</div><i class="av big"></i><b>${me?'VOCÊ GANHOU! 🎉':esc(name||'Jogador')}</b><small>${me?(kind==='full'?'+3 pontos no ranking do Bingo':'+1 ponto no ranking do Bingo'):(kind==='full'?'bateu a cartela cheia!':'fechou uma linha!')}</small><button class="pri">${me?'Uhuul!':'Fechar'}</button></div>`;
+  setAv(w.querySelector('.av'),me?S.photo:th,me?S.name:name,'#7209b7');w.style.display='';w.querySelector('button').onclick=()=>{w.style.display='none';};
+  if(me&&navigator.vibrate)navigator.vibrate([100,60,100,60,200]);confetti($('#bgConf'));setTimeout(()=>{w.style.display='none';},me?9000:5000);}
+function confetti(cv){const W=cv.width=innerWidth,H=cv.height=innerHeight,x=cv.getContext('2d');const C=['#ffc23d','#ff2bd6','#00e5ff','#25d366','#b026ff','#fff'];
+  const P=[...Array(140)].map(()=>({x:Math.random()*W,y:-20-Math.random()*H*.6,v:2+Math.random()*4,a:Math.random()*6,s:5+Math.random()*7,c:C[Math.floor(Math.random()*C.length)],w:Math.random()*.2-.1}));
+  let f=0;(function an(){x.clearRect(0,0,W,H);P.forEach(p=>{p.y+=p.v;p.x+=Math.sin(p.a+=.05)*1.5;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore();});
+    if(++f<240&&cv.isConnected)requestAnimationFrame(an);else x.clearRect(0,0,W,H);})();}
+function wcBingo(who,text){const l=$('#bgChat');if(!l)return;l.append(h('div','gm',`<b>${esc(who)}:</b> ${esc(text)}`));while(l.children.length>60)l.firstChild.remove();l.scrollTop=l.scrollHeight;}
+function bChatSend(){const i=$('#bgIn');const t=i.value.trim();if(!t)return;if(!S.rulesOk){rulesGate(bChatSend);return;}if(!modOk(t))return;i.value='';wcBingo('Você',t);busPub(bTopic(BG.round),{t:'chat',text:t,name:S.name});}
+function bingoOpen(){if(!BCFG().on&&!OKEY){go('lobby');toast('O Bingo está pausado agora');return;}
+  const N=bNow();if(N.r!==BG.round)bResetRound(N.r);BG.shown=-1;busSub(TOP.brank+'/'+weekId()+'/+');
+  const m=$('#bgMini');if(!m.childElementCount)m.innerHTML=[...Array(14)].map((_,i)=>{const n=i*5+3;return `<i class="c${bLet(n)}" style="--d:${(i*0.37)%2.4}s;--x:${(i*37)%70+5}%;--y:${(i*53)%60+15}%">${n}</i>`;}).join('');
+  const em=$('#bgEmo');if(!em.childElementCount)['🎱','🔥','😱','🙏','🍀','😂','👏','😭'].forEach(e=>{const b=h('button',null,e);b.onclick=()=>{fly(e,false);busPub(bTopic(BG.round),{t:'emo',e});};em.append(b);});
+  $('#bgSnd').textContent=BG.snd?'🔊':'🔇';bRankUI();bRender(true);}
+$('#bgBack').onclick=()=>go('lobby');
+$('#bgSnd').onclick=()=>{BG.snd=!BG.snd;$('#bgSnd').textContent=BG.snd?'🔊':'🔇';if(!BG.snd&&'speechSynthesis' in window)speechSynthesis.cancel();};
+$('#bgShout').onclick=bShout;$('#bgSend').onclick=bChatSend;$('#bgIn').onkeydown=e=>{if(e.key==='Enter')bChatSend();};
+$('#bingoCard').onclick=()=>go('bingo');
+setInterval(bTick,250);
+/* painel do dono — bingo */
+function renderOwnerBingo(){const b=oDraft.bingo=Object.assign({on:true,ms:3500,max:3,rew:'',spName:'',spLink:'',spLogo:null},oDraft.bingo||{});
+  $('#obOn').checked=b.on!==false;$('#obMs').value=String(b.ms);$('#obMax').value=String(b.max);$('#obRew').value=b.rew||'';$('#obSp').value=b.spName||'';$('#obSpL').value=b.spLink||'';
+  $('#obLogoP').innerHTML=b.spLogo?`<img src="${b.spLogo}" style="width:64px;height:64px;border-radius:14px;object-fit:cover">`:'';
+  $('#obLogo').onclick=()=>$('#obLogoF').click();$('#obLogoF').onchange=e=>{const f=e.target.files[0];if(!f)return;fitImage(f,160,160,u=>{b.spLogo=u;renderOwnerBingo();});};}
+function readOwnerBingo(){const b=oDraft.bingo||{};return{on:$('#obOn').checked,ms:+$('#obMs').value,max:+$('#obMax').value,rew:$('#obRew').value.trim(),spName:$('#obSp').value.trim(),spLink:$('#obSpL').value.trim(),spLogo:b.spLogo||null};}
 function netCtx(init){
   const idx=NET.players.findIndex(p=>p.id===S.uid);
   return{net:true,side:idx===0?'A':'B',seat:idx,players:NET.players.map(p=>({id:p.id,name:p.name})),init,
