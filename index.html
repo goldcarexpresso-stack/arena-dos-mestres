@@ -798,6 +798,21 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
 .stk .chip{border-radius:14px;padding:10px 12px;background:#141033;border:1px solid #3b2a7a;font-weight:800}
 .stk .chip.on{background:linear-gradient(135deg,#ffe27a,#ffb627);color:#2a1200;border-color:#fff3b0;box-shadow:0 0 14px #ffc23d88}
 .stk .sum{border-radius:16px;background:linear-gradient(135deg,#0d2a1a,#141033);border:1px solid #25d36655}
+
+.vvid.vert{aspect-ratio:4/5;overflow:hidden}
+.vvid.vert iframe{inset:auto;width:316%;height:142.2%;left:-108%;top:-21.1%}
+
+.nofx{position:fixed;inset:0;z-index:130;display:flex;align-items:center;justify-content:center;padding:16px;background:#05031ae8;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0}}
+.nobox{width:100%;max-width:420px;text-align:center;padding:22px 18px 16px;border-radius:26px;background:radial-gradient(circle at 50% 0,#3a1670,#120d30 70%);border:3px solid #ffc23d;box-shadow:0 0 50px #ffc23d66;animation:pop .45s cubic-bezier(.2,1.6,.4,1)}
+.noic{font-size:64px;animation:bob 2s ease-in-out infinite}
+.nobox h2{margin:6px 0 10px;font-size:24px;color:#fff;line-height:1.2}
+.nobox p{color:#e8d8ff;font-size:15.5px;margin:0 0 12px}.nobox p b{color:#ffe27a}.nobox p b.r{color:#ff7a8a}
+.notest{background:#2a2000;border:1px solid #ffc23d88;color:#ffe9b0;border-radius:14px;padding:10px 12px;font-size:14px;text-align:left;margin-bottom:10px}
+.nobox ol{text-align:left;color:#d9c8ff;font-size:14.5px;margin:0 0 14px;padding-left:22px}.nobox ol b{color:#fff}
+.nobox button{display:block;width:100%;margin-top:8px;padding:14px;font-size:16px;font-weight:900;border-radius:16px}
+.nogo{background:linear-gradient(90deg,#1fbf5b,#25d366)!important;color:#04210f!important;border:2px solid #fff!important;animation:ctaPulse 1.6s infinite}
+.nofr{background:#1d1640;border:1px solid #b026ff88;color:#fff}.nox{background:none;border:none;color:#a9a0cc;font-weight:700!important;padding:8px!important}
 </style>
 </head>
 <body>
@@ -1334,6 +1349,19 @@ function renderLobby(){
   GAMES.forEach((x,j)=>{const c=h('button','gc'+(PHOTO[x.id]?' phc':''),`${j===0?'<span class="gpill">MAIS JOGADO</span>':''}${PHOTO[x.id]?`<div class="art ph"><img src="${PHOTO[x.id]}" alt="" style="animation-delay:-${j*2.3}s"><i class="shine"></i></div>`:`<div class="art">${ART[x.id]}</div>`}<div class="tx"><b>${x.name}</b><span>${x.desc}</span></div>`);c.onclick=()=>openStake(x);g.append(c);});
   const n=(O.tours||[]).length;const tc=h('button','gc tourcard'+(PHOTO.torneio?' phc tph':''),`${PHOTO.torneio?`<img class="tbg" src="${PHOTO.torneio}" alt=""><i class="shine"></i>`:`<div class="tic">${ARTF.trofeu('TC')}</div>`}<span class="tneon">TORNEIOS</span><small>${n?n+(n===1?' torneio aberto':' torneios abertos'):'Em breve'}</small>`);tc.onclick=()=>{go('torneio');};g.append(tc);
 }
+function noFunds(stake,g){
+  const fx=document.createElement('div');fx.className='nofx';
+  fx.innerHTML=`<div class="nobox"><div class="noic">💰</div><h2>Você está sem moedas pra jogar</h2>
+    <p>Pra entrar numa partida valendo <b>${fmt(stake)}</b> você precisa ter moedas na sua <b>Carteira</b>. Seu saldo agora: <b class="r">${fmt(S.bal)}</b></p>
+    <div class="notest">🧪 <b>Isso é uma carteira de TESTE.</b> As moedas são de mentira, nenhum dinheiro real entra ou sai. O jogo só funciona quando tem moeda lá — é só adicionar de graça.</div>
+    <ol><li>Toque em <b>Ir pra Carteira</b></li><li>Toque em <b>+ R$ 10,00</b> (ou outro valor)</li><li>Volte em <b>Jogos</b> e entre na partida</li></ol>
+    <button class="pri nogo">💰 Ir pra Carteira e adicionar moedas</button>
+    <button class="nofr">👥 Jogar grátis com um amigo</button><button class="nox">Agora não</button></div>`;
+  document.body.append(fx);const cl=()=>fx.remove();
+  fx.querySelector('.nogo').onclick=()=>{cl();$('#mod').classList.remove('on');go('wallet');toast('👇 Toque num valor pra adicionar moedas de teste');};
+  fx.querySelector('.nofr').onclick=()=>{cl();$('#mod').classList.remove('on');if(g)openFriend(g);};
+  fx.querySelector('.nox').onclick=cl;fx.onclick=e=>{if(e.target===fx)cl();};
+}
 function openStake(g){
   let stake=S.lastStake||100,bo=g.bo;const body=h('div');
   let render=()=>{
@@ -1345,7 +1373,7 @@ function openStake(g){
   };render();
   body.classList.add('stk');if(PHOTO[g.id])body.insertAdjacentHTML('afterbegin',`<div class="stkph" style="background-image:url(${PHOTO[g.id]})"><b>${g.name}</b><small>${g.desc}</small></div>`);const _r=render;render=()=>{const ph=body.querySelector('.stkph');_r();if(ph)body.prepend(ph);};
   modal(g.name,body,[{t:'Cancelar'},{t:'👥 Com amigo',f:()=>openFriend(g)},{t:'Entrar',pri:1,f:()=>{
-    if(S.bal<stake){modal('Saldo insuficiente','Adicione saldo de teste na Carteira para entrar nessa partida.',[{t:'Fechar'},{t:'Ir pra Carteira',pri:1,f:()=>go('wallet')}]);return;}
+    if(S.bal<stake){setTimeout(()=>noFunds(stake,g),50);return;}
     S.lastStake=stake;startMatch(g,stake,bo);}}]);
 }
 
@@ -1614,7 +1642,7 @@ function editTour(i){
   body.querySelector('[data-splogo]').onclick=()=>body.querySelector('[data-spfile]').click();
   body.querySelector('[data-spfile]').onchange=e=>{const f=e.target.files[0];if(!f)return;fitImage(f,160,160,u=>{t.spLogo=u;body.querySelector('.spprev').innerHTML=`<img src="${u}" style="width:64px;height:64px;border-radius:14px">`;});};
   body.querySelector('[data-img]').onclick=()=>body.querySelector('input[type=file]:not([data-spfile])').click();
-  body.querySelector('input[type=file]:not([data-spfile])').onchange=e=>{const f=e.target.files[0];if(!f)return;fitImage(f,720,300,u=>{t.img=u;body.querySelector('.tprev').innerHTML=`<img src="${u}" style="width:100%;border-radius:10px">`;});};
+  body.querySelector('input[type=file]:not([data-spfile])').onchange=e=>{const f=e.target.files[0];if(!f)return;fitContain(f,820,820,u=>{t.img=u;body.querySelector('.tprev').innerHTML=`<img src="${u}" style="width:100%;border-radius:10px">`;});};
   modal(i==null?'Novo torneio':'Editar torneio',body,[{t:'Cancelar'},{t:'Salvar torneio',pri:1,f:()=>{
     body.querySelectorAll('[data-k]').forEach(x=>{t[x.dataset.k]=x.dataset.k==='max'?parseInt(x.value||'0',10):x.value.trim();});t.fee='Grátis';
     if(!t.title)t.title='Torneio';if(i==null){if(d.tours.length>=3){toast('Máximo de 3 torneios ao mesmo tempo');return;}d.tours.push(t);}else d.tours[i]=t;
@@ -1650,14 +1678,14 @@ function goLink(u){
   const a=document.createElement('a');a.href=/^https?:\/\//i.test(u)?u:'https://'+u;a.target='_blank';a.rel='noopener';document.body.append(a);a.click();a.remove();
 }
 function vidSrc(u){u=String(u||'').trim();if(!u||ytId(u))return u;if(/^https?:\/\//i.test(u))return u;return u.replace(/^\/+/,'');}
-function mediaHTML(kind,img,video,label){
-  if(kind==='video'&&video){const id=ytId(video);
-    if(id)return `<div class="vvid"><iframe data-yt="${id}" src="https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1&modestbranding=1&end=30" title="${esc(label||'Vídeo')}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`;
+function mediaHTML(kind,img,video,label,fmt){
+  if(kind==='video'&&video){const id=ytId(video);const vert=fmt==='v'||(fmt!=='h'&&/shorts\//i.test(video));
+    if(id)return `<div class="vvid${vert?' vert':''}"><iframe data-yt="${id}" src="https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1&modestbranding=1&end=30" title="${esc(label||'Vídeo')}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`;
     return `<div class="fit vfit"><video class="fv" src="${esc(vidSrc(video))}" muted playsinline preload="metadata"></video><button class="snd" aria-label="Som">🔇</button></div>`;}
   if(img){const u=esc(fixImgUrl(img));return `<div class="fit" style="--bg:url('${u}')"><img class="fi" src="${u}" alt="" onerror="this.closest('.fit').classList.add('bad')"></div>`;}
   return '';
 }
-function vitMediaHTML(v){return mediaHTML(v.mode==='video'?'video':'banner',v.mode==='banner'?v.img:null,v.video,v.title);}
+function vitMediaHTML(v){return mediaHTML(v.mode==='video'?'video':'banner',v.mode==='banner'?v.img:null,v.video,v.title,v.vfmt);}
 function waLink(num,msg){let n=String(num||'').replace(/\D/g,'');if(!n)return '';if(n.length<=11)n='55'+n;return 'https://wa.me/'+n+(msg?'?text='+encodeURIComponent(msg):'');}
 function activeAds(){return (O.ads||[]).filter(a=>(a.img||a.video)&&(!a.until||a.until>=today()));}
 const BTYPES={wa:{n:'WhatsApp',ic:'💬',ph:'Ex.: 81 99999-9999',def:'Chamar no WhatsApp',c:'linear-gradient(90deg,#1fbf5b,#25d366)',tc:'#04210f'},
@@ -1674,7 +1702,7 @@ function btnLink(b,a){const v=String(b.v||'').trim(),h0=/^https?:\/\//i.test(v),
   switch(b.t){case 'wa':return waLink(v,(a&&a.msg)||WAMSG);case 'ig':return h0?v:'https://instagram.com/'+u;case 'tt':return h0?v:'https://www.tiktok.com/@'+u;
     case 'fb':return h0?v:'https://facebook.com/'+u;case 'tel':return 'tel:'+v.replace(/[^\d+]/g,'');case 'mail':return 'mailto:'+v;default:return v;}}
 function openBtn(b,a){const u=btnLink(b,a);if(/^(tel|mailto):/i.test(u)){location.href=u;return;}goLink(u);}
-function adCardHTML(a,i){return `<div class="adc" data-i="${i}"><span class="adt">Anúncio</span>${mediaHTML(a.kind,a.img,a.video,a.who)}
+function adCardHTML(a,i){return `<div class="adc" data-i="${i}"><span class="adt">Anúncio</span>${mediaHTML(a.kind,a.img,a.video,a.who,a.vfmt)}
   <div class="adb"><b>${esc(a.who||'Loja parceira')}</b>${a.desc?`<small>${esc(a.desc)}</small>`:''}</div>
   ${(()=>{const B=adBtns(a);if(!B.length)return '';const bt=(b,k)=>{const T=BTYPES[b.t]||BTYPES.site;return `<button class="adbtn${k?' sm':''}" data-i="${i}" data-k="${k}" style="background:${T.c};color:${T.tc}">${T.ic} ${esc(b.l||T.def)}</button>`;};
     return bt(B[0],0)+(B.length>1?`<div class="adbx">${B.slice(1).map((b,k)=>bt(b,k+1)).join('')}</div>`:'');})()}</div>`;}
@@ -1716,13 +1744,14 @@ function editAd(i){
     <div data-ban><div class="lbl">Foto do banner</div><div class="adprev">${a.img?`<img src="${a.img}" style="width:100%;border-radius:12px">`:''}</div><button data-pick style="width:100%;margin-top:6px">📷 Escolher foto do celular</button><input type="file" accept="image/*" hidden></div>
     <div data-vid><div class="lbl">Vídeo: nome do arquivo que você subiu no GitHub, ou link do YouTube</div><input type="text" data-k="video" placeholder="Ex.: acai.mp4" value="${esc(a.video||'')}" autocapitalize="off">
       <small style="color:var(--mut)">${VIDHELP}</small><div class="vchk"></div></div>
+    <div data-vfmt><div class="lbl">Formato do vídeo</div><select data-k="vfmt" style="width:100%"><option value="">Automático (Shorts = em pé)</option><option value="v">📱 Em pé — preenche o espaço todo</option><option value="h">🖥️ Deitado (normal)</option></select></div>
     <div class="lbl">Nome da loja</div><input type="text" data-k="who" maxlength="40" placeholder="Ex.: Açaí do Gaibu" value="${esc(a.who||'')}">
     <div class="lbl">Frase curta (opcional)</div><input type="text" data-k="desc" maxlength="90" placeholder="Ex.: Açaí de 500ml por R$ 12" value="${esc(a.desc||'')}">
     <div class="lbl">📲 Botões de contato (até 3)</div><small style="color:var(--mut)">Escolha por onde o cliente fala com o anunciante. O primeiro botão fica grande.</small>
     <div class="btnlist"></div><button type="button" data-addbtn style="width:100%;margin-top:8px">+ Adicionar outro botão</button>
     <div data-wamsg><div class="lbl">Mensagem que já vai escrita no WhatsApp</div><input type="text" data-k="msg" maxlength="120" placeholder="Olá! Vi o anúncio de vocês na Arena dos Mestres." value="${esc(a.msg||'')}"></div>
     <div class="lbl">Mostrar até (vencimento)</div><input type="date" data-k="until" value="${esc(a.until||'')}">`;
-  const sel=body.querySelector('[data-k=kind]');sel.value=a.kind||'banner';
+  const sel=body.querySelector('[data-k=kind]');sel.value=a.kind||'banner';body.querySelector('[data-k=vfmt]').value=a.vfmt||'';
   let BL=adBtns(a).map(b=>({...b}));if(!BL.length)BL=[{t:'wa',v:'',l:''}];
   const bl=body.querySelector('.btnlist'),addB=body.querySelector('[data-addbtn]');
   const drawB=()=>{bl.innerHTML='';BL.forEach((b,k)=>{const T=BTYPES[b.t]||BTYPES.site;const r=h('div','btnrow');
@@ -1736,7 +1765,7 @@ function editAd(i){
     addB.style.display=BL.length>=3?'none':'';body.querySelector('[data-wamsg]').style.display=BL.some(b=>b.t==='wa')?'':'none';};
   addB.onclick=()=>{const used=BL.map(b=>b.t);BL.push({t:['ig','site','tel','wa','fb','tt'].find(x=>!used.includes(x))||'site',v:'',l:''});drawB();};drawB();
   const vi=body.querySelector('[data-k=video]'),vc=body.querySelector('.vchk');vi.onchange=()=>checkVid(vi.value.trim(),vc);if(a.video)checkVid(a.video,vc);
-  const sw=()=>{body.querySelector('[data-ban]').style.display=sel.value==='banner'?'':'none';body.querySelector('[data-vid]').style.display=sel.value==='video'?'':'none';};sel.onchange=sw;sw();
+  const sw=()=>{body.querySelector('[data-ban]').style.display=sel.value==='banner'?'':'none';body.querySelector('[data-vid]').style.display=sel.value==='video'?'':'none';body.querySelector('[data-vfmt]').style.display=sel.value==='video'?'':'none';};sel.onchange=sw;sw();
   const fi=body.querySelector('input[type=file]');body.querySelector('[data-pick]').onclick=()=>fi.click();
   fi.onchange=e=>{const f=e.target.files[0];if(!f)return;fitContain(f,800,800,u=>{a.img=u;body.querySelector('.adprev').innerHTML=`<img src="${u}" style="width:100%;border-radius:12px">`;});};
   modal(isNew?'Novo anúncio':'Editar anúncio',body,[{t:'Cancelar'},{t:'Salvar anúncio',pri:1,f:()=>{
@@ -3428,7 +3457,7 @@ $('#oTourAdd').onclick=()=>editTour(null);
 $('#oTAnn').oninput=e=>{oDraft.tann=e.target.value;};
 $('#oTAnnImg').onclick=()=>$('#oTAnnFile').click();
 $('#oTAnnRm').onclick=()=>{oDraft.tannImg=null;renderOwnerTours();};
-$('#oTAnnFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)fitImage(f,720,300,u=>{oDraft.tannImg=u;renderOwnerTours();});};
+$('#oTAnnFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)fitContain(f,820,820,u=>{oDraft.tannImg=u;renderOwnerTours();});};
 $('#gBtn').onclick=gchatToggle;$('#gSend').onclick=gchatSend;$('#gIn').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();gchatSend();}};
 setInterval(presence,15000);setInterval(onlineUI,5000);
 renderLobby();
