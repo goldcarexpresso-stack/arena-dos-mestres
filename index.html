@@ -172,6 +172,7 @@ video.cav{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;bord
 #entFx .eplate small{font-size:12px;color:#ffe7a3;font-weight:800;text-shadow:0 0 6px #000}#entFx .eplate em{font-size:11px;color:#e8dcff;font-style:normal;text-shadow:0 0 6px #000}
 @keyframes ePlate{0%{opacity:0;transform:translateX(-50%) translateY(30px) scale(.8)}14%{opacity:1;transform:translateX(-50%) scale(1.04)}22%{transform:translateX(-50%) scale(1)}86%{opacity:1}100%{opacity:0;transform:translateX(-50%) scale(.96)}}
 .ent-ew_unicornio .entbg{background:radial-gradient(circle at 50% 40%,#ff9ad8aa,#3a1a7aee 60%)}
+.lvprev{margin:8px 0 4px;border-radius:14px;overflow:hidden;border:2px solid #ff2d55;height:150px}.lvprev video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
 .livepane{position:relative;margin:6px 0 8px;border-radius:18px;overflow:hidden;background:#000;border:2px solid #ff2d55;box-shadow:0 0 18px #ff2d5566}
 .livepane .lmain{position:relative;height:30vh;max-height:300px;min-height:170px;cursor:pointer}
 .livepane video.lvid,#liveFull>video.lvid{width:100%;height:100%;object-fit:cover;display:block;background:#000}
@@ -2306,7 +2307,7 @@ function thumb(){
   im.src=src;return null;
 }
 function myStatus(){return NET.on?(NET.spec?'assistindo':NET.started?'jogando':'sala'):'livre';}
-function presence(){const live=NET.on&&!NET.spec&&NET.started&&NET.host&&NET.allowSpec&&NET.game?{room:NET.room,g:NET.game.id,n:NET.players.map(p=>p.name),w:NET.specs.length,lv:LIVE&&LIVE.on?1:0}:null;
+function presence(){const lvOn=!!(LIVE&&LIVE.on);const live=NET.on&&!NET.spec&&NET.host&&NET.allowSpec&&NET.game&&(NET.started||lvOn)?{room:NET.room,g:NET.game.id,n:NET.players.map(p=>p.name),w:NET.specs.length,lv:lvOn?1:0,wait:NET.started?0:1}:null;
   busPub(TOP.lobby,{t:'pres',name:S.name,thumb:thumb(),st:myStatus(),game:NET.on&&NET.game?NET.game.name:null,live,cos:myCos()});}
 function onLobby(o){
   if(o.t==='who'){presence();return;}
@@ -2473,7 +2474,8 @@ function renderRoom(){
   body.innerHTML=`${NET.host?'Mande o link ou convide quem está online.':'Você está na sala. Aguarde o dono da sala começar.'} ${g.id==='ludo'?'Ludo aceita de 2 a 4 jogadores.':''}${g.duo?'<br><br>🤝 <b style="color:var(--txt)">Dominó em dupla</b>: até 4 jogadores, 2 contra 2. Lugar vazio vira robô. O dono da sala toca em <b>⇄ Trocar</b> pra montar as duplas.':''}
     ${NET.host?`<input type="text" readonly value="${link}" style="font-size:13px;margin-top:10px">
     <div class="row" style="margin-top:10px"><a class="wpp" href="https://wa.me/?text=${encodeURIComponent(msg+link)}" target="_blank" rel="noopener">💬 WhatsApp</a><button id="cpL">📋 Copiar</button></div>
-    <button id="invOn" style="width:100%;margin-top:8px">🟢 Convidar quem está online</button>`:''}
+    <button id="invOn" style="width:100%;margin-top:8px">🟢 Convidar quem está online</button>
+    <button id="lvRoom" class="${LIVE.on?'pri':''}" style="width:100%;margin-top:8px">${LIVE.on?'🔴 Ao vivo — tocar pra encerrar':'🔴 Abrir live enquanto espera'}</button>${LIVE.on?`<div class="lvprev"></div><small style="color:var(--mut)">Quem está online vê sua live em "🔴 Lives nos jogos" e pode entrar pra assistir. ${NET.specs.length?'👀 '+NET.specs.length+' assistindo':''}</small>`:''}`:''}
     <div class="lbl">Jogadores na sala (${NET.players.length}/${NET.max})</div><div id="rl"></div>`;
   const rl=body.querySelector('#rl');
   if(g.duo){['A','B'].forEach((tm,k)=>{rl.append(h('div','lbl',k?'🔵 Dupla 2':'🟣 Dupla 1'));const ps=NET.players.filter(p=>(p.tm||'A')===tm);
@@ -2486,6 +2488,8 @@ function renderRoom(){
   if(NET.host&&(g.id==='ludo'||g.duo))btns.push({t:NET.players.length>=2?`▶ Começar (${NET.players.length})`:'Aguardando…',pri:1,f:()=>{if(NET.players.length>=2)hostStart();else renderRoom();}});
   modal(`👥 Sala — ${g.name}`,body,btns);
   const cp=body.querySelector('#cpL');if(cp)cp.onclick=async()=>{try{await navigator.clipboard.writeText(link);toast('Link copiado!');}catch(e){body.querySelector('input').select();toast('Segure o link e toque em Copiar');}};
+  const lvr=body.querySelector('#lvRoom');if(lvr)lvr.onclick=async()=>{await liveToggle();renderRoom();};
+  const lvp=body.querySelector('.lvprev');if(lvp&&CAM.stream)lvp.append(camVid(CAM.stream,true));
   const io=body.querySelector('#invOn');if(io)io.onclick=()=>{
     const b2=h('div');const ps=onlineList().filter(p=>!NET.players.some(q=>q.id===p.id));
     if(!ps.length)b2.innerHTML='<span style="color:var(--mut)">Ninguém disponível online agora.</span>';
@@ -2521,7 +2525,7 @@ function onRoom(o){
     if(!NET.allowSpec||isBlk(o.from)){roomPub({t:'nowatch',to:o.from});return;}
     if(NET.specs.length>=MAXSPEC&&!NET.specs.some(x=>x.id===o.from)){roomPub({t:'nowatch',to:o.from,full:1});return;}
     if(!NET.specs.some(x=>x.id===o.from)){NET.specs.push({id:o.from,name:(o.info&&o.info.name)||'Jogador',photo:o.info&&o.info.photo,cos:o.info&&o.info.cos});toast('👀 '+((o.info&&o.info.name)||'Alguém')+' está assistindo');}
-    pubRoster();scrPush(true);return;}
+    if(LIVE.on)roomPub({t:'live',on:true,guests:LIVE.guests});pubRoster();scrPush(true);return;}
   if(o.t==='micst'){if(o.on)MICON.add(o.from);else MICON.delete(o.from);renderSeats();return;}
   if(o.t==='askmic'){if(!NET.specs.some(x=>x.id===o.from))return;ASKS.add(o.from);renderSeats();const sp=NET.specs.find(x=>x.id===o.from);
     if(!NET.specMic)return;toast('✋ '+sp.name+' quer falar — toque na bolinha dele');
@@ -2691,14 +2695,14 @@ function onRoomSpec(o){
   if(o.t==='roster'){if(Array.isArray(o.players))NET.players=o.players;rosterExtra(o);
     if(NET.players.some(p=>p.id===S.uid)){clearInterval(WT.joinT);NET.spec=false;NET.started=false;toast('✋ Sua vez! Você entra na próxima partida');presence();return;}
     if(NET.specs.some(x=>x.id===S.uid))clearInterval(WT.joinT);
-    clearTimeout(WT.endT);if(NET.players.length<2)WT.endT=setTimeout(watchEnded,6000);return;}
+    clearTimeout(WT.endT);if(NET.players.length<2&&!LIVE.on)WT.endT=setTimeout(watchEnded,6000);return;}
   if(o.t==='scr'){WT.last=o;clearInterval(WT.joinT);renderWatch();return;}
   if(o.t==='chat'){if(isBlk(o.from))return;const p=NET.players.find(x=>x.id===o.from),sp=NET.specs.find(x=>x.id===o.from);wchatAdd(p?'🎮 '+p.name:'👀 '+(sp?sp.name:(o.name||'Plateia')),modShow(o.text));return;}
   if(o.t==='emo'){if(NET.specs.some(x=>x.id===o.from))seatPop(o.from,o.e);else fly(o.e,true);return;}
   if(o.t==='micst'){if(o.on)MICON.add(o.from);else MICON.delete(o.from);renderSeats();return;}
   if(o.t==='ended'){watchEnded();return;}
   if(o.t==='bye'){if(NET.specs.some(x=>x.id===o.from)){NET.specs=NET.specs.filter(x=>x.id!==o.from);voiceDrop(o.from);watchUI();return;}
-    NET.players=NET.players.filter(x=>x.id!==o.from);voiceDrop(o.from);clearTimeout(WT.endT);if(NET.players.length<2)WT.endT=setTimeout(watchEnded,6000);}
+    NET.players=NET.players.filter(x=>x.id!==o.from);voiceDrop(o.from);clearTimeout(WT.endT);if(NET.players.length<2&&!LIVE.on)WT.endT=setTimeout(watchEnded,6000);}
 }
 function watchEnded(){if(!NET.spec)return;leaveWatch(false);modal('📺 Partida encerrada','Essa partida terminou. Quer ver outra?',[{t:'Voltar',f:()=>go('lobby')},{t:'🔴 Ver ao vivo',pri:1,f:()=>{go('lobby');openLive();}}]);}
 function renderWatch(){const o=WT.last;if(!o)return;const v=$('#wView');v.innerHTML=o.html;const nA=(o.n||[])[0]||'Jogador 1',nB=(o.n||[])[1]||'Jogador 2';const stE=v.querySelector('.w-status');if(stE)stE.textContent=stE.textContent.replace(/Sua vez/g,'Vez de '+nA).replace(/Vez do (amigo|adversário)/gi,'Vez de '+nB).replace(/\bAmigo\b/g,nB).replace(/\b[Vv]ocê\b/g,nA);v.querySelectorAll('button,input,select').forEach(x=>{x.disabled=true;x.tabIndex=-1;});watchUI();}
@@ -2963,7 +2967,7 @@ function liveAsk(){if(!LIVE.on){toast('A live não está aberta');return;}if(LIV
 function liveKick(id){if(!NET.host)return;LIVE.guests=LIVE.guests.filter(x=>x!==id);roomPub({t:'camoff',to:id});livePub();liveUI();}
 function onLiveMsg(o){
   const fromHost=o.from===liveHostId();
-  if(o.t==='live'){if(!fromHost)return true;const was=LIVE.on;LIVE.on=!!o.on;LIVE.guests=Array.isArray(o.guests)?o.guests.slice(0,LIVEMAX):[];
+  if(o.t==='live'){if(!fromHost&&!(NET.spec&&!NET.players.length))return true;const was=LIVE.on;LIVE.on=!!o.on;LIVE.guests=Array.isArray(o.guests)?o.guests.slice(0,LIVEMAX):[];
     if(!LIVE.guests.includes(S.uid)&&!NET.host&&CAM.on&&NET.spec)camStop();if(!LIVE.on){LIVE.asked=false;LIVE.full=false;}
     if(LIVE.on&&!was&&!NET.host)toast('🔴 O dono da sala abriu uma live!');liveUI();return true;}
   if(o.t==='liveask'){if(!NET.host||NET.spec||!LIVE.on)return true;const nm=o.name||'Visitante';
@@ -2989,6 +2993,7 @@ function liveUI(){
     if(NET.spec&&!LIVE.guests.includes(S.uid)){const a=h('button',null,LIVE.asked?'⏳ Pedido enviado':'🙋 Pedir pra entrar na live');a.onclick=liveAsk;bar.append(a);}
     if(LIVE.guests.includes(S.uid)){const a=h('button',null,'🚪 Sair da live');a.onclick=()=>{camStop();roomPub({t:'liveleave'});LIVE.guests=LIVE.guests.filter(x=>x!==S.uid);liveUI();};bar.append(a);}
     const f=h('button','pri','⛶ Tela cheia');f.onclick=()=>liveFull(true);bar.append(f);p.append(bar);});
+  {const wv=$('#wView');if(wv&&NET.spec&&LIVE.on&&!WT.last&&!wv.querySelector('.wwlive'))wv.innerHTML='<div class="wwait wwlive">🔴 Live no ar — a partida ainda não começou.<br><small>Assista a live aqui em cima e peça pra entrar se quiser.</small></div>';}
   const lb=$('#liveBtn');if(lb){lb.style.display=NET.host&&!NET.spec&&M&&M.net?'':'none';lb.textContent=LIVE.on?'🔴 Ao vivo':'🔴 Live';lb.classList.toggle('pri',LIVE.on);}
   if(LIVE.full)liveFull(true,true);else{const fo=$('#liveFull');if(fo)fo.remove();}
 }
