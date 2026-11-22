@@ -2219,43 +2219,40 @@ const LOCAL=QS.get('local')==='1';
 if(!S.uid){S.uid='u'+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-3);save();}
 const BROKERS=['wss://broker.hivemq.com:8884/mqtt','wss://broker.emqx.io:8084/mqtt'];
 const TOP={fol:'arenadm/v3/fol',freq:'arenadm/v3/freq',bingo:'arenadm/v3/bingo',brank:'arenadm/v3/brank',bimg:'arenadm/v3/bimg',st:'arenadm/v3/st',unb:'arenadm/v3/unb',lobby:'arenadm/v2/lobby',me:()=>'arenadm/v2/u/'+S.uid,user:id=>'arenadm/v2/u/'+id,room:r=>'arenadm/v2/r/'+r,cfg:'arenadm/v3/cfg',tour:id=>'arenadm/v3/tour/'+id,parc:'arenadm/v3/parc',rank:w=>'arenadm/v3/rank/'+w,ib:id=>'arenadm/v3/ib/'+id};
-const BUS={subs:new Set(),cli:null,bc:null,ready:false,q:[]};
+const BUS={subs:new Set(),cli:null,clis:[],bc:null,ready:false,q:[]};
 function busConnect(){
   if(LOCAL){BUS.bc=new BroadcastChannel('adm_bus');BUS.bc.onmessage=e=>busRecv(e.data.t,e.data.s);[...BUS.subs].forEach(localRetained);BUS.ready=true;busFlush();setTimeout(()=>{presence();busPub(TOP.lobby,{t:'who'});},50);return;}
   if(!window.mqtt){setTimeout(busConnect,3000);return;}
-  let i=0;
-  const tryB=()=>{
-    const c=mqtt.connect(BROKERS[i],{clientId:S.uid+'_'+Math.random().toString(36).slice(2,6),clean:true,connectTimeout:7000,reconnectPeriod:3000,keepalive:30});
-    let ok=false;
-    const to=setTimeout(()=>{if(ok)return;try{c.end(true);}catch(e){}i=(i+1)%BROKERS.length;tryB();},9000);
-    c.on('connect',()=>{
-      const first=!ok;ok=true;clearTimeout(to);BUS.cli=c;
-      [...BUS.subs].forEach(t=>c.subscribe(t,{qos:0}));
-      BUS.ready=true;busFlush();
-      if(first){presence();busPub(TOP.lobby,{t:'who'});}
-    });
-    c.on('message',(t,m)=>busRecv(t,m.toString()));
-    c.on('close',()=>{BUS.ready=false;});
+  // conecta nos DOIS servidores ao mesmo tempo: quem estiver em qualquer um deles se enxerga
+  BUS.clis=[];
+  BROKERS.forEach(url=>{
+    const c=mqtt.connect(url,{clientId:S.uid+'_'+Math.random().toString(36).slice(2,6),clean:true,connectTimeout:8000,reconnectPeriod:4000,keepalive:30});
+    c.on('connect',()=>{if(!BUS.clis.includes(c))BUS.clis.push(c);BUS.cli=BUS.clis[0];
+      [...BUS.subs].forEach(x=>c.subscribe(x,{qos:0}));const first=!BUS.ready;BUS.ready=true;busFlush();
+      presence();busPub(TOP.lobby,{t:'who'});if(first)setTimeout(()=>{try{onlineUI();}catch(_){}},1500);});
+    c.on('message',(tp,m)=>busRecv(tp,m.toString()));
+    c.on('close',()=>{BUS.clis=BUS.clis.filter(x=>x!==c);BUS.cli=BUS.clis[0]||null;BUS.ready=BUS.clis.length>0;});
     c.on('error',()=>{});
-  };
-  tryB();
+  });
 }
 function busFlush(){while(BUS.ready&&BUS.q.length){const [t,o,r]=BUS.q.shift();busPub(t,o,r);}}
 function topicMatch(sub,t){if(sub===t)return true;if(!sub.includes('+'))return false;const a=sub.split('/'),b=t.split('/');return a.length===b.length&&a.every((x,i)=>x==='+'||x===b[i]);}
 function localRetained(sub){if(!BUS.bc)return;let r={};try{r=JSON.parse(localStorage.getItem('adm_ret')||'{}');}catch(e){}Object.entries(r).forEach(([t,s])=>{if(topicMatch(sub,t))setTimeout(()=>busRecv(t,s),20);});}
-function busSub(t){if(BUS.subs.has(t))return;BUS.subs.add(t);if(BUS.cli&&BUS.ready)BUS.cli.subscribe(t,{qos:0});if(BUS.bc)localRetained(t);}
-function busUnsub(t){BUS.subs.delete(t);if(BUS.cli&&BUS.ready)try{BUS.cli.unsubscribe(t);}catch(e){}}
+function busSub(t){if(BUS.subs.has(t))return;BUS.subs.add(t);(BUS.clis||[]).forEach(c=>{try{c.subscribe(t,{qos:0});}catch(e){}});if(BUS.bc)localRetained(t);}
+function busUnsub(t){BUS.subs.delete(t);(BUS.clis||[]).forEach(c=>{try{c.unsubscribe(t);}catch(e){}});}
 function busPub(t,o,retain){
   if(!BUS.ready){BUS.q.push([t,o,retain]);return;}
-  o.from=S.uid;const s=JSON.stringify(o);
+  o.from=S.uid;if(!retain)o._i=Math.random().toString(36).slice(2,9);const s=JSON.stringify(o);
   if(BUS.bc){if(retain){try{const r=JSON.parse(localStorage.getItem('adm_ret')||'{}');r[t]=s;localStorage.setItem('adm_ret',JSON.stringify(r));}catch(e){}}BUS.bc.postMessage({t,s});}
-  else try{BUS.cli.publish(t,s,{qos:0,retain:!!retain});}catch(e){}
+  else (BUS.clis||[]).forEach(c=>{try{c.publish(t,s,{qos:0,retain:!!retain});}catch(e){}});
 }
 function busClear(t){
   if(BUS.bc){try{const r=JSON.parse(localStorage.getItem('adm_ret')||'{}');delete r[t];localStorage.setItem('adm_ret',JSON.stringify(r));}catch(e){}BUS.bc.postMessage({t,s:''});}
-  else if(BUS.cli)try{BUS.cli.publish(t,'',{qos:0,retain:true});}catch(e){}
+  else (BUS.clis||[]).forEach(c=>{try{c.publish(t,'',{qos:0,retain:true});}catch(e){}});
 }
+const RSEEN=new Map();
 function busRecv(t,s){
+  {const k=t+'|'+s,now=Date.now();if(RSEEN.has(k)&&now-RSEEN.get(k)<20000)return;RSEEN.set(k,now);if(RSEEN.size>600){for(const [x,v] of RSEEN)if(now-v>20000)RSEEN.delete(x);}}
   if(![...BUS.subs].some(x=>topicMatch(x,t)))return;
   if(t.startsWith('arenadm/v3/fol/')){let o=null;try{o=s?JSON.parse(s):null;}catch(e){}onFol(t,o);return;}
   if(t.startsWith('arenadm/v3/freq/')){let o=null;try{o=s?JSON.parse(s):null;}catch(e){}onFreq(t,o);return;}
