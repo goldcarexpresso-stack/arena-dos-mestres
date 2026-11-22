@@ -23,7 +23,7 @@ body{min-height:100vh;overscroll-behavior:none}
 button{font:inherit;border:0;border-radius:12px;padding:11px 14px;background:var(--card2);color:var(--txt);cursor:pointer;font-weight:600}
 button.pri{background:var(--acc);color:#1d1400}
 button:disabled{opacity:.35}
-input[type=text],input[type=tel],input[type=email],input[type=url],input[type=date]{font:inherit;width:100%;padding:12px;border-radius:12px;border:1px solid #2c3463;background:#0f1328;color:var(--txt)}
+input[type=text],input[type=tel],input[type=email],input[type=url],input[type=password],input[type=date]{font:inherit;width:100%;padding:12px;border-radius:12px;border:1px solid #2c3463;background:#0f1328;color:var(--txt)}
 .scr{display:none;max-width:520px;margin:0 auto;padding:14px 14px 96px}
 .scr.on{display:block}
 h2{margin:4px 0 12px;font-size:20px}
@@ -1003,6 +1003,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
     <button id="pBlk" class="ptile t3"><span>🚫</span><b>Bloqueados</b><small id="pBlkS"></small></button>
     <button id="pTour" class="ptile t4"><span>💡</span><b>Tutorial</b><small>ver de novo</small></button>
   </div>
+  <div class="card" id="cloudCard"></div>
   <details class="card pedit"><summary>✏️ Editar perfil <small>foto e nome</small></summary>
     <div class="row" style="margin-top:12px"><button id="pickf2">📷 Escolher foto</button><button id="rmf">Remover foto</button></div>
     <input type="file" id="file" accept="image/*" hidden>
@@ -1269,7 +1270,7 @@ const prize=st=>st*2-Math.round(st*2*FEE);
 const _q=new URLSearchParams(location.search),SK=(_q.get('local')==='1'&&_q.get('u'))?'_'+_q.get('u'):'';
 let S={name:'Jogador',photo:null,bal:0,hist:[],w:0,l:0};
 try{const s=JSON.parse(localStorage.getItem('arena_v1'+SK));if(s)S=Object.assign(S,s);}catch(e){}
-function save(){try{localStorage.setItem('arena_v1'+SK,JSON.stringify(S));}catch(e){}}
+function save(){try{localStorage.setItem('arena_v1'+SK,JSON.stringify(S));}catch(e){}if(window.cloudQ)window.cloudQ();}
 function addHist(t,v){S.hist.unshift({t,v,d:new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})});S.hist=S.hist.slice(0,50);save();}
 if(!S.g1000){S.g1000=1;if(S.bal<100000){const add=100000-S.bal;S.bal=100000;addHist('🎁 Bônus de boas-vindas (teste)',add);}save();}
 
@@ -3778,6 +3779,60 @@ function Ludo(el,end,ctx){
   st(me===0?'Sua vez — você é o '+CL[seats[me].c].nm+'. Tire 6 para sair da casa':'Você é o '+CL[seats[me].c].nm+' — vez de '+seats[0].name);
   return()=>{done=true;};
 }
+
+/* ========== CONTA NA NUVEM (Supabase, schema arena) ========== */
+const SB={url:'https://axvmtjxjcepymkyaquol.supabase.co',key:'sb_publishable_pGU6dHjB-rfIEpMOmkW9Nw_UFjGAKaM'};
+const CLK='arena_auth'+SK;
+let CL={ses:null,t:null,busy:false,last:null,err:null};
+try{CL.ses=JSON.parse(localStorage.getItem(CLK)||'null');}catch(e){}
+function clSave(){try{if(CL.ses)localStorage.setItem(CLK,JSON.stringify(CL.ses));else localStorage.removeItem(CLK);}catch(e){}}
+function clSet(d){CL.ses={at:d.access_token,rt:d.refresh_token,exp:Date.now()+((d.expires_in||3600)-60)*1000,email:(d.user&&d.user.email)||(CL.ses&&CL.ses.email)||''};clSave();}
+async function clAuth(path,body){
+  const r=await fetch(SB.url+'/auth/v1/'+path,{method:'POST',headers:{apikey:SB.key,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok){const m=(d.msg||d.error_description||d.message||d.error||'').toLowerCase();
+    throw new Error(/invalid login|invalid_grant|credentials/.test(m)?'E-mail ou senha errados':/already|registered/.test(m)?'Esse e-mail já tem conta — toque em Entrar':/password/.test(m)?'A senha precisa ter pelo menos 6 caracteres':/email/.test(m)?'Confira o e-mail digitado':'Não deu certo agora. Tente de novo.');}
+  return d;}
+async function clToken(){if(!CL.ses)return null;
+  if(Date.now()<CL.ses.exp)return CL.ses.at;
+  try{const d=await clAuth('token?grant_type=refresh_token',{refresh_token:CL.ses.rt});clSet(d);return CL.ses.at;}
+  catch(e){CL.ses=null;clSave();cloudUI();toast('Sua sessão expirou — entre de novo na conta');return null;}}
+async function clRpc(fn,args){const tk=await clToken();if(!tk)throw new Error('Entre na conta primeiro');
+  const r=await fetch(SB.url+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:SB.key,Authorization:'Bearer '+tk,'Content-Type':'application/json'},body:JSON.stringify(args||{})});
+  if(!r.ok)throw new Error('Falha ao falar com a nuvem');return r.json();}
+async function cloudPush(){if(!CL.ses||CL.busy)return;CL.busy=true;
+  try{await clRpc('arena_salvar',{p_nome:S.name||'Jogador',p_dados:S});CL.last=Date.now();CL.err=null;}catch(e){CL.err=e.message;}
+  CL.busy=false;if($('#profile').classList.contains('on'))cloudUI();}
+window.cloudQ=()=>{if(!CL.ses)return;clearTimeout(CL.t);CL.t=setTimeout(cloudPush,4000);};
+window.addEventListener('pagehide',()=>{if(CL.ses&&CL.t){clearTimeout(CL.t);CL.t=null;if(Date.now()<CL.ses.exp)try{fetch(SB.url+'/rest/v1/rpc/arena_salvar',{method:'POST',keepalive:true,headers:{apikey:SB.key,Authorization:'Bearer '+CL.ses.at,'Content-Type':'application/json'},body:JSON.stringify({p_nome:S.name||'Jogador',p_dados:S})});}catch(e){}}});
+async function cloudAfterLogin(){
+  let c=null;try{c=await clRpc('arena_carregar');}catch(e){}
+  if(c&&c.dados&&Object.keys(c.dados).length){
+    const when=c.atualizado_em?new Date(c.atualizado_em).toLocaleString('pt-BR'):'';
+    modal('☁️ Conta encontrada',`Essa conta já tem dados salvos na nuvem (${esc(c.nome||'Jogador')}, saldo ${fmt(c.dados.bal||0)}${when?', salvo em '+when:''}).<br><br>Trazer a conta da nuvem pra este celular? O que está aqui agora será substituído.`,
+      [{t:'Manter este celular',f:()=>{cloudPush().then(()=>toast('Este celular foi salvo na nuvem'));}},{t:'☁️ Trazer da nuvem',pri:1,f:()=>{
+        try{localStorage.setItem('arena_v1'+SK,JSON.stringify(c.dados));}catch(e){}toast('Conta restaurada! Recarregando…');setTimeout(()=>location.reload(),900);}}]);
+  }else{await cloudPush();toast('✅ Conta criada — seu progresso agora fica salvo na nuvem');}
+  cloudUI();}
+function cloudUI(){const el=$('#cloudCard');if(!el)return;
+  if(CL.ses){el.innerHTML=`<b class="ct">☁️ Conta salva na nuvem</b><div style="color:var(--mut);font-size:13px;margin:6px 0 10px">Conectado como <b style="color:var(--txt)">${esc(CL.ses.email)}</b><br>${CL.err?'⚠️ '+esc(CL.err):CL.last?'Última vez salvo: '+new Date(CL.last).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'Saldo, acessórios e perfil são salvos sozinhos.'}</div>
+      <div class="row"><button id="clNow" class="pri">☁️ Salvar agora</button><button id="clOut">Sair da conta</button></div>`;
+    el.querySelector('#clNow').onclick=async()=>{await cloudPush();toast(CL.err?CL.err:'Salvo na nuvem ✅');};
+    el.querySelector('#clOut').onclick=()=>modal('Sair da conta?','Seu progresso continua salvo na nuvem. Neste celular o jogo para de salvar lá até você entrar de novo.',[{t:'Cancelar'},{t:'Sair',pri:1,f:async()=>{await cloudPush();CL.ses=null;clSave();cloudUI();toast('Você saiu da conta');}}]);
+    return;}
+  el.innerHTML=`<b class="ct">☁️ Salve sua conta</b><div style="color:var(--mut);font-size:13px;margin:6px 0 10px">Entre com e-mail e senha pra não perder saldo, acessórios e perfil se trocar de celular.</div>
+    <input type="email" id="clEm" placeholder="Seu e-mail" autocomplete="email"><input type="password" id="clPw" placeholder="Senha (mínimo 6)" autocomplete="current-password" style="margin-top:8px">
+    <div class="row" style="margin-top:10px"><button id="clIn" class="pri">Entrar</button><button id="clUp">Criar conta</button></div>`;
+  const go2=async(novo)=>{const em=el.querySelector('#clEm').value.trim(),pw=el.querySelector('#clPw').value;
+    if(!/^\S+@\S+\.\S+$/.test(em)){toast('Digite um e-mail válido');return;}if(pw.length<6){toast('A senha precisa ter pelo menos 6 caracteres');return;}
+    el.querySelectorAll('button').forEach(b=>b.disabled=true);
+    try{let d;if(novo){d=await clAuth('signup',{email:em,password:pw});
+        if(!d.access_token){toast('Conta criada! Confira seu e-mail para confirmar e depois toque em Entrar');cloudUI();return;}}
+      else d=await clAuth('token?grant_type=password',{email:em,password:pw});
+      clSet(d);toast(novo?'Conta criada!':'Bem-vindo de volta!');await cloudAfterLogin();}
+    catch(e){toast(e.message);cloudUI();}};
+  el.querySelector('#clIn').onclick=()=>go2(false);el.querySelector('#clUp').onclick=()=>go2(true);}
+cloudUI();if(CL.ses)setTimeout(cloudPush,5000);
 
 /* ========== INSTALAR (PWA) ========== */
 let instEv=null;
