@@ -118,6 +118,31 @@ video.cav{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;bord
  .cbub{width:var(--cw);height:auto;aspect-ratio:4/3;border-radius:18px;transition:width .2s}.cbub.big{width:min(calc(var(--cw) * 1.7),460px)}.cbub small{font-size:13px;padding:3px}}
 .cwbar{display:flex;align-items:center;gap:6px;padding:6px 8px;cursor:move;touch-action:none;font-size:13px}.cwbar b{flex:1;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cwact button,.cwx{padding:4px 8px;font-size:12px}
+.ajuda-flutuante{position:fixed;left:12px;bottom:104px;z-index:55;padding:7px 12px;font-size:13px;font-weight:800;color:#fff;background:linear-gradient(110deg,#00e5ff,#7c4dff 55%,#d63aff);border:2px solid #f3e8ff;border-radius:999px;box-shadow:0 0 16px #b026ff99;cursor:pointer;animation:ajdNeon 2.4s ease-in-out infinite}
+@keyframes ajdNeon{0%,100%{box-shadow:0 0 12px #b026ff88}50%{box-shadow:0 0 22px #00e5ffcc}}
+.ajd-fundo{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;background:#000a;backdrop-filter:blur(4px)}
+.ajd-folha{width:100%;max-width:520px;max-height:86vh;overflow-y:auto;padding:18px 16px 22px;display:flex;flex-direction:column;gap:14px;background:linear-gradient(180deg,#2a1260 0%,#120a2a 70%);border:1px solid #b026ff88;border-bottom:none;border-radius:28px 28px 0 0;box-shadow:0 -10px 40px #b026ff44;color:#fff;animation:ajdSobe .25s ease-out}
+@keyframes ajdSobe{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.ajd-topo{display:flex;justify-content:space-between;align-items:center}
+.ajd-titulo{font-size:20px;background:linear-gradient(90deg,#ffc23d,#ff5edb,#b026ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ajd-voltar,.ajd-fechar{min-height:40px;padding:0 14px;font-size:15px;font-weight:800;border-radius:999px}
+.ajd-busca{width:100%;padding:14px 16px;font:inherit;font-size:16px;color:#fff;background:#1a0f3a;border:1px solid #4a2a8a;border-radius:999px}
+.ajd-busca:focus{outline:none;border-color:#ff5edb;box-shadow:0 0 0 3px #ff5edb40}
+.ajd-vazio{color:#cdb8ff;font-size:14px;margin:0}
+.ajd-grade{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ajd-tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:92px;padding:14px;color:#fff;text-align:left;background:linear-gradient(160deg,#2c1766,#160c36);border:1px solid #7c4dff77;border-radius:20px;box-shadow:0 6px 18px #0006}
+.ajd-tile:active{transform:scale(.97)}.ajd-tile-icone{font-size:26px}.ajd-tile-nome{font-size:14px;font-weight:800;line-height:1.2}
+.ajd-aqui{position:absolute;top:10px;right:10px;padding:2px 8px;font-size:10px;font-weight:800;color:#1a0f3a;background:#ffc23d;border-radius:999px}
+.ajd-hero{display:flex;align-items:center;gap:14px}.ajd-hero h3{font-size:20px;font-weight:900;margin:0}.ajd-hero p{margin:2px 0 0;color:#cdb8ff;font-size:14px}
+.ajd-hero-icone{display:flex;align-items:center;justify-content:center;flex:none;width:56px;height:56px;font-size:28px;background:linear-gradient(135deg,#00e5ff44,#b026ff66);border:1px solid #d63aff;border-radius:18px;box-shadow:0 0 18px #b026ff55}
+.ajd-rotulo{margin:0;font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#ffc23d}
+.ajd-acoes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ajd-acao{display:flex;flex-direction:column;gap:4px;padding:12px;background:#1a0f3a;border:1px solid #7c4dff55;border-radius:16px}.ajd-acao-icone{font-size:22px}.ajd-acao strong{font-size:14px}.ajd-acao small{font-size:12px;color:#cdb8ff}
+.ajd-passos{list-style:none;counter-reset:passo;display:flex;flex-direction:column;gap:10px;margin:0;padding:0}
+.ajd-passos li{counter-increment:passo;display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.35}
+.ajd-passos li::before{content:counter(passo);flex:none;display:flex;align-items:center;justify-content:center;width:26px;height:26px;font-size:13px;font-weight:900;color:#1a0f3a;background:#ffc23d;border-radius:50%;box-shadow:0 0 10px #ffc23d99}
+.ajd-duvida{padding:12px 14px;background:#1a0f3a;border:1px solid #7c4dff55;border-radius:16px}.ajd-duvida summary{font-weight:800;cursor:pointer}.ajd-duvida p{margin:8px 0 0;color:#cdb8ff}
+.ajd-ir{width:100%;min-height:48px}
 .d4p{background:#ffffff12;border-radius:12px;padding:6px 10px;text-align:center;border:2px solid transparent}.d4p b{display:block;font-size:13px;color:var(--txt)}.d4p small{font-size:11px;color:var(--mut)}
 .d4p.mt{border-color:#7c4dff66}.d4p.ot{border-color:#ff6b6b44}.d4p.on{border-color:#ffc23d;box-shadow:0 0 12px #ffc23d88}
 .d4p.tp{margin:0 auto 8px;max-width:190px}.d4mid{display:flex;gap:6px;align-items:stretch}.d4mid .dz{flex:1;min-width:0}
@@ -2937,6 +2962,89 @@ function onCamMsg(o){
   if(o.t==='camoff'){if(o.to===S.uid&&fromHost){CAM.okd=false;CAM.asked=false;if(CAM.on){camStop();modal('📷 Câmera desligada','O dono da sala desligou sua câmera.',[{t:'OK',pri:1}]);}}return true;}
   return false;}
 setInterval(()=>{if(NET.on)camUI();else{CAM.okd=false;CAM.asked=false;if(CAM.on)camStop();else{const a=$('#camDockT'),b=$('#camDockB');if(a)a.style.display='none';if(b)b.style.display='none';}}},1500);
+
+/* ========== DÚVIDAS (ajuda rápida, igual ao AURORA) ========== */
+const AJD=[
+ {id:'lobby',t:'Jogos',i:'🎮',d:'Escolha um jogo e jogue contra o robô ou com amigos.',
+  a:[['Toque no jogo','🎲','Abre a entrada'],['Entrar','▶️','Joga contra o robô'],['Com amigo','👥','Cria sua sala'],['Torneios','🏆','Veja os torneios']],
+  p:['Toque no card do jogo.','Escolha o valor e o formato.','Toque em Entrar ou 👥 Com amigo.'],
+  q:['Apareceu "sem moedas"?','Vá em Carteira e toque num valor. As moedas são de teste e não custam nada.'],k:'jogo jogar inicio início menu partida robo robô entrar valor'},
+ {id:'dama',t:'Dama',i:'⚫',d:'Damas brasileiras: capture todas as peças do adversário.',sem:1,
+  a:[['Toque na peça','👆','Mostra onde pode ir'],['Toque na casa','🟩','Faz o movimento'],['Dica','💡','Mostra a melhor jogada']],
+  p:['Toque numa peça sua com brilho.','Toque na casa de destino.','Captura é obrigatória quando dá.'],
+  q:['Apareceu "essa peça não pode mover"?','Tem captura obrigatória em outra peça. Procure a que brilha.'],k:'dama damas peça peca comer capturar dama'},
+ {id:'xadrez',t:'Xadrez',i:'♞',d:'Xeque-mate vence a partida.',sem:1,
+  a:[['Toque na peça','👆','Mostra os movimentos'],['Toque na casa','🟩','Move a peça']],
+  p:['Toque numa peça sua.','Toque numa casa marcada.','Dê xeque-mate no rei.'],
+  q:['A peça não mexe?','Seu rei pode estar em xeque. Tire ele do xeque primeiro.'],k:'xadrez rei xeque mate peão cavalo torre'},
+ {id:'domino',t:'Dominó',i:'🁣',d:'1 contra 1 ou em dupla (4 jogadores, 2 contra 2).',sem:1,
+  a:[['1 contra 1','👤','Você e o robô'],['Em dupla (4)','🤝','Você + parceiro'],['Toque na pedra','🁢','Joga na ponta'],['Ponta','◀▶','Escolhe o lado']],
+  p:['Na entrada, escolha o Modo.','Toque numa pedra com brilho.','Se encaixar nas duas pontas, escolha o lado.'],
+  q:['Como monto as duplas com amigos?','Escolha Em dupla (4) → 👥 Com amigo. O dono da sala toca em ⇄ Trocar pra montar as duplas. Lugar vazio vira robô.'],k:'domino dominó dupla parceiro pedra carroça sena 4 quatro'},
+ {id:'sinuca',t:'Sinuca',i:'🎱',d:'Bola 8: encaçape as suas e depois a preta.',sem:1,
+  a:[['Arraste pra trás','👆','Mira e força'],['Solte','💥','Dá a tacada']],
+  p:['Arraste o dedo pra trás da branca.','Veja a linha de mira e a força.','Solte pra tacar.'],
+  q:['Perdi derrubando a preta?','A preta só pode cair depois de todas as suas bolas.'],k:'sinuca bola taco tacada caçapa preta'},
+ {id:'ludo',t:'Ludo',i:'🎲',d:'De 2 a 4 jogadores. Leve as 4 peças até o centro.',sem:1,
+  a:[['Rolar dado','🎲','Joga o dado'],['Toque na peça','👆','Move a peça'],['4 jogadores','👥','Você contra 3 robôs']],
+  p:['Toque em Rolar dado.','Tire 6 pra sair da casa.','Toque na peça com brilho.'],
+  q:['Não consigo sair da casa?','Só sai com 6 no dado.'],k:'ludo dado peça seis 6 casa'},
+ {id:'sala',t:'Jogar com amigo',i:'👥',d:'Crie uma sala e chame quem você quiser.',sem:1,
+  a:[['WhatsApp','💬','Manda o link'],['Copiar','📋','Copia o link'],['Online','🟢','Convida quem está on']],
+  p:['No jogo, toque em 👥 Com amigo.','Mande o link pro seu amigo.','A partida começa quando ele entrar.'],
+  q:['Meu amigo não entrou?','Peça pra ele tocar no link e depois em Entrar. Se a sala fechou, crie outra.'],k:'amigo sala convite convidar link whatsapp online'},
+ {id:'camera',t:'Câmera e voz',i:'📷',d:'Na partida com amigo dá pra falar e aparecer na câmera.',sem:1,
+  a:[['Microfone','🎙️','Liga a sua voz'],['Câmera','📷','Mostra seu rosto'],['Toque no rosto','🔍','Aumenta a câmera'],['Liberar','✅','Dono libera o oponente']],
+  p:['Na partida, toque em 📷 Câmera.','Permita a câmera no celular.','O oponente pede e o dono da sala libera.'],
+  q:['A câmera não liga?','Toque no cadeado do endereço → Permissões → Câmera → Permitir. No notebook, role a tela pra achar o botão embaixo do tabuleiro.'],k:'camera câmera video vídeo rosto live ao vivo microfone voz falar'},
+ {id:'plateia',t:'Plateia',i:'👀',d:'Assista partidas ao vivo e converse no chat.',sem:1,
+  a:[['Ver ao vivo','🔴','Entra pra assistir'],['Pedir pra falar','✋','Pede o microfone'],['Fila','📋','Joga a próxima']],
+  p:['No Jogos, toque em AO VIVO no card.','Escreva no chat ou mande emoji.','Toque em ✋ pra pedir o microfone.'],
+  q:['Fui tirado da sala?','O dono da sala pode fechar o microfone ou tirar quem atrapalha.'],k:'plateia assistir ao vivo visitante espectador fila'},
+ {id:'online',t:'Online',i:'🟢',d:'Quem está no app agora.',
+  a:[['Convidar','🎮','Chama pra jogar'],['Toque na foto','👤','Vê o perfil']],
+  p:['Toque em Online, embaixo.','Escolha a pessoa.','Toque em Convidar e escolha o jogo.'],
+  q:['A lista está vazia?','Chame um amigo pelo link em 👥 Com amigo.'],k:'online pessoas convidar quem está jogadores'},
+ {id:'chats',t:'Conversas',i:'💬',d:'Suas mensagens com amigos.',
+  a:[['Abrir','💬','Toque no nome'],['Enviar','➤','Manda a mensagem']],
+  p:['Toque em Conversas, embaixo.','Toque na conversa.','Escreva e toque em Enviar.'],
+  q:['Não vejo a pessoa?','Primeiro vire amigo dela (➕ Amigo na partida).'],k:'conversa conversas mensagem chat escrever enviar amigo'},
+ {id:'wallet',t:'Carteira',i:'💰',d:'Moedas de teste pra entrar nas partidas.',
+  a:[['Adicionar','➕','Coloca moedas de teste'],['Histórico','📜','Entradas e prêmios']],
+  p:['Toque em Carteira, embaixo.','Toque num valor pra adicionar.','Volte em Jogos e jogue.'],
+  q:['É dinheiro de verdade?','Não. É saldo de teste, não entra nem sai dinheiro real.'],k:'carteira saldo moeda moedas dinheiro pix saque deposito depósito'},
+ {id:'profile',t:'Perfil e conta',i:'👤',d:'Sua foto, nome, acessórios e conta na nuvem.',
+  a:[['Editar perfil','✏️','Foto e nome'],['Acessórios','🎒','Equipa o que ganhou'],['Salve sua conta','☁️','Guarda na nuvem'],['Amigos','👥','Sua lista']],
+  p:['Toque em Perfil, embaixo.','Em ☁️ Salve sua conta, crie com e-mail e senha.','Troque de celular sem perder nada.'],
+  q:['Esqueci a senha?','No card da conta, digite o e-mail e toque em Esqueci a senha. Chega um link no e-mail.'],k:'perfil foto nome conta login entrar senha email e-mail nuvem salvar acessorios acessórios baú bau'},
+ {id:'torneio',t:'Torneios',i:'🏆',d:'Campeonatos da semana e do mês.',
+  a:[['Ver torneio','🏆','Regras e prêmio'],['Participar','✅','Entra no torneio']],
+  p:['No Jogos, toque em TORNEIOS.','Leia as regras e o prêmio.','Toque em participar.'],
+  q:['Não tem torneio aberto?','Os torneios são abertos pelo dono do app. Fique de olho no Instagram.'],k:'torneio torneios campeonato premio prêmio ranking'}
+];
+const ajdNorm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+function ajdHere(){const s=document.querySelector('.scr.on');const id=s&&s.id;return id==='chat'?'chats':id==='bag'?'profile':id;}
+function ajdOpen(){const bg=h('div','ajd-fundo');const sh=h('div','ajd-folha');bg.append(sh);document.body.append(bg);
+  const close=()=>bg.remove();bg.onclick=e=>{if(e.target===bg)close();};
+  const here=ajdHere();
+  function lista(q){sh.innerHTML=`<div class="ajd-topo"><strong class="ajd-titulo">Dúvidas</strong><button class="ajd-fechar">✕</button></div>
+    <input class="ajd-busca" placeholder="🔎  O que você quer fazer?" value="${esc(q||'')}"><p class="ajd-vazio" style="display:none">Não achei. Escolha um tema:</p><div class="ajd-grade"></div>`;
+    sh.querySelector('.ajd-fechar').onclick=close;const inp=sh.querySelector('.ajd-busca'),gr=sh.querySelector('.ajd-grade'),vz=sh.querySelector('.ajd-vazio');
+    const fill=()=>{const w=ajdNorm(inp.value).split(/\s+/).filter(x=>x.length>2);
+      let L=w.length?AJD.filter(t=>{const tx=ajdNorm([t.t,t.k,t.d,t.q[0],t.q[1]].join(' '));return w.some(x=>tx.includes(x));}):AJD;
+      vz.style.display=w.length&&!L.length?'':'none';if(!L.length)L=AJD;gr.innerHTML='';
+      L.forEach(t=>{const b=h('button','ajd-tile',`<span class="ajd-tile-icone">${t.i}</span><span class="ajd-tile-nome">${esc(t.t)}</span>${t.id===here?'<span class="ajd-aqui">aqui</span>':''}`);b.onclick=()=>det(t);gr.append(b);});};
+    inp.oninput=fill;fill();}
+  function det(t){sh.innerHTML=`<div class="ajd-topo"><button class="ajd-voltar">‹ Voltar</button><button class="ajd-fechar">✕</button></div>
+    <div class="ajd-hero"><span class="ajd-hero-icone">${t.i}</span><div><h3>${esc(t.t)}</h3><p>${esc(t.d)}</p></div></div>
+    <h4 class="ajd-rotulo">Toque e use</h4><div class="ajd-acoes">${t.a.map(a=>`<div class="ajd-acao"><span class="ajd-acao-icone">${a[1]}</span><strong>${esc(a[0])}</strong><small>${esc(a[2])}</small></div>`).join('')}</div>
+    <h4 class="ajd-rotulo">Em 3 passos</h4><ol class="ajd-passos">${t.p.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
+    <details class="ajd-duvida"><summary>${esc(t.q[0])}</summary><p>${esc(t.q[1])}</p></details>`;
+    const btn=h('button','pri ajd-ir',t.id===here||t.sem?'Entendi':'Ir para esta tela →');btn.onclick=()=>{close();if(!(t.id===here||t.sem))go(t.id);};sh.append(btn);
+    sh.querySelector('.ajd-voltar').onclick=()=>lista('');sh.querySelector('.ajd-fechar').onclick=close;sh.scrollTop=0;}
+  lista('');}
+(function(){const b=h('button','ajuda-flutuante','💬 Dúvidas');b.id='ajdBtn';b.onclick=ajdOpen;document.body.append(b);
+  setInterval(()=>{const s=document.querySelector('.scr.on');b.style.display=s&&['match','watch','owner'].includes(s.id)?'none':'';},700);})();
 
 /* ========== MODERAÇÃO: TERMOS RESTRITOS ========== */
 const MOD_CATS={
