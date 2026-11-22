@@ -1767,6 +1767,8 @@ function myMonth(){const m=monthId();if(!S.mo||S.mo.id!==m)S.mo={id:m,wins:0,gam
 let RKW=weekId(),RKM=monthId();
 setInterval(()=>{const w=weekId(),m=monthId();if(w!==RKW){busUnsub(TOP.rank(RKW)+'/+');RANK.clear();RKW=w;busSub(TOP.rank(w)+'/+');}
   if(m!==RKM){busUnsub(TOP.rank(RKM)+'/+');RANKM.clear();RKM=m;busSub(TOP.rank(m)+'/+');}renderRank();},60e3);
+/* W.O. só vale no ranking se a partida já tinha andado: uma rodada completa ou ~metade dos lances */
+function woValid(){if(!M)return false;if((M.me||0)+(M.op||0)>=1)return true;const need={dama:24,xadrez:30,domino:M.duo?14:12,sinuca:8,ludo:30}[M.g&&M.g.id]||20;return (M.acts||0)>=need;}
 function addWeek(win){const k=myWeek(),m=myMonth();k.games++;m.games++;if(win){k.wins++;m.wins++;}save();pubRank();}
 function pubRank(){const k=myWeek(),m=myMonth(),base={name:S.name,thumb:thumb(),cos:myCos()};
   if(k.games)busPub(TOP.rank(k.id)+'/'+S.uid,{...base,wins:k.wins,games:k.games},true);
@@ -2531,7 +2533,7 @@ function onRoom(o){
     M.cleanup=GAMEFN[M.g.id](stg,roundEnd,netCtx(o.init));
     return;
   }
-  if(o.t==='g'){if(M&&M.recv)M.recv(o.d,o.from);return;}
+  if(o.t==='g'){if(M)M.acts=(M.acts||0)+1;if(M&&M.recv)M.recv(o.d,o.from);return;}
   if(o.t==='emo'){if(NET.specs.some(x=>x.id===o.from))seatPop(o.from,o.e);else fly(o.e,true);return;}
   if(o.t==='chat'){const p=NET.players.find(x=>x.id===o.from),sp=NET.specs.find(x=>x.id===o.from);if(isBlk(o.from))return;gchatAdd(p?p.name:sp?'👀 '+sp.name:(o.name?'👀 '+o.name:'Amigo'),o.text,false);return;}
   if(o.t==='rematch'){NET.rm.add(o.from);const p=NET.players.find(x=>x.id===o.from);toast((p?p.name:'Alguém')+' quer revanche!');checkRematch();return;}
@@ -2554,15 +2556,17 @@ function onBye(id){
   if(M&&M.net){if(M.cleanup)M.cleanup();M.over=true;}
   const nq=NET.queue.map(id=>NET.specs.find(x=>x.id===id)).filter(Boolean)[0];
   if(wasPlaying&&nq&&NET.players.length===1&&NET.players[0].id===S.uid){
-    S.w++;save();addWeek(true);statGame(M.g&&M.g.id);
+    const okWO=woValid();if(okWO){S.w++;save();addWeek(true);statGame(M.g&&M.g.id);}
     NET.queue=NET.queue.filter(x=>x!==nq.id);NET.specs=NET.specs.filter(x=>x.id!==nq.id);NET.players.push({id:nq.id,name:nq.name,photo:nq.photo});
     NET.host=true;NET.started=false;pubRoster();
-    modal('🏆 Vitória por W.O.',esc(p.name)+' desistiu e a vitória é sua.<br><br>✋ <b style="color:var(--txt)">'+esc(nq.name)+'</b> estava na fila e vai jogar com você agora…',[{t:'Bora!',pri:1}]);
+    modal(okWO?'🏆 Vitória por W.O.':'Partida cancelada',esc(p.name)+(okWO?' desistiu e a vitória é sua — conta no ranking.':' saiu logo no começo, então essa partida não conta no ranking.')+'<br><br>✋ <b style="color:var(--txt)">'+esc(nq.name)+'</b> estava na fila e vai jogar com você agora…',[{t:'Bora!',pri:1}]);
     setTimeout(()=>{if(NET.on&&!NET.started&&NET.players.length>=2)hostStart();},3000);return;}
   if(wasPlaying&&NET.specs.length)roomPub({t:'ended'});
   netLeave(false);
-  if(wasPlaying){S.w++;save();addWeek(true);statGame(M.g&&M.g.id);
-    modal('🏆 Vitória por W.O.',esc(p.name)+' saiu antes do fim da partida, então a vitória é sua — e já conta no ranking.',[{t:'Voltar ao lobby',pri:1,f:()=>go('lobby')}]);return;}
+  if(wasPlaying){const okWO=woValid();
+    if(okWO){S.w++;save();addWeek(true);statGame(M.g&&M.g.id);
+      modal('🏆 Vitória por W.O.',esc(p.name)+' saiu depois de boa parte da partida, então a vitória é sua — e conta no ranking.',[{t:'Voltar ao lobby',pri:1,f:()=>go('lobby')}]);return;}
+    modal('Partida cancelada',esc(p.name)+' saiu logo no começo. Essa partida <b style="color:var(--txt)">não conta no ranking</b>.<br><br><small>Pra valer no pódio, a partida precisa chegar pelo menos na metade antes de alguém sair.</small>',[{t:'Voltar ao lobby',pri:1,f:()=>go('lobby')}]);return;}
   modal('Sala encerrada','Os outros jogadores saíram.',[{t:'Voltar ao lobby',pri:1,f:()=>go('lobby')}]);
 }
 function netLeave(sendBye){
@@ -2841,7 +2845,7 @@ function readOwnerBingo(){const b=oDraft.bingo||{};return{on:$('#obOn').checked,
 function netCtx(init){
   const idx=NET.players.findIndex(p=>p.id===S.uid);
   return{net:true,side:idx===0?'A':'B',seat:idx,players:NET.players.map(p=>({id:p.id,name:p.name,tm:p.tm})),init,
-    send:d=>roomPub({t:'g',d}),
+    send:d=>{if(M)M.acts=(M.acts||0)+1;roomPub({t:'g',d});},
     share:data=>roomPub({t:'start',round:M.round,init:data,players:NET.players}),
     onMsg:fn=>{M.recv=fn;},onLeave:fn=>{M.onLeave=fn;}};
 }
