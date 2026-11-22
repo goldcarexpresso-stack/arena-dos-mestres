@@ -2851,7 +2851,11 @@ async function toggleCam(){
   await fetchIce();
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('Este navegador não libera a câmera');return;}
   try{CAM.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:320},height:{ideal:240},frameRate:{ideal:15,max:20}},audio:false});}
-  catch(x){modal('Câmera bloqueada','Pra aparecer, permita a câmera: toque no cadeado ao lado do endereço do site → Permissões → Câmera → Permitir.',[{t:'OK',pri:1}]);return;}
+  catch(x){const n=x&&x.name;
+    if(n==='NotFoundError'||n==='OverconstrainedError')modal('📷 Câmera não encontrada','Este aparelho não tem câmera ligada ou o navegador não achou nenhuma. No notebook, confira se a webcam está conectada e ativada.',[{t:'OK',pri:1}]);
+    else if(n==='NotReadableError'||n==='AbortError')modal('📷 Câmera ocupada','A câmera está sendo usada por outro programa (WhatsApp, Meet, outra aba…). Feche o outro programa e toque em 📷 Câmera de novo.',[{t:'OK',pri:1}]);
+    else modal('📷 Câmera bloqueada','Pra aparecer, permita a câmera: toque no cadeado ao lado do endereço do site → Permissões (ou Configurações do site) → Câmera → Permitir. Depois toque em 📷 Câmera de novo.',[{t:'OK',pri:1}]);
+    return;}
   CAM.on=true;camSync();clearInterval(CAM.tick);CAM.tick=setInterval(camSync,3000);
   roomPub({t:'cam',on:true});camUI();toast('📷 Câmera ligada — quem está na sala vê seu rosto na bolinha');
 }
