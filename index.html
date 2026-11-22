@@ -143,6 +143,23 @@ video.cav{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;bord
 .ajd-passos li::before{content:counter(passo);flex:none;display:flex;align-items:center;justify-content:center;width:26px;height:26px;font-size:13px;font-weight:900;color:#1a0f3a;background:#ffc23d;border-radius:50%;box-shadow:0 0 10px #ffc23d99}
 .ajd-duvida{padding:12px 14px;background:#1a0f3a;border:1px solid #7c4dff55;border-radius:16px}.ajd-duvida summary{font-weight:800;cursor:pointer}.ajd-duvida p{margin:8px 0 0;color:#cdb8ff}
 .ajd-ir{width:100%;min-height:48px}
+.giftbtn{background:linear-gradient(135deg,#ff5edb,#7c4dff)!important;box-shadow:0 0 12px #ff5edb88}
+.gf-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.gf-top b{color:#7ee8ff}.gf-mais{padding:6px 12px;font-size:13px}
+.gf-pra{margin-bottom:8px;color:var(--mut)}.gf-pra b{color:var(--txt)}
+.gf-grade{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.gf-it{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;border-radius:16px;background:linear-gradient(160deg,#2c1766,#160c36);border:1px solid #7c4dff66}
+.gf-it .gf-art{font-size:34px;line-height:1.1}.gf-it img.gf-art{width:52px;height:52px;object-fit:contain}.gf-it b{font-size:12px}.gf-it small{font-size:11px;color:#7ee8ff}
+.gf-it.off{opacity:.45}.gf-pe{color:var(--mut);font-size:12px}
+.gf-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}.gf-stats div{display:flex;flex-direction:column;align-items:center;padding:8px 2px;border-radius:12px;background:#ffffff0d}.gf-stats b{font-size:15px}.gf-stats small{font-size:10px;color:var(--mut);text-align:center}
+.gfx{position:fixed;inset:0;z-index:95;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;overflow:hidden}
+.gfx.big{background:radial-gradient(circle,#b026ff55,#0000 70%)}
+.gfx-art{animation:gfxIn 2.2s ease-out forwards}.gfx-art span{font-size:110px;filter:drop-shadow(0 0 24px #ff5edb)}.gfx.big .gfx-art span{font-size:170px}
+.gfx-art img{width:200px;height:200px;object-fit:contain;filter:drop-shadow(0 0 24px #ff5edb)}.gfx.big .gfx-art img{width:300px;height:300px}
+.gfx-txt{padding:8px 16px;border-radius:999px;background:#120a2acc;border:1px solid #ff5edb;color:#fff;font-size:15px;text-align:center;max-width:90vw;animation:gfxTx 2.2s ease-out forwards}.gfx-txt b{color:#ffc23d}
+.gfx-p{position:absolute;top:-40px;font-size:34px;animation:gfxRain 2.6s linear forwards}
+@keyframes gfxIn{0%{transform:scale(.2) translateY(60px);opacity:0}15%{transform:scale(1.15);opacity:1}25%{transform:scale(1)}80%{opacity:1}100%{transform:scale(1.05) translateY(-30px);opacity:0}}
+@keyframes gfxTx{0%,10%{opacity:0;transform:translateY(20px)}20%,85%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes gfxRain{to{transform:translateY(110vh) rotate(360deg);opacity:.2}}
 .d4p{background:#ffffff12;border-radius:12px;padding:6px 10px;text-align:center;border:2px solid transparent}.d4p b{display:block;font-size:13px;color:var(--txt)}.d4p small{font-size:11px;color:var(--mut)}
 .d4p.mt{border-color:#7c4dff66}.d4p.ot{border-color:#ff6b6b44}.d4p.on{border-color:#ffc23d;box-shadow:0 0 12px #ffc23d88}
 .d4p.tp{margin:0 auto 8px;max-width:190px}.d4mid{display:flex;gap:6px;align-items:stretch}.d4mid .dz{flex:1;min-width:0}
@@ -1044,6 +1061,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
     <button id="pBlk" class="ptile t3"><span>🚫</span><b>Bloqueados</b><small id="pBlkS"></small></button>
     <button id="pTour" class="ptile t4"><span>💡</span><b>Tutorial</b><small>ver de novo</small></button>
   </div>
+  <div class="card" id="giftCard"></div>
   <div class="card" id="cloudCard"></div>
   <details class="card pedit"><summary>✏️ Editar perfil <small>foto e nome</small></summary>
     <div class="row" style="margin-top:12px"><button id="pickf2">📷 Escolher foto</button><button id="rmf">Remover foto</button></div>
@@ -2445,7 +2463,7 @@ function hostStart(){
 }
 function onRoom(o){
   if(o.t==='rtc'){onRtc(o);return;}
-  if(onCamMsg(o))return;
+  if(onCamMsg(o)||onGiftMsg(o))return;
   if(NET.spec){onRoomSpec(o);return;}
   if(o.t==='watch'){if(!NET.host)return;
     if(!NET.allowSpec||isBlk(o.from)){roomPub({t:'nowatch',to:o.from});return;}
@@ -2563,7 +2581,7 @@ function seatMenu(x){
 }
 function seatPop(id,e){const b=document.querySelector(`.scr.on .seat[data-sid="${CSS.escape(id)}"]`);if(!b){fly(e,true);return;}
   const s=h('span','spop',e);b.append(s);setTimeout(()=>s.remove(),1700);}
-function renderWEmo(){const w=$('#wEmo');if(!w||w.childElementCount)return;
+function renderWEmo(){const w=$('#wEmo');if(!w||w.childElementCount)return;{const gb=h('button','giftbtn','🎁');gb.title='Mandar presente';gb.onclick=giftOpen;w.append(gb);}
   ['👏','🔥','😂','😮','😎','💯','🙏','😡','🤡','❤️',...ownedEmojis()].forEach(e=>{const b=h('button',null,e);b.onclick=()=>{if(!NET.spec)return;seatPop(S.uid,e);roomPub({t:'emo',e});};w.append(b);});}
 function askMic(){if(!NET.spec)return;if(!NET.specMic){toast('🔇 O dono da sala deixou a plateia só no chat');return;}ASKS.add(S.uid);voiceUI();roomPub({t:'askmic'});toast('✋ Pedido enviado — espere o dono da sala liberar');}
 function applySpecMute(){VOICE.audios.forEach((a,id)=>{a.muted=specMuted(id);});
@@ -3046,6 +3064,56 @@ function ajdOpen(){const bg=h('div','ajd-fundo');const sh=h('div','ajd-folha');b
 (function(){const b=h('button','ajuda-flutuante','💬 Dúvidas');b.id='ajdBtn';b.onclick=ajdOpen;document.body.append(b);
   setInterval(()=>{const s=document.querySelector('.scr.on');b.style.display=s&&['match','watch','owner'].includes(s.id)?'none':'';},700);})();
 
+/* ========== PRESENTES AO VIVO (grátis agora; compra fica pronta pra ligar depois) ========== */
+// Diamantes 💎 = moeda só de presente. Hoje se ganha jogando. PAGO_LIGADO fica false até ter CNPJ + Mercado Pago.
+const GIFT_PAGO_LIGADO=false;
+const GIFTS=[
+ {id:'rosa',n:'Rosa',e:'🌹',c:1},{id:'coracao',n:'Coração',e:'💖',c:5},{id:'cafe',n:'Cafezinho',e:'☕',c:10},
+ {id:'coroa',n:'Coroa',e:'👑',c:20},{id:'trofeu',n:'Troféu',e:'🏆',c:50},{id:'foguete',n:'Foguete',e:'🚀',c:100},
+ {id:'carro',n:'Carrão',e:'🏎️',c:200},{id:'dragao',n:'Dragão',e:'🐉',c:500},{id:'castelo',n:'Castelo',e:'🏰',c:1000}
+];
+// Quando as artes chegarem, cada presente ganha a imagem: GIFT_IMG.rosa='img/presentes/rosa.png'
+const GIFT_IMG={};
+const GEM_GANHO={dia:30,partida:5,vitoria:10,inicio:100};
+if(S.gem==null){S.gem=GEM_GANHO.inicio;S.charm=0;S.giftIn=0;S.giftOut=0;}
+function gemAdd(n,why){S.gem=(S.gem||0)+n;save();if(why)toast(`💎 +${n} diamantes — ${why}`);}
+(function(){const d=new Date().toISOString().slice(0,10);if(S.gemDay!==d){const first=!S.gemDay;S.gemDay=d;if(!first)setTimeout(()=>gemAdd(GEM_GANHO.dia,'presente do dia'),4000);else save();}})();
+const giftArt=(g,cls)=>GIFT_IMG[g.id]?`<img class="${cls||''}" src="${GIFT_IMG[g.id]}" alt="${esc(g.n)}">`:`<span class="${cls||''}">${g.e}</span>`;
+function giftTargets(){return NET.players.filter(p=>p.id!==S.uid);}
+function giftOpen(){
+  if(!NET.on){toast('Presentes funcionam nas partidas com amigos e na plateia');return;}
+  const tg=giftTargets();if(!tg.length){toast('Ainda não tem ninguém pra receber presente');return;}
+  let to=tg[0].id;const body=h('div');
+  const render=()=>{body.innerHTML=`<div class="gf-top"><span>Seus <b>💎 ${S.gem||0}</b> diamantes</span><button class="gf-mais">➕ Mais</button></div>
+    ${tg.length>1?`<div class="lbl">Pra quem?</div><div class="chips">${tg.map(p=>`<button class="chip ${p.id===to?'on':''}" data-to="${esc(p.id)}">${esc(p.name)}</button>`).join('')}</div>`:`<div class="gf-pra">Pra <b>${esc(tg[0].name)}</b></div>`}
+    <div class="gf-grade">${GIFTS.map(g=>`<button class="gf-it ${(S.gem||0)<g.c?'off':''}" data-g="${g.id}">${giftArt(g,'gf-art')}<b>${esc(g.n)}</b><small>💎 ${g.c}</small></button>`).join('')}</div>
+    <small class="gf-pe">Ganhe diamantes jogando: +${GEM_GANHO.partida} por partida online, +${GEM_GANHO.vitoria} por vitória e +${GEM_GANHO.dia} todo dia.</small>`;
+    body.querySelectorAll('[data-to]').forEach(b=>b.onclick=()=>{to=b.dataset.to;render();});
+    body.querySelector('.gf-mais').onclick=gemShop;
+    body.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{const g=GIFTS.find(x=>x.id===b.dataset.g);
+      if((S.gem||0)<g.c){toast(`Faltam 💎 ${g.c-(S.gem||0)} — jogue mais pra ganhar`);return;}
+      S.gem-=g.c;S.giftOut=(S.giftOut||0)+1;save();const p=tg.find(x=>x.id===to);
+      roomPub({t:'gift',g:g.id,to,name:S.name,toName:p&&p.name});giftFx(g,S.name||'Você',p?p.name:'');$('#mod').classList.remove('on');});};
+  render();modal('🎁 Mandar presente',body,[{t:'Fechar'}]);
+}
+function gemShop(){
+  if(!GIFT_PAGO_LIGADO){modal('💎 Mais diamantes',`Por enquanto os diamantes são <b style="color:var(--txt)">grátis</b> e se ganham jogando:<br><br>🎮 Partida online: +${GEM_GANHO.partida}<br>🏆 Vitória: +${GEM_GANHO.vitoria}<br>📅 Todo dia ao abrir o app: +${GEM_GANHO.dia}<br><br><small>Pacotes de diamantes vão chegar em breve.</small>`,[{t:'OK',pri:1}]);return;}
+  // (futuro) aqui entra a loja paga: pacotes + Pix/Mercado Pago. Só ligar depois de CNPJ e contador.
+}
+const GQ=[];let GBUSY=false;
+function giftFx(g,from,toName){GQ.push({g,from,toName});if(!GBUSY)giftNext();}
+function giftNext(){const x=GQ.shift();if(!x){GBUSY=false;return;}GBUSY=true;const big=x.g.c>=100;
+  const fx=h('div','gfx'+(big?' big':''),`<div class="gfx-art">${giftArt(x.g,'gfx-img')}</div><div class="gfx-txt"><b>${esc(x.from)}</b> mandou <b>${esc(x.g.n)}</b>${x.toName?' pra <b>'+esc(x.toName)+'</b>':''} ${x.g.e}</div>`);
+  if(big)for(let i=0;i<18;i++){const s=h('span','gfx-p',x.g.e);s.style.left=Math.random()*100+'%';s.style.animationDelay=(Math.random()*1.2)+'s';fx.append(s);}
+  document.body.append(fx);setTimeout(()=>{fx.remove();giftNext();},big?3600:2300);}
+function onGiftMsg(o){if(o.t!=='gift')return false;const g=GIFTS.find(x=>x.id===o.g);if(!g||isBlk(o.from))return true;
+  if(o.to===S.uid){S.charm=(S.charm||0)+g.c;S.giftIn=(S.giftIn||0)+1;save();}
+  giftFx(g,o.name||'Alguém',o.to===S.uid?'você':(o.toName||''));return true;}
+function giftCardUI(){const el=$('#giftCard');if(!el)return;const k=[S.gem,S.charm,S.giftIn,S.giftOut].join();if(el.dataset.k===k)return;el.dataset.k=k;
+  el.innerHTML=`<b class="ct">🎁 Presentes</b><div class="gf-stats"><div><b>💎 ${S.gem||0}</b><small>diamantes</small></div><div><b>💝 ${S.charm||0}</b><small>pontos recebidos</small></div><div><b>${S.giftIn||0}</b><small>recebidos</small></div><div><b>${S.giftOut||0}</b><small>enviados</small></div></div>
+  <small style="color:var(--mut)">Mande presentes nas partidas com amigos e na plateia (botão 🎁). Diamantes se ganham jogando.</small>`;}
+setInterval(()=>{if($('#profile').classList.contains('on'))giftCardUI();},1500);
+
 /* ========== MODERAÇÃO: TERMOS RESTRITOS ========== */
 const MOD_CATS={
   'ameaça ou violência':['vou te matar','vou matar voce','vou matar vc','te mato','te matar','vou te pegar la fora','te pego la fora','sei onde voce mora','sei onde vc mora','vou te bater','vou te furar','vou atirar em voce','vou atirar em vc','vou te dar um tiro','te dar um tiro','tiro na cara','vou acabar com sua vida','se mata','vai se matar','vou te quebrar','te arrebento'],
@@ -3477,7 +3545,7 @@ function setupMatchUI(){
   $('#minfo').innerHTML=M.net?`<b style="color:var(--txt)">${g.name}</b> · ${M.need===1?'Partida única':'Melhor de 3'}<br>👥 ${NET.players.length} jogadores · grátis`
     :`<b style="color:var(--txt)">${g.name}</b> · ${M.bo===1?'Partida única':'Melhor de '+M.bo}<br>Entrada ${fmt(M.stake)} · Prêmio ${fmt(prize(M.stake))}`;
   drawBars();
-  const em=$('#emo');em.innerHTML='';
+  const em=$('#emo');em.innerHTML='';if(M.net){const gb=h('button','giftbtn','🎁');gb.title='Mandar presente';gb.onclick=giftOpen;em.append(gb);}
   ['😂','😎','🔥','👏','😡','🤡','🫵','💤','🙏','🤬',...ownedEmojis()].forEach(e=>{const b=h('button',null,e);b.onclick=()=>{fly(e,false);emojiSeq(e);if(M&&M.net)roomPub({t:'emo',e});else if(Math.random()<.5)botEmoji();};em.append(b);});
   gchatReset();
   go('match');
@@ -3537,7 +3605,7 @@ function roundEnd(res,label){
   }
   modal(t,`Placar: <b style="color:var(--txt)">${M.me} x ${M.op}</b>`,[{t:'Próxima rodada',pri:1,f:startRound}]);
 }
-function finishMatch(win,label){
+function finishMatch(win,label){if(M&&!M.gemDone){M.gemDone=1;gemAdd(win?GEM_GANHO.vitoria:GEM_GANHO.partida,win?'vitória':'partida jogada');}
   M.over=true;const g=M.g,stake=M.stake;
   if(M.net){statGame(g&&g.id);
     if(win)S.w++;else S.l++;save();
