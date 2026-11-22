@@ -1061,6 +1061,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
     <button id="pBlk" class="ptile t3"><span>🚫</span><b>Bloqueados</b><small id="pBlkS"></small></button>
     <button id="pTour" class="ptile t4"><span>💡</span><b>Tutorial</b><small>ver de novo</small></button>
   </div>
+  <div class="card" id="styleCard"></div>
   <div class="card" id="giftCard"></div>
   <div class="card" id="cloudCard"></div>
   <details class="card pedit"><summary>✏️ Editar perfil <small>foto e nome</small></summary>
@@ -1337,9 +1338,11 @@ if(!S.g1000){S.g1000=1;if(S.bal<100000){const add=100000-S.bal;S.bal=100000;addH
 const RAR={c:{n:'Comum',col:'#9fb3c8',w:60,dup:8,price:60},r:{n:'Raro',col:'#3ea6ff',w:28,dup:20,price:160},e:{n:'Épico',col:'#c86bff',w:10,dup:50,price:420},l:{n:'Lendário',col:'#ffc23d',w:2,dup:120,price:1100}};
 const CATS={fr:'🖼️ Molduras',en:'✨ Entradas',nm:'🔤 Nomes',sl:'🏅 Selos',em:'😍 Emojis',bu:'💬 Balões',sk:'🎨 Mesas',ut:'💡 Dicas'};
 const ITEMS={
- f_neon:{c:'fr',r:'c',n:'Aro Neon'},f_ouro:{c:'fr',r:'r',n:'Aro de Ouro'},f_fogo:{c:'fr',r:'r',n:'Aro de Fogo'},f_gelo:{c:'fr',r:'r',n:'Aro de Gelo'},
- f_coracao:{c:'fr',r:'r',n:'Aro Coração'},f_laco:{c:'fr',r:'r',n:'Laço Fofo'},f_bone:{c:'fr',r:'r',n:'Boné de Craque'},f_arco:{c:'fr',r:'e',n:'Arco-íris Girando'},
- f_raio:{c:'fr',r:'e',n:'Aro Elétrico'},f_galaxia:{c:'fr',r:'e',n:'Galáxia'},f_rei:{c:'fr',r:'l',n:'Coroa do Rei'},f_rainha:{c:'fr',r:'l',n:'Coroa da Rainha'},f_diamante:{c:'fr',r:'l',n:'Diamante'},
+ f_neon:{c:'fr',r:'c',n:'Aro Neon'},f_ouro:{c:'fr',r:'r',n:'Aro de Ouro'},f_fogo:{c:'fr',r:'r',n:'Aro de Fogo',g:'m'},f_gelo:{c:'fr',r:'r',n:'Aro de Gelo'},
+ f_coracao:{c:'fr',r:'e',n:'Anel Coração de Cristal',g:'f'},f_laco:{c:'fr',r:'r',n:'Laço de Pérolas',g:'f'},f_bone:{c:'fr',r:'r',n:'Boné Premium',g:'m'},f_arco:{c:'fr',r:'e',n:'Arco-íris Girando'},
+ f_raio:{c:'fr',r:'e',n:'Aro Elétrico',g:'m'},f_galaxia:{c:'fr',r:'e',n:'Galáxia',g:'m'},f_rei:{c:'fr',r:'l',n:'Coroa do Rei',g:'m'},f_rainha:{c:'fr',r:'l',n:'Coroa da Rainha',g:'f'},
+ fw_asas:{c:'fr',r:'e',n:'Asas de Anjo',g:'f'},fw_cerejeira:{c:'fr',r:'r',n:'Flor de Cerejeira',g:'f'},fw_borboleta:{c:'fr',r:'r',n:'Borboletas',g:'f'},fw_lua:{c:'fr',r:'e',n:'Lua e Estrelas',g:'f'},fw_pavao:{c:'fr',r:'e',n:'Penas de Pavão',g:'f'},fw_perolas:{c:'fr',r:'l',n:'Pérolas e Tiara',g:'f'},
+ fm_dragao:{c:'fr',r:'e',n:'Asas de Dragão',g:'m'},fm_louros:{c:'fr',r:'r',n:'Louros de Campeão',g:'m'},fm_leao:{c:'fr',r:'l',n:'Rei Leão',g:'m'},fm_gelo:{c:'fr',r:'e',n:'Cristal de Gelo',g:'m'},f_diamante:{c:'fr',r:'l',n:'Diamante'},
  e_neon:{c:'en',r:'c',n:'Chegada Neon',t:'chegou chegando'},e_raio:{c:'en',r:'r',n:'Raio',t:'caiu como um raio ⚡'},e_fogo:{c:'en',r:'r',n:'Pegando Fogo',t:'chegou pegando fogo 🔥'},
  e_coracao:{c:'en',r:'r',n:'Chuva de Corações',t:'chegou espalhando amor 💖'},e_carro:{c:'en',r:'e',n:'Carrão',t:'estacionou na Arena 🏎️'},e_tapete:{c:'en',r:'e',n:'Tapete Vermelho',t:'passou no tapete vermelho 📸'},
  e_rei:{c:'en',r:'l',n:'O Rei Chegou',t:'O REI CHEGOU 👑'},e_rainha:{c:'en',r:'l',n:'A Rainha Chegou',t:'A RAINHA CHEGOU 👑'},e_dragao:{c:'en',r:'l',n:'Dragão',t:'chegou montado no dragão 🐉'},
@@ -1357,12 +1360,12 @@ const ITEMS={
  k_sin_azul:{c:'sk',r:'r',n:'Sinuca: Mesa Azul',g:'sinuca',felt:'#1257a8',rail:'#3a2412'},k_sin_vinho:{c:'sk',r:'r',n:'Sinuca: Mesa Vinho',g:'sinuca',felt:'#7a1430',rail:'#2a1a0e'},
  k_sin_neon:{c:'sk',r:'e',n:'Sinuca: Mesa Neon',g:'sinuca',felt:'#1b0f45',rail:'#b026ff'},
  u_dica3:{c:'ut',r:'c',n:'3 Dicas',q:3},u_dica10:{c:'ut',r:'r',n:'10 Dicas',q:10}};
-const POOL={dama:['f_neon','f_ouro','f_laco','f_bone','f_rei','f_rainha','e_neon','e_coracao','n_neonA','s_dama','s_mestre','s_mestra','k_dama_ouro','k_dama_neon','p_zoeira','p_romance','u_dica3'],
- xadrez:['f_gelo','f_galaxia','f_diamante','e_raio','e_tapete','e_rei','e_rainha','n_gelo','n_ouro','s_genio','k_xad_marmore','k_xad_neon','p_risada','p_luxo','b_neon'],
- domino:['f_fogo','f_bone','f_neon','e_fogo','e_carro','e_dragao','n_fogo','s_pedreiro','s_mestre','s_mestra','k_dom_azul','k_dom_madeira','p_nordeste','p_zoeira','u_dica3','u_dica10'],
- sinuca:['f_raio','f_neon','f_fogo','e_raio','e_carro','n_neonA','n_neonR','s_mira','s_imbativel','k_sin_azul','k_sin_vinho','k_sin_neon','p_festa','p_luxo','b_neon'],
- ludo:['f_arco','f_coracao','f_laco','e_coracao','e_neon','e_rei','e_rainha','n_arco','n_neonR','s_sortudo','p_bichos','p_romance','b_rosa','b_galaxia'],
- bingo:['f_ouro','f_diamante','f_galaxia','e_tapete','e_dragao','n_ouro','n_arco','s_rei_bingo','p_festa','p_risada','b_ouro']};
+const POOL={dama:['fw_borboleta','fm_louros','f_neon','f_ouro','f_laco','f_bone','f_rei','f_rainha','e_neon','e_coracao','n_neonA','s_dama','s_mestre','s_mestra','k_dama_ouro','k_dama_neon','p_zoeira','p_romance','u_dica3'],
+ xadrez:['fm_leao','fw_perolas','fm_gelo','f_gelo','f_galaxia','f_diamante','e_raio','e_tapete','e_rei','e_rainha','n_gelo','n_ouro','s_genio','k_xad_marmore','k_xad_neon','p_risada','p_luxo','b_neon'],
+ domino:['fm_dragao','fw_cerejeira','f_fogo','f_bone','f_neon','e_fogo','e_carro','e_dragao','n_fogo','s_pedreiro','s_mestre','s_mestra','k_dom_azul','k_dom_madeira','p_nordeste','p_zoeira','u_dica3','u_dica10'],
+ sinuca:['fm_gelo','fw_lua','f_raio','f_neon','f_fogo','e_raio','e_carro','n_neonA','n_neonR','s_mira','s_imbativel','k_sin_azul','k_sin_vinho','k_sin_neon','p_festa','p_luxo','b_neon'],
+ ludo:['fw_asas','fw_lua','fw_borboleta','f_arco','f_coracao','f_laco','e_coracao','e_neon','e_rei','e_rainha','n_arco','n_neonR','s_sortudo','p_bichos','p_romance','b_rosa','b_galaxia'],
+ bingo:['fw_pavao','fm_leao','fw_asas','f_ouro','f_diamante','f_galaxia','e_tapete','e_dragao','n_ouro','n_arco','s_rei_bingo','p_festa','p_risada','b_ouro']};
 const GNAME={dama:'Dama',xadrez:'Xadrez',domino:'Dominó',sinuca:'Sinuca',ludo:'Ludo',bingo:'Bingo'};
 const COS=new Map();const cosSet=(id,c)=>{if(id&&c&&typeof c==='object')COS.set(id,{f:c.f,n:c.n,s:c.s,e:c.e,b:c.b});};
 const own=id=>!!(S.inv&&S.inv[id]);
@@ -1371,7 +1374,7 @@ function nmHTML(name,id,short){const c=id?(id===S.uid?myCos():COS.get(id)):null;
   return `<span class="nm ${c&&c.n&&ITEMS[c.n]?'nm-'+c.n:''}">${n}</span>${sl&&!short?` <span class="slo" style="--c:${sl.col||RAR[sl.r].col}" title="${esc(sl.n)}">${sl.i}</span>`:''}`;}
 function ownedEmojis(){return Object.keys(ITEMS).filter(k=>ITEMS[k].c==='em'&&own(k)).flatMap(k=>ITEMS[k].e);}
 function addBrilho(n){S.bri=(S.bri||0)+n;save();bagCardUI();}
-function rollItem(pool){const P=(POOL[pool]||POOL.dama).filter(k=>ITEMS[k]);let x=Math.random()*100,rr='c';for(const k of ['l','e','r','c']){if(x<RAR[k].w){rr=k;break;}x-=RAR[k].w;}
+function rollItem(pool){const P=(POOL[pool]||POOL.dama).filter(k=>ITEMS[k]&&(!ITEMS[k].g||!S.sexo||ITEMS[k].g===S.sexo));let x=Math.random()*100,rr='c';for(const k of ['l','e','r','c']){if(x<RAR[k].w){rr=k;break;}x-=RAR[k].w;}
   let c=P.filter(k=>ITEMS[k].r===rr);if(!c.length)c=P;const fresh=c.filter(k=>!own(k)||ITEMS[k].c==='ut');const L=fresh.length&&Math.random()<.75?fresh:c;return L[Math.floor(Math.random()*L.length)];}
 function grant(id){const it=ITEMS[id];S.inv=S.inv||{};let dup=false;
   if(it.c==='ut'){S.hints=(S.hints||0)+it.q;S.inv[id]=1;}else if(own(id)){dup=true;S.bri=(S.bri||0)+RAR[it.r].dup;}else S.inv[id]=Date.now();
@@ -1381,6 +1384,17 @@ function equip(id){const it=ITEMS[id];if(!it||!own(id))return;S.eq=S.eq||{};
   save();presence();if(M&&$('#match').classList.contains('on'))drawBars();renderLobbyMine();}
 const isEq=id=>{const it=ITEMS[id],e=S.eq||{};return it.c==='sk'?!!(e.sk&&e.sk[it.g]===id):e[it.c]===id;};
 function renderLobbyMine(){try{setAv($('#lav'),S.photo,S.name,null,S.uid);$('#lname').innerHTML=nmHTML(S.name,S.uid);}catch(e){}}
+/* molduras com arte (img/molduras): número = tamanho da arte em relação ao buraco da foto */
+const FRIMG={"f_rainha": 2.129, "fw_asas": 2.466, "fw_cerejeira": 1.937, "fw_borboleta": 2.19, "f_coracao": 2.255, "f_laco": 2.282, "fw_lua": 2.071, "fw_pavao": 2.073, "fw_perolas": 1.599, "f_rei": 2.297, "f_bone": 2.442, "fm_dragao": 2.305, "f_fogo": 2.291, "f_raio": 2.201, "fm_louros": 1.825, "fm_leao": 2.505, "fm_gelo": 2.222, "f_galaxia": 2.005};
+(function(){let css='';for(const id in FRIMG){const ins=((FRIMG[id]/1.05-1)/2*100).toFixed(1);
+  css+=`[data-fr="${id}"]{border-color:transparent!important;box-shadow:none!important;animation:none!important}[data-fr="${id}"]::before{content:none!important}`+
+  `[data-fr="${id}"]::after{content:"";position:absolute;inset:-${ins}%;background:url(img/molduras/${id}.webp) center/contain no-repeat;pointer-events:none;z-index:2;-webkit-mask:none;mask:none;border-radius:0;animation:none}`;}
+  const st=document.createElement('style');st.textContent=css;document.head.append(st);})();
+function styleCardUI(){const el=$('#styleCard');if(!el)return;const k=S.sexo||'';if(el.dataset.k===k)return;el.dataset.k=k;
+  el.innerHTML=`<b class="ct">✨ Meu estilo de acessórios</b><div style="color:var(--mut);font-size:13px;margin:6px 0 10px">Os baús e prêmios vão trazer molduras do seu estilo.</div>
+  <div class="chips"><button class="chip ${k==='f'?'on':''}" data-sx="f">👑 Feminino</button><button class="chip ${k==='m'?'on':''}" data-sx="m">🧢 Masculino</button><button class="chip ${!k?'on':''}" data-sx="">🌈 Todos</button></div>`;
+  el.querySelectorAll('[data-sx]').forEach(b=>b.onclick=()=>{S.sexo=b.dataset.sx||null;save();styleCardUI();toast('Estilo salvo ✨');});}
+setInterval(()=>{if($('#profile').classList.contains('on'))styleCardUI();},1500);
 /* baú: a cada 3 min jogando, um baú fica pronto; abre quando você vence a próxima rodada */
 const CHEST_MS=180000;
 function chestTick(){const on=M&&!M.over&&$('#match').classList.contains('on')&&!document.hidden;
