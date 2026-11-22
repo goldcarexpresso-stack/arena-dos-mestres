@@ -188,6 +188,19 @@ video.lvid.mir{transform:scaleX(-1)}
 .lnog{font-size:22px}.lkick{position:absolute;right:2px;top:2px;padding:0 5px;font-size:11px;line-height:16px;border-radius:999px}
 .lbar{display:flex;gap:6px;padding:6px;background:#120a2a;flex-wrap:wrap}.lbar button{flex:1;padding:7px 8px;font-size:12px}
 #liveFull{position:fixed;inset:0;z-index:92;background:#000}
+#liveReq{position:fixed;left:0;right:0;top:0;z-index:9999;display:flex;flex-direction:column;gap:8px;padding:10px;pointer-events:none}
+.lrq{pointer-events:auto;background:linear-gradient(135deg,#ff2d55,#7a1cff);border:3px solid #fff;border-radius:20px;padding:16px 14px;box-shadow:0 0 0 4px #ff2d5566,0 10px 40px #000c;text-align:center;color:#fff;animation:lrqIn .35s ease,lrqPulse 1.2s ease-in-out infinite alternate}
+.lrq b{display:block;font-size:22px;line-height:1.2;margin:2px 0 4px}
+.lrq p{margin:0 0 12px;font-size:15px;opacity:.95}
+.lrq .lrqb{display:flex;gap:8px}
+.lrq .lrqb button{flex:1;font-size:17px;font-weight:800;padding:14px 8px;border-radius:14px;border:0}
+.lrq .lrqok{background:#22c55e;color:#fff}
+.lrq .lrqno{background:#0007;color:#fff}
+.lrq .lrqt{height:5px;background:#fff6;border-radius:4px;margin-top:10px;overflow:hidden}
+.lrq .lrqt i{display:block;height:100%;background:#fff;animation:lrqBar 30s linear forwards}
+@keyframes lrqIn{from{transform:translateY(-120%)}to{transform:none}}
+@keyframes lrqPulse{to{box-shadow:0 0 0 10px #ff2d5533,0 10px 40px #000c}}
+@keyframes lrqBar{to{width:0}}
 .lftop{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:center;padding:12px}.lftop .ltag{position:static}
 .lfx{padding:6px 12px;border-radius:999px}
 .lfguests{position:absolute;right:10px;top:60px;display:flex;flex-direction:column;gap:8px}.lfguests .lguest{width:110px;height:82px}
@@ -1314,7 +1327,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
   <div id="wSeatB" class="seats" style="display:none"></div>
   <div class="emo" id="wEmo"></div>
   <div class="row wctl"><button id="wQueue" class="pri">✋ Quero jogar a próxima</button><button id="wMic">🎙️ Falar</button></div>
-  <button id="wLiveAsk" class="wliveask">🙋 Pedir pra entrar ao vivo</button>
+  <button id="wLiveAsk" class="wliveask">🙋📷 Pedir pra abrir minha câmera</button>
   <div class="gpanel wpanel"><div id="wChat" class="gmsgs"></div>
     <div class="cbar2"><input type="text" id="wIn" placeholder="Comente a partida…" maxlength="200" autocomplete="off"><button id="wSend" class="pri">➤</button></div></div>
 </section>
@@ -2992,20 +3005,31 @@ async function liveToggle(){
   LIVE.on=true;livePub();liveUI();toast('🔴 Você está ao vivo! Quem estiver na sala vê seu rosto em cima do jogo');
 }
 function liveAsk(){if(LIVE.guests.includes(S.uid)){toast('Você já está na live');return;}
-  if(LIVE.asked){toast('⏳ Pedido já enviado — espere o dono aceitar');return;}LIVE.asked=true;roomPub({t:'liveask',name:S.name});liveUI();toast('🙋 Pedido enviado pro dono da live');}
+  if(LIVE.asked){toast('⏳ Pedido já enviado — espere o dono aceitar');return;}LIVE.asked=true;roomPub({t:'liveask',name:S.name});liveUI();toast('🙋 Pedido enviado — o dono precisa permitir sua câmera');}
 function liveKick(id){if(!NET.host)return;LIVE.guests=LIVE.guests.filter(x=>x!==id);roomPub({t:'camoff',to:id});livePub();liveUI();}
+function liveReqShow(id,nm){
+  let box=$('#liveReq');if(!box){box=h('div');box.id='liveReq';document.body.append(box);}
+  if(box.querySelector('[data-id="'+id+'"]'))return;
+  const c=h('div','lrq');c.dataset.id=id;
+  c.innerHTML=`<div style="font-size:30px">🙋📷</div><b>${esc(nm)} quer abrir a câmera</b><p>${LIVE.on?'Ele vai aparecer na sua live com câmera e voz.':'Sua live abre e ele aparece com câmera e voz.'}</p><div class="lrqb"><button class="lrqno">Recusar</button><button class="lrqok">✅ Permitir ${esc(nm)}</button></div><div class="lrqt"><i></i></div>`;
+  const close=()=>{clearTimeout(c._t);c.remove();if(!box.children.length)box.remove();};
+  c.querySelector('.lrqno').onclick=()=>{close();roomPub({t:'liveno',to:id});};
+  c.querySelector('.lrqok').onclick=async()=>{close();if(!LIVE.on){await liveToggle();if(!LIVE.on)return;}
+    if(LIVE.guests.includes(id))return;if(LIVE.guests.length>=LIVEMAX){toast('A live já tem 2 convidados');roomPub({t:'liveno',to:id,full:1});return;}
+    LIVE.guests.push(id);livePub();roomPub({t:'camok',to:id});liveUI();toast('✅ '+nm+' entrou na live');};
+  c._t=setTimeout(()=>{close();roomPub({t:'liveno',to:id});},30000);
+  box.append(c);
+  try{if(navigator.vibrate)navigator.vibrate([200,100,200,100,300]);}catch(e){}
+  try{const ac=new (window.AudioContext||window.webkitAudioContext)();[0,.18,.36].forEach((t,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=[880,1100,1320][i];g.gain.setValueAtTime(.18,ac.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+t+.16);o.connect(g).connect(ac.destination);o.start(ac.currentTime+t);o.stop(ac.currentTime+t+.17);});setTimeout(()=>ac.close(),1200);}catch(e){}
+}
 function onLiveMsg(o){
   const fromHost=o.from===liveHostId();
   if(o.t==='live'){if(!fromHost&&!(NET.spec&&!NET.players.length))return true;const was=LIVE.on;LIVE.on=!!o.on;LIVE.guests=Array.isArray(o.guests)?o.guests.slice(0,LIVEMAX):[];
     if(!LIVE.guests.includes(S.uid)&&!NET.host&&CAM.on&&NET.spec)camStop();if(!LIVE.on){LIVE.asked=false;LIVE.full=false;}
     if(LIVE.on&&!was&&!NET.host)toast('🔴 O dono da sala abriu uma live!');liveUI();return true;}
   if(o.t==='liveask'){if(!NET.host||NET.spec)return true;const nm=o.name||'Visitante';
-    if(!LIVE.on){modal('🙋 Pedido pra entrar ao vivo',`<b style="color:var(--txt)">${esc(nm)}</b> quer entrar ao vivo com você (câmera e voz).<br><br>Aceitando, sua live abre e ${esc(nm)} aparece numa janelinha.`,
-      [{t:'Recusar',f:()=>roomPub({t:'liveno',to:o.from})},{t:'🔴 Abrir live e aceitar',pri:1,f:async()=>{await liveToggle();if(!LIVE.on)return;LIVE.guests.push(o.from);livePub();roomPub({t:'camok',to:o.from});toast(nm+' entrou na live');}}]);return true;}
-    if(LIVE.guests.length>=LIVEMAX){roomPub({t:'liveno',to:o.from,full:1});toast(nm+' pediu pra entrar, mas a live já tem 2 convidados');return true;}
-    modal('🙋 Pedido pra entrar na live',`<b style="color:var(--txt)">${esc(nm)}</b> quer entrar na sua live com câmera e voz.`,
-      [{t:'Recusar',f:()=>roomPub({t:'liveno',to:o.from})},{t:'✅ Aceitar',pri:1,f:()=>{if(LIVE.guests.length>=LIVEMAX){toast('A live já tem 2 convidados');return;}
-        LIVE.guests.push(o.from);livePub();roomPub({t:'camok',to:o.from});toast(nm+' entrou na live');}}]);return true;}
+    if(LIVE.on&&LIVE.guests.length>=LIVEMAX){roomPub({t:'liveno',to:o.from,full:1});toast(nm+' pediu pra abrir a câmera, mas a live já tem 2 convidados');return true;}
+    liveReqShow(o.from,nm);return true;}
   if(o.t==='liveno'){if(o.to!==S.uid||!fromHost)return true;LIVE.asked=false;liveUI();toast(o.full?'A live já está cheia (2 convidados)':'O dono da live não aceitou agora');return true;}
   if(o.t==='liveleave'){if(NET.host&&LIVE.guests.includes(o.from)){LIVE.guests=LIVE.guests.filter(x=>x!==o.from);livePub();liveUI();}return true;}
   return false;}
@@ -3021,11 +3045,11 @@ function liveUI(){
     if(gs.length){const gw=h('div','lguests');gs.forEach(g=>{const b=h('div','lguest');if(!g.none)b.append(liveVid(g.st,g.me));else b.append(h('span','lnog','📷'));b.append(h('small',null,esc(camName(g.id))));
       if(NET.host&&!NET.spec){const x=h('button','lkick','✕');x.title='Tirar da live';x.onclick=e=>{e.stopPropagation();liveKick(g.id);};b.append(x);}gw.append(b);});p.append(gw);}
     const bar=h('div','lbar');
-    if(NET.spec&&!LIVE.guests.includes(S.uid)){const a=h('button',null,LIVE.asked?'⏳ Pedido enviado':'🙋 Pedir pra entrar na live');a.onclick=liveAsk;bar.append(a);}
+    if(NET.spec&&!LIVE.guests.includes(S.uid)){const a=h('button',null,LIVE.asked?'⏳ Pedido enviado':'🙋📷 Pedir pra abrir câmera');a.onclick=liveAsk;bar.append(a);}
     if(LIVE.guests.includes(S.uid)){const a=h('button',null,'🚪 Sair da live');a.onclick=()=>{camStop();roomPub({t:'liveleave'});LIVE.guests=LIVE.guests.filter(x=>x!==S.uid);liveUI();};bar.append(a);}
     const f=h('button','pri','⛶ Tela cheia');f.onclick=()=>liveFull(true);bar.append(f);p.append(bar);});
   {const wv=$('#wView');if(wv&&NET.spec&&LIVE.on&&!WT.last&&!wv.querySelector('.wwlive'))wv.innerHTML='<div class="wwait wwlive">🔴 Live no ar — a partida ainda não começou.<br><small>Assista a live aqui em cima e peça pra entrar se quiser.</small></div>';}
-  {const wa=$('#wLiveAsk');if(wa){const inL=LIVE.guests.includes(S.uid);wa.style.display=NET.spec&&!inL?'':'none';wa.textContent=LIVE.asked?'⏳ Pedido enviado — aguarde o dono':LIVE.on?'🙋 Pedir pra entrar na live':'🙋 Pedir pra entrar ao vivo';}}
+  {const wa=$('#wLiveAsk');if(wa){const inL=LIVE.guests.includes(S.uid);wa.style.display=NET.spec&&!inL?'':'none';wa.textContent=LIVE.asked?'⏳ Pedido enviado — aguarde o dono permitir':'🙋📷 Pedir pra abrir minha câmera';}}
   const lb=$('#liveBtn');if(lb){lb.style.display=NET.host&&!NET.spec&&M&&M.net?'':'none';lb.textContent=LIVE.on?'🔴 Ao vivo':'🔴 Live';lb.classList.toggle('pri',LIVE.on);}
   if(LIVE.full)liveFull(true,true);else{const fo=$('#liveFull');if(fo)fo.remove();}
 }
