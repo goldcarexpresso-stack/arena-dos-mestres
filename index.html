@@ -175,6 +175,7 @@ video.cav{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;bord
 .lvprev{margin:8px 0 4px;border-radius:14px;overflow:hidden;border:2px solid #ff2d55;height:150px}.lvprev video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
 .backcard{border:2px solid #ffc23d;background:linear-gradient(135deg,#3a2a06,#160c36);box-shadow:0 0 14px #ffc23d44}.backcard b{display:block;font-size:16px}.backcard small{color:var(--mut);display:block;margin:4px 0 10px}
 #opbar.subon{border-color:#ff9f1a!important;box-shadow:0 0 12px #ff9f1a55}#opbar.subon small{color:#ffcf7a}
+.wliveask{width:100%;margin:6px 0;border:2px solid #ff2d55;background:linear-gradient(90deg,#3a0a2a,#160c36)}
 .livepane{position:relative;margin:6px 0 8px;border-radius:18px;overflow:hidden;background:#000;border:2px solid #ff2d55;box-shadow:0 0 18px #ff2d5566}
 .livepane .lmain{position:relative;height:30vh;max-height:300px;min-height:170px;cursor:pointer}
 .livepane video.lvid,#liveFull>video.lvid{width:100%;height:100%;object-fit:cover;display:block;background:#000}
@@ -1313,6 +1314,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
   <div id="wSeatB" class="seats" style="display:none"></div>
   <div class="emo" id="wEmo"></div>
   <div class="row wctl"><button id="wQueue" class="pri">✋ Quero jogar a próxima</button><button id="wMic">🎙️ Falar</button></div>
+  <button id="wLiveAsk" class="wliveask">🙋 Pedir pra entrar ao vivo</button>
   <div class="gpanel wpanel"><div id="wChat" class="gmsgs"></div>
     <div class="cbar2"><input type="text" id="wIn" placeholder="Comente a partida…" maxlength="200" autocomplete="off"><button id="wSend" class="pri">➤</button></div></div>
 </section>
@@ -2989,7 +2991,7 @@ async function liveToggle(){
   if(!CAM.on)await camStart();if(!CAM.on)return;
   LIVE.on=true;livePub();liveUI();toast('🔴 Você está ao vivo! Quem estiver na sala vê seu rosto em cima do jogo');
 }
-function liveAsk(){if(!LIVE.on){toast('A live não está aberta');return;}if(LIVE.guests.includes(S.uid)){toast('Você já está na live');return;}
+function liveAsk(){if(LIVE.guests.includes(S.uid)){toast('Você já está na live');return;}
   if(LIVE.asked){toast('⏳ Pedido já enviado — espere o dono aceitar');return;}LIVE.asked=true;roomPub({t:'liveask',name:S.name});liveUI();toast('🙋 Pedido enviado pro dono da live');}
 function liveKick(id){if(!NET.host)return;LIVE.guests=LIVE.guests.filter(x=>x!==id);roomPub({t:'camoff',to:id});livePub();liveUI();}
 function onLiveMsg(o){
@@ -2997,7 +2999,9 @@ function onLiveMsg(o){
   if(o.t==='live'){if(!fromHost&&!(NET.spec&&!NET.players.length))return true;const was=LIVE.on;LIVE.on=!!o.on;LIVE.guests=Array.isArray(o.guests)?o.guests.slice(0,LIVEMAX):[];
     if(!LIVE.guests.includes(S.uid)&&!NET.host&&CAM.on&&NET.spec)camStop();if(!LIVE.on){LIVE.asked=false;LIVE.full=false;}
     if(LIVE.on&&!was&&!NET.host)toast('🔴 O dono da sala abriu uma live!');liveUI();return true;}
-  if(o.t==='liveask'){if(!NET.host||NET.spec||!LIVE.on)return true;const nm=o.name||'Visitante';
+  if(o.t==='liveask'){if(!NET.host||NET.spec)return true;const nm=o.name||'Visitante';
+    if(!LIVE.on){modal('🙋 Pedido pra entrar ao vivo',`<b style="color:var(--txt)">${esc(nm)}</b> quer entrar ao vivo com você (câmera e voz).<br><br>Aceitando, sua live abre e ${esc(nm)} aparece numa janelinha.`,
+      [{t:'Recusar',f:()=>roomPub({t:'liveno',to:o.from})},{t:'🔴 Abrir live e aceitar',pri:1,f:async()=>{await liveToggle();if(!LIVE.on)return;LIVE.guests.push(o.from);livePub();roomPub({t:'camok',to:o.from});toast(nm+' entrou na live');}}]);return true;}
     if(LIVE.guests.length>=LIVEMAX){roomPub({t:'liveno',to:o.from,full:1});toast(nm+' pediu pra entrar, mas a live já tem 2 convidados');return true;}
     modal('🙋 Pedido pra entrar na live',`<b style="color:var(--txt)">${esc(nm)}</b> quer entrar na sua live com câmera e voz.`,
       [{t:'Recusar',f:()=>roomPub({t:'liveno',to:o.from})},{t:'✅ Aceitar',pri:1,f:()=>{if(LIVE.guests.length>=LIVEMAX){toast('A live já tem 2 convidados');return;}
@@ -3021,6 +3025,7 @@ function liveUI(){
     if(LIVE.guests.includes(S.uid)){const a=h('button',null,'🚪 Sair da live');a.onclick=()=>{camStop();roomPub({t:'liveleave'});LIVE.guests=LIVE.guests.filter(x=>x!==S.uid);liveUI();};bar.append(a);}
     const f=h('button','pri','⛶ Tela cheia');f.onclick=()=>liveFull(true);bar.append(f);p.append(bar);});
   {const wv=$('#wView');if(wv&&NET.spec&&LIVE.on&&!WT.last&&!wv.querySelector('.wwlive'))wv.innerHTML='<div class="wwait wwlive">🔴 Live no ar — a partida ainda não começou.<br><small>Assista a live aqui em cima e peça pra entrar se quiser.</small></div>';}
+  {const wa=$('#wLiveAsk');if(wa){const inL=LIVE.guests.includes(S.uid);wa.style.display=NET.spec&&!inL?'':'none';wa.textContent=LIVE.asked?'⏳ Pedido enviado — aguarde o dono':LIVE.on?'🙋 Pedir pra entrar na live':'🙋 Pedir pra entrar ao vivo';}}
   const lb=$('#liveBtn');if(lb){lb.style.display=NET.host&&!NET.spec&&M&&M.net?'':'none';lb.textContent=LIVE.on?'🔴 Ao vivo':'🔴 Live';lb.classList.toggle('pri',LIVE.on);}
   if(LIVE.full)liveFull(true,true);else{const fo=$('#liveFull');if(fo)fo.remove();}
 }
@@ -3797,6 +3802,7 @@ function finishMatch(win,label){if(M&&!M.gemDone){M.gemDone=1;gemAdd(win?GEM_GAN
 }
 $('#wBack').onclick=()=>{leaveWatch(true);go('lobby');};
 $('#wSend').onclick=wchatSend;$('#wIn').onkeydown=e=>{if(e.key==='Enter')wchatSend();};
+$('#wLiveAsk').onclick=()=>liveAsk();
 $('#wMic').onclick=()=>{if(canTalk())toggleMic();else askMic();};
 $('#wQueue').onclick=()=>{if(!NET.spec)return;const on=!NET.queue.includes(S.uid);roomPub({t:'q',on});toast(on?'✋ Você entrou na fila — se alguém desistir, você joga':'Você saiu da fila');};
 $('#pBlk').onclick=openBlkList;$('#pTour').onclick=()=>{S.tips={};save();go('lobby');setTimeout(startTour,500);};$('#pFr').onclick=openFriends;
