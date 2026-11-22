@@ -160,6 +160,16 @@ video.cav{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;bord
 @keyframes gfxIn{0%{transform:scale(.2) translateY(60px);opacity:0}15%{transform:scale(1.15);opacity:1}25%{transform:scale(1)}80%{opacity:1}100%{transform:scale(1.05) translateY(-30px);opacity:0}}
 @keyframes gfxTx{0%,10%{opacity:0;transform:translateY(20px)}20%,85%{opacity:1;transform:none}100%{opacity:0}}
 @keyframes gfxRain{to{transform:translateY(110vh) rotate(360deg);opacity:.2}}
+#entFx .eart{position:absolute;top:10px;left:50%;height:175px;max-width:78vw;object-fit:contain;filter:drop-shadow(0 0 16px #ffffff66);z-index:2}
+#entFx .eart.move{animation:eMove 3.4s ease-in-out forwards}#entFx .eart.zoom{animation:eZoom 3.4s ease-out forwards}
+@keyframes eMove{0%{transform:translateX(-170vw)}24%{transform:translateX(-50%)}72%{transform:translateX(-50%) translateY(-4px)}100%{transform:translateX(110vw)}}
+@keyframes eZoom{0%{transform:translateX(-50%) scale(.2);opacity:0}14%{transform:translateX(-50%) scale(1.12);opacity:1}24%{transform:translateX(-50%) scale(1)}84%{opacity:1}100%{transform:translateX(-50%) scale(1.06);opacity:0}}
+#entFx .eplate{position:absolute;left:50%;bottom:8px;width:min(94vw,430px);height:122px;background:center/contain no-repeat;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 17%;z-index:3;transform:translateX(-50%);animation:ePlate 3.4s ease forwards}
+#entFx .eplate .av{width:46px;height:46px;flex:none}#entFx .eplate>div{display:flex;flex-direction:column;min-width:0;text-align:left}
+#entFx .eplate b{font-size:16px;color:#fff;text-shadow:0 0 8px #000,0 0 12px #b026ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#entFx .eplate small{font-size:12px;color:#ffe7a3;font-weight:800;text-shadow:0 0 6px #000}#entFx .eplate em{font-size:11px;color:#e8dcff;font-style:normal;text-shadow:0 0 6px #000}
+@keyframes ePlate{0%{opacity:0;transform:translateX(-50%) translateY(30px) scale(.8)}14%{opacity:1;transform:translateX(-50%) scale(1.04)}22%{transform:translateX(-50%) scale(1)}86%{opacity:1}100%{opacity:0;transform:translateX(-50%) scale(.96)}}
+.ent-ew_unicornio .entbg{background:radial-gradient(circle at 50% 40%,#ff9ad8aa,#3a1a7aee 60%)}
 .d4p{background:#ffffff12;border-radius:12px;padding:6px 10px;text-align:center;border:2px solid transparent}.d4p b{display:block;font-size:13px;color:var(--txt)}.d4p small{font-size:11px;color:var(--mut)}
 .d4p.mt{border-color:#7c4dff66}.d4p.ot{border-color:#ff6b6b44}.d4p.on{border-color:#ffc23d;box-shadow:0 0 12px #ffc23d88}
 .d4p.tp{margin:0 auto 8px;max-width:190px}.d4mid{display:flex;gap:6px;align-items:stretch}.d4mid .dz{flex:1;min-width:0}
@@ -1344,8 +1354,9 @@ const ITEMS={
  fw_asas:{c:'fr',r:'e',n:'Asas de Anjo',g:'f'},fw_cerejeira:{c:'fr',r:'r',n:'Flor de Cerejeira',g:'f'},fw_borboleta:{c:'fr',r:'r',n:'Borboletas',g:'f'},fw_lua:{c:'fr',r:'e',n:'Lua e Estrelas',g:'f'},fw_pavao:{c:'fr',r:'e',n:'Penas de Pavão',g:'f'},fw_perolas:{c:'fr',r:'l',n:'Pérolas e Tiara',g:'f'},
  fm_dragao:{c:'fr',r:'e',n:'Asas de Dragão',g:'m'},fm_louros:{c:'fr',r:'r',n:'Louros de Campeão',g:'m'},fm_leao:{c:'fr',r:'l',n:'Rei Leão',g:'m'},fm_gelo:{c:'fr',r:'e',n:'Cristal de Gelo',g:'m'},f_diamante:{c:'fr',r:'l',n:'Diamante'},
  e_neon:{c:'en',r:'c',n:'Chegada Neon',t:'chegou chegando'},e_raio:{c:'en',r:'r',n:'Raio',t:'caiu como um raio ⚡'},e_fogo:{c:'en',r:'r',n:'Pegando Fogo',t:'chegou pegando fogo 🔥'},
- e_coracao:{c:'en',r:'r',n:'Chuva de Corações',t:'chegou espalhando amor 💖'},e_carro:{c:'en',r:'e',n:'Carrão',t:'estacionou na Arena 🏎️'},e_tapete:{c:'en',r:'e',n:'Tapete Vermelho',t:'passou no tapete vermelho 📸'},
- e_rei:{c:'en',r:'l',n:'O Rei Chegou',t:'O REI CHEGOU 👑'},e_rainha:{c:'en',r:'l',n:'A Rainha Chegou',t:'A RAINHA CHEGOU 👑'},e_dragao:{c:'en',r:'l',n:'Dragão',t:'chegou montado no dragão 🐉'},
+ e_coracao:{c:'en',r:'r',n:'Chuva de Corações',t:'chegou espalhando amor 💖',g:'f'},e_carro:{c:'en',r:'e',n:'Carrão',t:'estacionou na Arena 🏎️',g:'m'},e_tapete:{c:'en',r:'e',n:'Tapete Vermelho',t:'passou no tapete vermelho 📸'},
+ e_rei:{c:'en',r:'l',n:'O Rei Chegou',t:'O REI CHEGOU 👑',g:'m'},e_rainha:{c:'en',r:'l',n:'A Rainha Chegou',t:'A RAINHA CHEGOU 👑',g:'f'},e_dragao:{c:'en',r:'l',n:'Dragão',t:'chegou montado no dragão 🐉',g:'m'},
+ ew_unicornio:{c:'en',r:'l',n:'Unicórnio Alado',t:'chegou de unicórnio 🦄',g:'f'},
  n_neonA:{c:'nm',r:'c',n:'Nome Neon Azul'},n_neonR:{c:'nm',r:'c',n:'Nome Neon Rosa'},n_ouro:{c:'nm',r:'r',n:'Nome de Ouro'},n_fogo:{c:'nm',r:'r',n:'Nome em Chamas'},n_gelo:{c:'nm',r:'r',n:'Nome de Gelo'},n_arco:{c:'nm',r:'e',n:'Nome Arco-íris'},
  s_mestre:{c:'sl',r:'c',n:'Selo Mestre ♂',i:'♂',col:'#3ea6ff'},s_mestra:{c:'sl',r:'c',n:'Selo Mestra ♀',i:'♀',col:'#ff5fb7'},s_dama:{c:'sl',r:'r',n:'Fera da Dama',i:'⚪'},
  s_genio:{c:'sl',r:'r',n:'Gênio do Xadrez',i:'♞'},s_pedreiro:{c:'sl',r:'r',n:'Pedreiro do Dominó',i:'🁣'},s_mira:{c:'sl',r:'r',n:'Mira de Sinuca',i:'🎯'},
@@ -1360,12 +1371,12 @@ const ITEMS={
  k_sin_azul:{c:'sk',r:'r',n:'Sinuca: Mesa Azul',g:'sinuca',felt:'#1257a8',rail:'#3a2412'},k_sin_vinho:{c:'sk',r:'r',n:'Sinuca: Mesa Vinho',g:'sinuca',felt:'#7a1430',rail:'#2a1a0e'},
  k_sin_neon:{c:'sk',r:'e',n:'Sinuca: Mesa Neon',g:'sinuca',felt:'#1b0f45',rail:'#b026ff'},
  u_dica3:{c:'ut',r:'c',n:'3 Dicas',q:3},u_dica10:{c:'ut',r:'r',n:'10 Dicas',q:10}};
-const POOL={dama:['fw_borboleta','fm_louros','f_neon','f_ouro','f_laco','f_bone','f_rei','f_rainha','e_neon','e_coracao','n_neonA','s_dama','s_mestre','s_mestra','k_dama_ouro','k_dama_neon','p_zoeira','p_romance','u_dica3'],
+const POOL={dama:['ew_unicornio','fw_borboleta','fm_louros','f_neon','f_ouro','f_laco','f_bone','f_rei','f_rainha','e_neon','e_coracao','n_neonA','s_dama','s_mestre','s_mestra','k_dama_ouro','k_dama_neon','p_zoeira','p_romance','u_dica3'],
  xadrez:['fm_leao','fw_perolas','fm_gelo','f_gelo','f_galaxia','f_diamante','e_raio','e_tapete','e_rei','e_rainha','n_gelo','n_ouro','s_genio','k_xad_marmore','k_xad_neon','p_risada','p_luxo','b_neon'],
  domino:['fm_dragao','fw_cerejeira','f_fogo','f_bone','f_neon','e_fogo','e_carro','e_dragao','n_fogo','s_pedreiro','s_mestre','s_mestra','k_dom_azul','k_dom_madeira','p_nordeste','p_zoeira','u_dica3','u_dica10'],
  sinuca:['fm_gelo','fw_lua','f_raio','f_neon','f_fogo','e_raio','e_carro','n_neonA','n_neonR','s_mira','s_imbativel','k_sin_azul','k_sin_vinho','k_sin_neon','p_festa','p_luxo','b_neon'],
- ludo:['fw_asas','fw_lua','fw_borboleta','f_arco','f_coracao','f_laco','e_coracao','e_neon','e_rei','e_rainha','n_arco','n_neonR','s_sortudo','p_bichos','p_romance','b_rosa','b_galaxia'],
- bingo:['fw_pavao','fm_leao','fw_asas','f_ouro','f_diamante','f_galaxia','e_tapete','e_dragao','n_ouro','n_arco','s_rei_bingo','p_festa','p_risada','b_ouro']};
+ ludo:['ew_unicornio','fw_asas','fw_lua','fw_borboleta','f_arco','f_coracao','f_laco','e_coracao','e_neon','e_rei','e_rainha','n_arco','n_neonR','s_sortudo','p_bichos','p_romance','b_rosa','b_galaxia'],
+ bingo:['ew_unicornio','fw_pavao','fm_leao','fw_asas','f_ouro','f_diamante','f_galaxia','e_tapete','e_dragao','n_ouro','n_arco','s_rei_bingo','p_festa','p_risada','b_ouro']};
 const GNAME={dama:'Dama',xadrez:'Xadrez',domino:'Dominó',sinuca:'Sinuca',ludo:'Ludo',bingo:'Bingo'};
 const COS=new Map();const cosSet=(id,c)=>{if(id&&c&&typeof c==='object')COS.set(id,{f:c.f,n:c.n,s:c.s,e:c.e,b:c.b});};
 const own=id=>!!(S.inv&&S.inv[id]);
@@ -1420,6 +1431,8 @@ function itemPrev(id,big){const it=ITEMS[id];
   if(it.c==='sk')return `<div class="skprev sk-${id}"></div>`;
   if(it.c==='ut')return `<span style="font-size:${big?44:30}px">💡</span>`;return '';}
 /* entradas */
+const ENTART={e_coracao:['coracoes','rosa','zoom'],e_rainha:['carruagem','rosa','move'],ew_unicornio:['unicornio','rosa','move'],e_carro:['carro','neon','move'],e_rei:['trono','ouro','zoom'],e_dragao:['dragao','fogo','move'],e_raio:['raio','raio','zoom'],e_fogo:['fenix','fogo','move'],e_tapete:['tapete','ouro','zoom'],e_neon:[null,'neon','zoom']};
+(function(){Object.values(ENTART).forEach(a=>{if(a[0])new Image().src='img/entradas/'+a[0]+'.webp';new Image().src='img/entradas/placa_'+a[1]+'.webp';});})();
 const ENTQ=[];let entBusy=false;const ENTSEEN=new Set();let entRoom=null;
 function entCheck(){if(!NET.on)return;if(entRoom!==NET.room){entRoom=NET.room;ENTSEEN.clear();}
   [...NET.players,...NET.specs].forEach(p=>{if(!p||ENTSEEN.has(p.id))return;ENTSEEN.add(p.id);const c=p.id===S.uid?myCos():(p.cos||COS.get(p.id));
@@ -1427,10 +1440,11 @@ function entCheck(){if(!NET.on)return;if(entRoom!==NET.room){entRoom=NET.room;EN
 function showEntrance(p,sub){if(!p||!p.cos||!p.cos.e||!ITEMS[p.cos.e])return;cosSet(p.id,p.cos);if(ENTQ.length>3)return;ENTQ.push([p,sub]);if(!entBusy)entNext();}
 function entNext(){const n=ENTQ.shift();const fx=$('#entFx');if(!n){entBusy=false;fx.style.display='none';return;}entBusy=true;const [p,sub]=n,id=p.cos.e,it=ITEMS[id];
   const parts={e_fogo:'🔥',e_coracao:'💖',e_tapete:'📸',e_rei:'✨',e_rainha:'✨',e_dragao:'🔥',e_raio:'⚡',e_neon:'✦',e_carro:'💨'}[id]||'✨';
-  fx.className='entfx ent-'+id;fx.style.display='';
+  fx.className='entfx ent-'+id;fx.style.display='';const A=ENTART[id]||[null,'neon','zoom'];
+  const top=id==='e_rei'||id==='e_rainha'||id==='ew_unicornio';
   fx.innerHTML=`<div class="entbg"></div>${[...Array(14)].map((_,i)=>`<span class="ep" style="--x:${(i*41)%100}%;--d:${(i*.17)%1.6}s;--s:${.8+(i%4)*.25}">${parts}</span>`).join('')}
-    ${id==='e_carro'?'<span class="car">🏎️</span>':''}${id==='e_dragao'?'<span class="drag">🐉</span>':''}${id==='e_rei'||id==='e_rainha'?'<span class="crown">👑</span>':''}${id==='e_raio'?'<span class="bolt">⚡</span>':''}
-    <div class="entcard"><i class="av big"></i><div><b>${nmHTML(p.name,p.id,1)}</b><small>${id==='e_rei'||id==='e_rainha'?esc(it.t):esc(sub||'entrou')}</small><em>${id==='e_rei'||id==='e_rainha'?esc(sub||''):esc(it.t)}</em></div></div>`;
+    ${A[0]?`<img class="eart ${A[2]}" src="img/entradas/${A[0]}.webp" alt="">`:''}
+    <div class="eplate" style="background-image:url(img/entradas/placa_${A[1]}.webp)"><i class="av"></i><div><b>${nmHTML(p.name,p.id,1)}</b><small>${top?esc(it.t):esc(sub||'entrou')}</small><em>${top?esc(sub||''):esc(it.t)}</em></div></div>`;
   setAv(fx.querySelector('.av'),p.photo,p.name,'#7209b7',p.id);setTimeout(()=>{fx.classList.add('out');setTimeout(()=>{fx.classList.remove('out');entNext();},450);},3300);}
 /* skins de mesa + dicas */
 let SKIN={};
