@@ -103,16 +103,19 @@ h2{margin:4px 0 12px;font-size:20px}
 .myh{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px}
 .myh button{padding:3px;background:none;border-radius:8px;opacity:.45}
 .myh button.ok{opacity:1;box-shadow:0 0 0 2px var(--acc)}
-#camDock{position:fixed;right:8px;top:118px;z-index:60;display:flex;flex-direction:row-reverse;gap:6px}
-.cbub{width:56px;height:56px;border-radius:50%;padding:0;overflow:hidden;position:relative;border:2px solid #ffc23d;background:#000;box-shadow:0 4px 14px #0008}
-.cbub video{width:100%;height:100%;object-fit:cover;display:block}.cbub.me video{transform:scaleX(-1)}
-.cbub small{position:absolute;left:0;right:0;bottom:0;font-size:9px;background:#000a;color:#fff;text-align:center;white-space:nowrap;overflow:hidden}
 #camWin{position:fixed;right:10px;top:90px;width:min(78vw,300px);z-index:70;background:#120a2a;border:2px solid #7c4dff;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px #000a}
-#camWin video{width:100%;display:block;background:#000;aspect-ratio:4/3;object-fit:cover}#camWin video.mir{transform:scaleX(-1)}
+#camWin video{width:100%;display:block;background:#000;aspect-ratio:4/3;object-fit:cover}#camWin video.mir,.cbub video.mir,video.cav.mir{transform:scaleX(-1)}
+.camdock{position:fixed;z-index:60;display:flex;gap:6px}.camdock.top{right:8px;top:118px;flex-direction:row-reverse}.camdock.bot{right:8px;bottom:170px;flex-direction:row-reverse}
+.cbub{width:56px;height:56px;border-radius:50%;padding:0;overflow:hidden;position:relative;border:2px solid #ffc23d;background:#000;box-shadow:0 4px 14px #0008}
+.cbub video{width:100%;height:100%;object-fit:cover;display:block}
+.cbub small{position:absolute;left:0;right:0;bottom:0;font-size:9px;background:#000a;color:#fff;text-align:center;white-space:nowrap;overflow:hidden}
+.camav{position:relative;overflow:hidden;width:58px!important;height:58px!important;border-color:#ff2d55!important;box-shadow:0 0 0 2px #ff2d5555,0 0 14px #ff2d5588}
+video.cav{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;cursor:pointer;z-index:2;background:#000}
+@media(min-width:1000px){.camdock{--cw:clamp(120px,calc((100vw - 1010px)/2 - 16px),300px);flex-direction:column!important}
+ .camdock.top{left:8px;right:auto;top:110px}.camdock.bot{right:8px;left:auto;top:auto;bottom:24px}
+ .cbub{width:var(--cw);height:auto;aspect-ratio:4/3;border-radius:18px}.cbub small{font-size:13px;padding:3px}}
 .cwbar{display:flex;align-items:center;gap:6px;padding:6px 8px;cursor:move;touch-action:none;font-size:13px}.cwbar b{flex:1;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cwact button,.cwx{padding:4px 8px;font-size:12px}
-@media(min-width:1000px){#camDock{--cw:clamp(120px,calc((100vw - 1010px)/2 - 16px),300px);left:8px;right:8px;top:300px;bottom:auto;display:grid;grid-template-columns:var(--cw) 1fr var(--cw);gap:12px;pointer-events:none}
- .cbub{width:var(--cw);height:auto;aspect-ratio:4/3;border-radius:18px;pointer-events:auto}.cbub:nth-child(odd){grid-column:1}.cbub:nth-child(even){grid-column:3}.cbub small{font-size:13px;padding:3px}}
 .d4p{background:#ffffff12;border-radius:12px;padding:6px 10px;text-align:center;border:2px solid transparent}.d4p b{display:block;font-size:13px;color:var(--txt)}.d4p small{font-size:11px;color:var(--mut)}
 .d4p.mt{border-color:#7c4dff66}.d4p.ot{border-color:#ff6b6b44}.d4p.on{border-color:#ffc23d;box-shadow:0 0 12px #ffc23d88}
 .d4p.tp{margin:0 auto 8px;max-width:190px}.d4mid{display:flex;gap:6px;align-items:stretch}.d4mid .dz{flex:1;min-width:0}
@@ -2838,9 +2841,10 @@ document.addEventListener('click',()=>VOICE.audios.forEach(a=>{if(a.paused)a.pla
 
 /* ========== CÂMERA AO VIVO (opcional, só jogadores da mesa) ========== */
 const MAXCAMSPEC=4;
-const CAM={stream:null,on:false,send:new Map(),rem:new Map(),open:null,tick:null};
+const CAM={stream:null,on:false,send:new Map(),rem:new Map(),open:null,tick:null,okd:false,asked:false};
 const camAllowed=id=>NET.players.some(p=>p.id===id)||(()=>{const i=NET.specs.findIndex(x=>x.id===id);return i>=0&&i<MAXCAMSPEC;})();
 const camName=id=>id===S.uid?'Você':((NET.players.find(p=>p.id===id)||{}).name||'Jogador');
+const camHost=()=>NET.players[0]&&NET.players[0].id;
 function camAttach(id,e){if(!CAM.on||!CAM.stream||!camAllowed(id)||CAM.send.has(id))return;
   const tr=CAM.stream.getVideoTracks()[0];if(!tr)return;try{CAM.send.set(id,e.pc.addTrack(tr,CAM.stream));}catch(x){}}
 function camDetach(id){const s=CAM.send.get(id),e=VOICE.pcs.get(id);if(s&&e){try{e.pc.removeTrack(s);}catch(x){}}CAM.send.delete(id);}
@@ -2848,6 +2852,12 @@ function camSync(){if(!CAM.on)return;voicePeers().forEach(id=>{if(camAllowed(id)
 async function toggleCam(){
   if(CAM.on){camStop();toast('📷 Câmera desligada');return;}
   if(NET.spec||!NET.players.some(p=>p.id===S.uid)){toast('Só quem está jogando pode abrir a câmera');return;}
+  if(!NET.host&&!CAM.okd){
+    if(CAM.asked){toast('⏳ Pedido já enviado — espere o dono da sala liberar');return;}
+    CAM.asked=true;roomPub({t:'camask',name:S.name});camUI();toast('✋ Pedido enviado — o dono da sala precisa liberar sua câmera');return;}
+  await camStart();
+}
+async function camStart(){
   await fetchIce();
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('Este navegador não libera a câmera');return;}
   try{CAM.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:320},height:{ideal:240},frameRate:{ideal:15,max:20}},audio:false});}
@@ -2857,7 +2867,7 @@ async function toggleCam(){
     else modal('📷 Câmera bloqueada','Pra aparecer, permita a câmera: toque no cadeado ao lado do endereço do site → Permissões (ou Configurações do site) → Câmera → Permitir. Depois toque em 📷 Câmera de novo.',[{t:'OK',pri:1}]);
     return;}
   CAM.on=true;camSync();clearInterval(CAM.tick);CAM.tick=setInterval(camSync,3000);
-  roomPub({t:'cam',on:true});camUI();toast('📷 Câmera ligada — quem está na sala vê seu rosto na bolinha');
+  roomPub({t:'cam',on:true});camUI();toast('📷 Câmera ligada — quem está na sala vê seu rosto');
 }
 function camStop(){clearInterval(CAM.tick);[...CAM.send.keys()].forEach(camDetach);
   if(CAM.stream)CAM.stream.getTracks().forEach(t=>t.stop());CAM.stream=null;
@@ -2867,23 +2877,36 @@ function camTrack(peer,ev){const tr=ev.track;const st=ev.streams[0]||new MediaSt
 function camDrop(id){CAM.rem.delete(id);if(CAM.open===id)camClose();camUI();}
 function camLive(){const L=[];if(CAM.on&&CAM.stream)L.push({id:S.uid,st:CAM.stream,me:true});
   CAM.rem.forEach((v,id)=>{if(v.tr.readyState==='live'&&!v.tr.muted)L.push({id,st:v.st});});return L;}
+// quem fica "embaixo": para o jogador é ele mesmo; para a plateia é o dono da sala
+const camBottomId=()=>NET.spec?camHost():S.uid;
+const camWide=()=>matchMedia('(min-width:1000px)').matches;
+function camSlotEl(id){if(camWide()||NET.spec||!$('#match').classList.contains('on')||(M&&M.duo))return null;
+  if(id===S.uid)return $('#mebar .av');const others=NET.players.filter(p=>p.id!==S.uid);
+  return others.length===1&&others[0].id===id?$('#opbar .av'):null;}
+function camVid(st,mir){const v=document.createElement('video');v.autoplay=true;v.muted=true;v.playsInline=true;v.setAttribute('playsinline','');v.srcObject=st;if(mir)v.classList.add('mir');v.play().catch(()=>{});return v;}
+function camDock(id,pos){let d=$('#'+id);if(!d){d=h('div');d.id=id;d.className='camdock '+pos;document.body.append(d);}return d;}
 function camUI(){
-  const b=$('#camBtn');if(b){b.textContent=CAM.on?'📷 Ao vivo':'📷 Câmera';b.classList.toggle('pri',CAM.on);}
-  let dock=$('#camDock');if(!dock){dock=h('div');dock.id='camDock';document.body.append(dock);}
+  const b=$('#camBtn');if(b){b.textContent=CAM.on?'📷 Ao vivo':CAM.asked?'⏳ Aguardando':'📷 Câmera';b.classList.toggle('pri',CAM.on);}
   const show=NET.on&&($('#match').classList.contains('on')||$('#watch').classList.contains('on'));
-  const L=show?camLive():[];dock.style.display=L.length?'':'none';
-  const ids=L.map(x=>x.id).join(',');if(dock.dataset.ids!==ids){dock.dataset.ids=ids;dock.innerHTML='';
-    L.forEach(x=>{const c=h('button','cbub'+(x.me?' me':''));const v=document.createElement('video');v.autoplay=true;v.muted=true;v.playsInline=true;v.setAttribute('playsinline','');v.srcObject=x.st;v.play().catch(()=>{});
-      c.append(v,h('small',null,esc(camName(x.id))));c.onclick=()=>camOpen(x.id);dock.append(c);});}
+  const L=show?camLive():[];
+  // câmera dentro da foto do jogador (celular, partida 1x1)
+  document.querySelectorAll('.camav').forEach(a=>{const x=L.find(y=>y.id===a.dataset.cam);if(!x||camSlotEl(x.id)!==a){a.classList.remove('camav');const v=a.querySelector('video.cav');if(v){v.srcObject=null;v.remove();}delete a.dataset.cam;}});
+  const T=[],B=[];
+  L.forEach(x=>{const el=camSlotEl(x.id);
+    if(el){if(el.dataset.cam!==x.id||!el.querySelector('video.cav')){el.querySelectorAll('video.cav').forEach(v=>v.remove());el.dataset.cam=x.id;el.classList.add('camav');const v=camVid(x.st,x.me);v.classList.add('cav');v.onclick=e=>{e.stopPropagation();camOpen(x.id);};el.append(v);}return;}
+    (x.id===camBottomId()?B:T).push(x);});
+  [['camDockT','top',T],['camDockB','bot',B]].forEach(([id,pos,arr])=>{const d=camDock(id,pos);d.style.display=arr.length?'':'none';
+    const ids=arr.map(x=>x.id).join(',');if(d.dataset.ids===ids)return;d.dataset.ids=ids;d.innerHTML='';
+    arr.forEach(x=>{const c=h('button','cbub'+(x.me?' me':''));c.append(camVid(x.st,x.me),h('small',null,esc(camName(x.id))));c.onclick=()=>camOpen(x.id);d.append(c);});});
   if(CAM.open&&!L.some(x=>x.id===CAM.open))camClose();
 }
 function camOpen(id){const x=camLive().find(y=>y.id===id);if(!x)return;CAM.open=id;
   let w=$('#camWin');if(!w){w=h('div');w.id='camWin';document.body.append(w);}
   w.innerHTML=`<div class="cwbar"><b>${x.me?'📷 Você ao vivo':'📷 '+esc(camName(id))}</b><span class="cwact"></span><button class="cwx" aria-label="Fechar">✕</button></div>`;
-  const v=document.createElement('video');v.autoplay=true;v.muted=true;v.playsInline=true;v.setAttribute('playsinline','');v.srcObject=x.st;if(x.me)v.classList.add('mir');w.append(v);v.play().catch(()=>{});
+  const v=camVid(x.st,x.me);w.append(v);
   const act=w.querySelector('.cwact');
   if(x.me){const b=h('button',null,'Desligar');b.onclick=()=>{camStop();toast('📷 Câmera desligada');};act.append(b);}
-  else if(NET.host&&!NET.spec){const b=h('button',null,'🚫 Desligar a câmera dele');b.onclick=()=>{roomPub({t:'camoff',to:id});toast('Pedido enviado: câmera de '+camName(id)+' desligada');camClose();};act.append(b);}
+  else if(NET.host&&!NET.spec){const b=h('button',null,'🚫 Desligar a câmera dele');b.onclick=()=>{roomPub({t:'camoff',to:id});toast('Câmera de '+camName(id)+' desligada');camClose();};act.append(b);}
   w.querySelector('.cwx').onclick=camClose;w.style.display='';
   const bar=w.querySelector('.cwbar');let d=null;
   bar.onpointerdown=e=>{if(e.target.closest('button'))return;const r=w.getBoundingClientRect();d={x:e.clientX-r.left,y:e.clientY-r.top};try{bar.setPointerCapture(e.pointerId);}catch(_){}};
@@ -2892,10 +2915,16 @@ function camOpen(id){const x=camLive().find(y=>y.id===id);if(!x)return;CAM.open=
 }
 function camClose(){CAM.open=null;const w=$('#camWin');if(w){w.style.display='none';w.querySelectorAll('video').forEach(v=>v.srcObject=null);}}
 function onCamMsg(o){
+  const fromHost=o.from===camHost();
   if(o.t==='cam'){setTimeout(camUI,600);return true;}
-  if(o.t==='camoff'){if(o.to===S.uid&&NET.players[0]&&o.from===NET.players[0].id&&CAM.on){camStop();modal('📷 Câmera desligada','O dono da sala desligou sua câmera.',[{t:'OK',pri:1}]);}return true;}
+  if(o.t==='camask'){if(!NET.host||NET.spec||!NET.players.some(p=>p.id===o.from))return true;const nm=camName(o.from);
+    modal('📷 Pedido de câmera',`<b style="color:var(--txt)">${esc(nm)}</b> quer abrir a câmera nesta partida.`,
+      [{t:'Recusar',f:()=>roomPub({t:'camno',to:o.from})},{t:'📷 Liberar',pri:1,f:()=>{roomPub({t:'camok',to:o.from});toast('Câmera liberada pra '+nm);}}]);return true;}
+  if(o.t==='camok'){if(o.to!==S.uid||!fromHost)return true;CAM.okd=true;CAM.asked=false;camUI();toast('✅ O dono da sala liberou sua câmera');if(!CAM.on)camStart();return true;}
+  if(o.t==='camno'){if(o.to!==S.uid||!fromHost)return true;CAM.asked=false;camUI();toast('O dono da sala não liberou a câmera agora');return true;}
+  if(o.t==='camoff'){if(o.to===S.uid&&fromHost){CAM.okd=false;CAM.asked=false;if(CAM.on){camStop();modal('📷 Câmera desligada','O dono da sala desligou sua câmera.',[{t:'OK',pri:1}]);}}return true;}
   return false;}
-setInterval(()=>{if(NET.on)camUI();else if(CAM.on)camStop();},1500);
+setInterval(()=>{if(NET.on)camUI();else{CAM.okd=false;CAM.asked=false;if(CAM.on)camStop();else{const a=$('#camDockT'),b=$('#camDockB');if(a)a.style.display='none';if(b)b.style.display='none';}}},1500);
 
 /* ========== MODERAÇÃO: TERMOS RESTRITOS ========== */
 const MOD_CATS={
