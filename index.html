@@ -2726,19 +2726,24 @@ const bLet=n=>'BINGO'[Math.floor((n-1)/15)];
 function bEval(card,set){const hit=i=>card[i]===0||set.has(card[i]);let lineMiss=9,best=null;
   for(const L of BLINES){const m=L.filter(i=>!hit(i)).length;if(m<lineMiss){lineMiss=m;best=L;}}
   const fullMiss=card.filter((n,i)=>!hit(i)).length;return{lineMiss,fullMiss,best};}
-const BG={round:-1,ks:[],next:0,auto:true,snd:true,joins:new Map(),win:{line:[],full:[]},first:{line:null,full:null},shown:-1,manual:new Set(),
+const BG={watch:new Map(),lastJ:0,replied:new Set(),round:-1,ks:[],next:0,auto:true,snd:true,joins:new Map(),win:{line:[],full:[]},first:{line:null,full:null},shown:-1,manual:new Set(),
   lastSpoken:-1,iv:null,pend:0,rank:new Map(),said:{}};
 function bNow(){const sl=bSlot(),t=Date.now(),r=Math.floor(t/sl),el=t-r*sl;const ms=BCFG().ms;
   let n=el<BJOIN?0:Math.min(75,Math.floor((el-BJOIN)/ms)+1);return{r,el,sl,n,ms,toDraw:BJOIN-el,toNext:sl-el};}
 function bDrawn(){const N=bNow();let n=N.n;if(BG.round===N.r&&BG.first.full)n=Math.min(n,BG.first.full.idx);return n;}
 function bTopic(r){return TOP.bingo+'/'+r;}
 function bResetRound(r){
-  if(BG.round>=0)busUnsub(bTopic(BG.round));BG.round=r;BG.joins=new Map();BG.win={line:[],full:[]};BG.first={line:null,full:null};BG.manual=new Set();BG.lastSpoken=-1;BG.said={};
+  if(BG.round>=0)busUnsub(bTopic(BG.round));BG.round=r;BG.joins=new Map();BG.replied=new Set();BG.win={line:[],full:[]};BG.first={line:null,full:null};BG.manual=new Set();BG.lastSpoken=-1;BG.said={};
   BG.seenStart=bNow().el<BJOIN;
   BG.ks=[];if(BG.pend){const m=Math.min(BG.pend,BCFG().max);BG.ks=[...Array(m)].map((_,i)=>i);BG.pend=0;}
   busSub(bTopic(r));if(BG.ks.length)bJoinPub();bRender(true);
 }
-function bJoinPub(){if(!BG.ks.length)return;busPub(bTopic(BG.round),{t:'j',ks:BG.ks,name:S.name,thumb:thumb(),cos:myCos()});}
+function bJoinPub(){BG.lastJ=Date.now();if(!BG.ks.length){if($('#bingo').classList.contains('on'))busPub(bTopic(BG.round),{t:'v',name:S.name,thumb:thumb()});return;}busPub(bTopic(BG.round),{t:'j',ks:BG.ks,name:S.name,thumb:thumb(),cos:myCos()});}
+function bReply(id){if(id===S.uid||BG.replied.has(id))return;BG.replied.add(id);if(!$('#bingo').classList.contains('on')&&!BG.ks.length)return;setTimeout(bJoinPub,300+Math.random()*1200);}
+function bPeople(){const el=$('#bgPeople');if(!el)return;const J=[...BG.joins.values()],W=[...BG.watch.values()].filter(w=>!BG.joins.has(w.id));
+  const meW=!BG.ks.length&&$('#bingo').classList.contains('on');const nJ=J.length+(BG.ks.length&&!BG.joins.has(S.uid)?1:0),nW=W.length+(meW?1:0);
+  const A=[...J,...W].slice(0,10);el.innerHTML=`<div class="bgav">${A.map(()=>'<i class="av"></i>').join('')}</div><span>👥 <b>${nJ}</b> jogando${nW?` · 👀 <b>${nW}</b> na sala`:''}</span>`;
+  el.querySelectorAll('.av').forEach((a,i)=>setAv(a,A[i].thumb,A[i].name,'#4a1a7a',A[i].id));}
 function bTick(){
   const N=bNow();const open=$('#bingo').classList.contains('on');
   if(N.r!==BG.round&&(open||BG.ks.length||BG.pend||$('#lobby').classList.contains('on')))bResetRound(N.r);
@@ -2747,7 +2752,8 @@ function bTick(){
   const n=bDrawn();
   if(n!==BG.shown){const was=BG.shown;BG.shown=n;if(n>0&&was>=0&&n>was&&open)bAnnounce(bBalls(BG.round)[n-1]);bRender(false);bCheckMine();}
   else if(open)bPhase(N);
-  if(open&&N.el%10000<300&&BG.ks.length)bJoinPub();
+  if(open&&Date.now()-BG.lastJ>8000)bJoinPub();
+  {const now=Date.now();for(const [k,v] of BG.watch)if(now-v.t>25000||BG.joins.has(k))BG.watch.delete(k);}
 }
 function bPhase(N){const ph=$('#bgPhase');if(!ph)return;const f=s=>Math.floor(s/60000)+':'+String(Math.floor(s%60000/1000)).padStart(2,'0');
   if(N.el<BJOIN)ph.innerHTML=`<b>Pegue suas cartelas!</b><span>Sorteio começa em <em>${f(N.toDraw)}</em></span>`;
@@ -2771,8 +2777,7 @@ function bRender(full){
   $('#bgRew').innerHTML=cfg.rew?`🎁 ${esc(cfg.rew)}`:'';
   const sp=$('#bgSp');sp.innerHTML=cfg.spName?`<button class="bgspon">${cfg.spLogo?`<img src="${cfg.spLogo}" alt="">`:'🤝'}<span><small>RODADA PATROCINADA POR</small><b>${esc(cfg.spName)}</b></span>${cfg.spLink?'<em>Ver →</em>':''}</button>`:'';
   const spb=sp.querySelector('button');if(spb&&cfg.spLink)spb.onclick=()=>goLink(cfg.spLink);
-  const J=[...BG.joins.values()];$('#bgPeople').innerHTML=`<div class="bgav">${J.slice(0,8).map(()=>'<i class="av"></i>').join('')}</div><span>👥 <b>${J.length+(BG.ks.length&&!BG.joins.has(S.uid)?1:0)}</b> jogando nesta rodada</span>`;
-  $('#bgPeople').querySelectorAll('.av').forEach((a,i)=>setAv(a,J[i].thumb,J[i].name,'#4a1a7a',J[i].id));
+  bPeople();
   // cartelas
   const box=$('#bgCards'),ctl=$('#bgCtl');box.innerHTML='';ctl.innerHTML='';const joinOpen=N.el<BJOIN;
   BG.ks.forEach((k,ci)=>{const card=bCard(S.uid,r,k),ev=bEval(card,set);const el=h('div','bcard');
@@ -2819,7 +2824,8 @@ function onBingo(t,o,mine){
   if(o.t==='j'){const N=bNow();if(!Array.isArray(o.ks))return;const prev=BG.joins.get(o.from);cosSet(o.from,o.cos);
     if(!prev&&o.from!==S.uid&&o.cos&&o.cos.e&&$('#bingo').classList.contains('on'))showEntrance({id:o.from,name:o.name,photo:o.thumb,cos:o.cos},'chegou no Bingo');
     BG.joins.set(o.from,{id:o.from,name:String(o.name||'Jogador').slice(0,20),thumb:o.thumb,ks:o.ks.slice(0,4).map(Number),late:prev?prev.late:(N.el>=BJOIN&&N.r===r&&o.from!==S.uid&&BG.seenStart)});
-    bRender(false);return;}
+    BG.watch.delete(o.from);bReply(o.from);bRender(false);bPeople();return;}
+  if(o.t==='v'){if(o.from===S.uid)return;if(!BG.joins.has(o.from)){BG.watch.set(o.from,{id:o.from,name:String(o.name||'Jogador').slice(0,20),thumb:o.thumb,t:Date.now()});bReply(o.from);bPeople();}return;}
   if(o.t==='chat'){wcBingo('👤 '+(o.name||'Jogador'),modShow(String(o.text||'').slice(0,160)));return;}
   if(o.t==='emo'){fly(o.e,true);return;}
   if(o.t==='c'){if(!bValid(o,r,mine))return;const w=BG.win[o.kind];if(w.some(x=>x.uid===o.from))return;
