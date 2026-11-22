@@ -103,8 +103,10 @@ h2{margin:4px 0 12px;font-size:20px}
 .myh{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px}
 .myh button{padding:3px;background:none;border-radius:8px;opacity:.45}
 .myh button.ok{opacity:1;box-shadow:0 0 0 2px var(--acc)}
-#camWin{position:fixed;right:10px;top:90px;width:min(78vw,300px);z-index:70;background:#120a2a;border:2px solid #7c4dff;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px #000a}
-#camWin video{width:100%;display:block;background:#000;aspect-ratio:4/3;object-fit:cover}#camWin video.mir,.cbub video.mir,video.cav.mir{transform:scaleX(-1)}
+.camwin{position:fixed;display:block;width:min(62vw,250px);z-index:70;background:#120a2a;border:2px solid #7c4dff;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px #000a}
+.camwin.cwT{left:8px;top:118px}.camwin.cwB{right:8px;bottom:120px}
+.camwin video{width:100%;display:block;background:#000;aspect-ratio:4/3;object-fit:cover}.camwin video.mir,.cbub video.mir,video.cav.mir{transform:scaleX(-1)}
+.camav.cwopen video.cav{display:none}
 .camdock{position:fixed;z-index:60;display:flex;gap:6px}.camdock.top{right:8px;top:118px;flex-direction:row-reverse}.camdock.bot{right:8px;bottom:170px;flex-direction:row-reverse}
 .cbub{width:56px;height:56px;border-radius:50%;padding:0;overflow:hidden;position:relative;border:2px solid #ffc23d;background:#000;box-shadow:0 4px 14px #0008}
 .cbub video{width:100%;height:100%;object-fit:cover;display:block}
@@ -113,7 +115,7 @@ h2{margin:4px 0 12px;font-size:20px}
 video.cav{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;cursor:pointer;z-index:2;background:#000}
 @media(min-width:1000px){.camdock{--cw:clamp(120px,calc((100vw - 1010px)/2 - 16px),300px);flex-direction:column!important}
  .camdock.top{left:8px;right:auto;top:110px}.camdock.bot{right:8px;left:auto;top:auto;bottom:24px}
- .cbub{width:var(--cw);height:auto;aspect-ratio:4/3;border-radius:18px}.cbub small{font-size:13px;padding:3px}}
+ .cbub{width:var(--cw);height:auto;aspect-ratio:4/3;border-radius:18px;transition:width .2s}.cbub.big{width:min(calc(var(--cw) * 1.7),460px)}.cbub small{font-size:13px;padding:3px}}
 .cwbar{display:flex;align-items:center;gap:6px;padding:6px 8px;cursor:move;touch-action:none;font-size:13px}.cwbar b{flex:1;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cwact button,.cwx{padding:4px 8px;font-size:12px}
 .d4p{background:#ffffff12;border-radius:12px;padding:6px 10px;text-align:center;border:2px solid transparent}.d4p b{display:block;font-size:13px;color:var(--txt)}.d4p small{font-size:11px;color:var(--mut)}
@@ -2841,7 +2843,7 @@ document.addEventListener('click',()=>VOICE.audios.forEach(a=>{if(a.paused)a.pla
 
 /* ========== CÂMERA AO VIVO (opcional, só jogadores da mesa) ========== */
 const MAXCAMSPEC=4;
-const CAM={stream:null,on:false,send:new Map(),rem:new Map(),open:null,tick:null,okd:false,asked:false};
+const CAM={stream:null,on:false,send:new Map(),rem:new Map(),open:{T:null,B:null},pos:{},big:new Set(),tick:null,okd:false,asked:false};
 const camAllowed=id=>NET.players.some(p=>p.id===id)||(()=>{const i=NET.specs.findIndex(x=>x.id===id);return i>=0&&i<MAXCAMSPEC;})();
 const camName=id=>id===S.uid?'Você':((NET.players.find(p=>p.id===id)||{}).name||'Jogador');
 const camHost=()=>NET.players[0]&&NET.players[0].id;
@@ -2871,10 +2873,10 @@ async function camStart(){
 }
 function camStop(){clearInterval(CAM.tick);[...CAM.send.keys()].forEach(camDetach);
   if(CAM.stream)CAM.stream.getTracks().forEach(t=>t.stop());CAM.stream=null;
-  if(CAM.on&&NET.on)roomPub({t:'cam',on:false});CAM.on=false;if(CAM.open===S.uid)camClose();camUI();}
+  if(CAM.on&&NET.on)roomPub({t:'cam',on:false});CAM.on=false;camCloseId(S.uid);camUI();}
 function camTrack(peer,ev){const tr=ev.track;const st=ev.streams[0]||new MediaStream([tr]);CAM.rem.set(peer,{tr,st});
   tr.onmute=camUI;tr.onunmute=camUI;tr.onended=()=>{CAM.rem.delete(peer);camUI();};camUI();}
-function camDrop(id){CAM.rem.delete(id);if(CAM.open===id)camClose();camUI();}
+function camDrop(id){CAM.rem.delete(id);camCloseId(id);camUI();}
 function camLive(){const L=[];if(CAM.on&&CAM.stream)L.push({id:S.uid,st:CAM.stream,me:true});
   CAM.rem.forEach((v,id)=>{if(v.tr.readyState==='live'&&!v.tr.muted)L.push({id,st:v.st});});return L;}
 // quem fica "embaixo": para o jogador é ele mesmo; para a plateia é o dono da sala
@@ -2893,27 +2895,37 @@ function camUI(){
   document.querySelectorAll('.camav').forEach(a=>{const x=L.find(y=>y.id===a.dataset.cam);if(!x||camSlotEl(x.id)!==a){a.classList.remove('camav');const v=a.querySelector('video.cav');if(v){v.srcObject=null;v.remove();}delete a.dataset.cam;}});
   const T=[],B=[];
   L.forEach(x=>{const el=camSlotEl(x.id);
-    if(el){if(el.dataset.cam!==x.id||!el.querySelector('video.cav')){el.querySelectorAll('video.cav').forEach(v=>v.remove());el.dataset.cam=x.id;el.classList.add('camav');const v=camVid(x.st,x.me);v.classList.add('cav');v.onclick=e=>{e.stopPropagation();camOpen(x.id);};el.append(v);}return;}
+    if(el){if(el.dataset.cam!==x.id||!el.querySelector('video.cav')){el.querySelectorAll('video.cav').forEach(v=>v.remove());el.dataset.cam=x.id;el.classList.add('camav');const v=camVid(x.st,x.me);v.classList.add('cav');v.onclick=e=>{e.stopPropagation();camOpen(x.id);};el.append(v);}el.classList.toggle('cwopen',camIsOpen(x.id));return;}
     (x.id===camBottomId()?B:T).push(x);});
-  [['camDockT','top',T],['camDockB','bot',B]].forEach(([id,pos,arr])=>{const d=camDock(id,pos);d.style.display=arr.length?'':'none';
-    const ids=arr.map(x=>x.id).join(',');if(d.dataset.ids===ids)return;d.dataset.ids=ids;d.innerHTML='';
-    arr.forEach(x=>{const c=h('button','cbub'+(x.me?' me':''));c.append(camVid(x.st,x.me),h('small',null,esc(camName(x.id))));c.onclick=()=>camOpen(x.id);d.append(c);});});
-  if(CAM.open&&!L.some(x=>x.id===CAM.open))camClose();
+  const wide=camWide();
+  [['camDockT','top',T],['camDockB','bot',B]].forEach(([id,pos,arr])=>{const d=camDock(id,pos);const vis=wide?arr:arr.filter(x=>!camIsOpen(x.id));d.style.display=vis.length?'':'none';
+    const ids=vis.map(x=>x.id+(CAM.big.has(x.id)?'+':'')).join(',')+(wide?'w':'');if(d.dataset.ids===ids)return;d.dataset.ids=ids;d.innerHTML='';
+    vis.forEach(x=>{const c=h('button','cbub'+(x.me?' me':'')+(wide&&CAM.big.has(x.id)?' big':''));c.append(camVid(x.st,x.me),h('small',null,esc(camName(x.id))+(wide?(CAM.big.has(x.id)?' · toque pra diminuir':' · toque pra aumentar'):'')));
+      c.onclick=()=>{if(camWide()){if(CAM.big.has(x.id))CAM.big.delete(x.id);else CAM.big.add(x.id);camUI();}else camOpen(x.id);};d.append(c);});});
+  ['T','B'].forEach(k=>{const id=CAM.open[k];if(id&&(wide||!L.some(x=>x.id===id)))camCloseSlot(k);});
 }
-function camOpen(id){const x=camLive().find(y=>y.id===id);if(!x)return;CAM.open=id;
-  let w=$('#camWin');if(!w){w=h('div');w.id='camWin';document.body.append(w);}
+const camSlotOf=id=>id===camBottomId()?'B':'T';
+const camIsOpen=id=>CAM.open.T===id||CAM.open.B===id;
+function camOpen(id){const x=camLive().find(y=>y.id===id);if(!x)return;
+  if(camWide()){if(CAM.big.has(id))CAM.big.delete(id);else CAM.big.add(id);camUI();return;}
+  const k=camSlotOf(id);CAM.open[k]=id;
+  let w=$('#camWin'+k);if(!w){w=h('div','camwin '+(k==='T'?'cwT':'cwB'));w.id='camWin'+k;document.body.append(w);}
   w.innerHTML=`<div class="cwbar"><b>${x.me?'📷 Você ao vivo':'📷 '+esc(camName(id))}</b><span class="cwact"></span><button class="cwx" aria-label="Fechar">✕</button></div>`;
-  const v=camVid(x.st,x.me);w.append(v);
+  w.append(camVid(x.st,x.me));
   const act=w.querySelector('.cwact');
   if(x.me){const b=h('button',null,'Desligar');b.onclick=()=>{camStop();toast('📷 Câmera desligada');};act.append(b);}
-  else if(NET.host&&!NET.spec){const b=h('button',null,'🚫 Desligar a câmera dele');b.onclick=()=>{roomPub({t:'camoff',to:id});toast('Câmera de '+camName(id)+' desligada');camClose();};act.append(b);}
-  w.querySelector('.cwx').onclick=camClose;w.style.display='';
+  else if(NET.host&&!NET.spec){const b=h('button',null,'🚫 Desligar');b.onclick=()=>{roomPub({t:'camoff',to:id});toast('Câmera de '+camName(id)+' desligada');camCloseSlot(k);};act.append(b);}
+  w.querySelector('.cwx').onclick=()=>camCloseSlot(k);w.style.display='';
+  const p=CAM.pos[k];if(p){w.style.left=p.l+'px';w.style.top=p.t+'px';w.style.right='auto';w.style.bottom='auto';}else{w.style.left=w.style.top=w.style.right=w.style.bottom='';}
   const bar=w.querySelector('.cwbar');let d=null;
   bar.onpointerdown=e=>{if(e.target.closest('button'))return;const r=w.getBoundingClientRect();d={x:e.clientX-r.left,y:e.clientY-r.top};try{bar.setPointerCapture(e.pointerId);}catch(_){}};
-  bar.onpointermove=e=>{if(!d)return;w.style.left=Math.max(0,Math.min(innerWidth-w.offsetWidth,e.clientX-d.x))+'px';w.style.top=Math.max(0,Math.min(innerHeight-w.offsetHeight,e.clientY-d.y))+'px';w.style.right='auto';w.style.bottom='auto';};
+  bar.onpointermove=e=>{if(!d)return;const l=Math.max(0,Math.min(innerWidth-w.offsetWidth,e.clientX-d.x)),tp=Math.max(0,Math.min(innerHeight-w.offsetHeight,e.clientY-d.y));
+    w.style.left=l+'px';w.style.top=tp+'px';w.style.right='auto';w.style.bottom='auto';CAM.pos[k]={l,t:tp};};
   bar.onpointerup=bar.onpointercancel=()=>{d=null;};
+  camUI();
 }
-function camClose(){CAM.open=null;const w=$('#camWin');if(w){w.style.display='none';w.querySelectorAll('video').forEach(v=>v.srcObject=null);}}
+function camCloseSlot(k){CAM.open[k]=null;const w=$('#camWin'+k);if(w){w.style.display='none';w.querySelectorAll('video').forEach(v=>v.srcObject=null);}camUI();}
+function camCloseId(id){['T','B'].forEach(k=>{if(CAM.open[k]===id)camCloseSlot(k);});CAM.big.delete(id);}
 function onCamMsg(o){
   const fromHost=o.from===camHost();
   if(o.t==='cam'){setTimeout(camUI,600);return true;}
