@@ -3822,16 +3822,30 @@ function cloudUI(){const el=$('#cloudCard');if(!el)return;
     return;}
   el.innerHTML=`<b class="ct">☁️ Salve sua conta</b><div style="color:var(--mut);font-size:13px;margin:6px 0 10px">Entre com e-mail e senha pra não perder saldo, acessórios e perfil se trocar de celular.</div>
     <input type="email" id="clEm" placeholder="Seu e-mail" autocomplete="email"><input type="password" id="clPw" placeholder="Senha (mínimo 6)" autocomplete="current-password" style="margin-top:8px">
-    <div class="row" style="margin-top:10px"><button id="clIn" class="pri">Entrar</button><button id="clUp">Criar conta</button></div>`;
+    <div class="row" style="margin-top:10px"><button id="clIn" class="pri">Entrar</button><button id="clUp">Criar conta</button></div>
+    <button id="clFg" style="width:100%;margin-top:8px;background:none;border:none;color:var(--mut);text-decoration:underline">Esqueci a senha</button>`;
+  el.querySelector('#clFg').onclick=async()=>{const em=el.querySelector('#clEm').value.trim();if(!/^\S+@\S+\.\S+$/.test(em)){toast('Digite seu e-mail no campo acima primeiro');return;}
+    try{await clAuth('recover?redirect_to='+encodeURIComponent(location.origin+location.pathname),{email:em});
+      modal('📧 Confira seu e-mail',`Se existir conta com <b style="color:var(--txt)">${esc(em)}</b>, chegou um e-mail com um link. Toque nele: o app abre e pede a senha nova.<br><br><small>Pode cair no Spam. O link vale por pouco tempo.</small>`,[{t:'OK',pri:1}]);}
+    catch(e){toast(e.message);}};
   const go2=async(novo)=>{const em=el.querySelector('#clEm').value.trim(),pw=el.querySelector('#clPw').value;
     if(!/^\S+@\S+\.\S+$/.test(em)){toast('Digite um e-mail válido');return;}if(pw.length<6){toast('A senha precisa ter pelo menos 6 caracteres');return;}
     el.querySelectorAll('button').forEach(b=>b.disabled=true);
-    try{let d;if(novo){d=await clAuth('signup',{email:em,password:pw});
+    try{let d;if(novo){d=await clAuth('signup',{email:em,password:pw,data:{app:'arena'}});
         if(!d.access_token){toast('Conta criada! Confira seu e-mail para confirmar e depois toque em Entrar');cloudUI();return;}}
       else d=await clAuth('token?grant_type=password',{email:em,password:pw});
       clSet(d);toast(novo?'Conta criada!':'Bem-vindo de volta!');await cloudAfterLogin();}
     catch(e){toast(e.message);cloudUI();}};
   el.querySelector('#clIn').onclick=()=>go2(false);el.querySelector('#clUp').onclick=()=>go2(true);}
+(function(){const hp=new URLSearchParams((location.hash||'').slice(1));if(!hp.get('access_token'))return;
+  const ty=hp.get('type');clSet({access_token:hp.get('access_token'),refresh_token:hp.get('refresh_token'),expires_in:+hp.get('expires_in')||3600});
+  try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+  fetch(SB.url+'/auth/v1/user',{headers:{apikey:SB.key,Authorization:'Bearer '+CL.ses.at}}).then(r=>r.json()).then(u=>{if(u&&u.email){CL.ses.email=u.email;clSave();cloudUI();}}).catch(()=>{});
+  if(ty==='recovery')setTimeout(()=>{const b=h('div');b.innerHTML='Digite a senha nova (mínimo 6):<input type="password" id="clNp" style="margin-top:10px" autocomplete="new-password">';
+    modal('🔑 Nova senha',b,[{t:'Salvar senha',pri:1,f:async()=>{const pw=b.querySelector('#clNp').value;if(pw.length<6){toast('A senha precisa ter pelo menos 6 caracteres');return;}
+      const r=await fetch(SB.url+'/auth/v1/user',{method:'PUT',headers:{apikey:SB.key,Authorization:'Bearer '+CL.ses.at,'Content-Type':'application/json'},body:JSON.stringify({password:pw})});
+      if(r.ok){toast('✅ Senha trocada! Você já está conectado');cloudAfterLogin();}else toast('Não deu pra trocar a senha. Peça o link de novo.');}}]);},1500);
+  else setTimeout(cloudAfterLogin,1500);})();
 cloudUI();if(CL.ses)setTimeout(cloudPush,5000);
 
 /* ========== INSTALAR (PWA) ========== */
