@@ -3073,7 +3073,8 @@ const GIFTS=[
  {id:'carro',n:'Carrão',e:'🏎️',c:200},{id:'dragao',n:'Dragão',e:'🐉',c:500},{id:'castelo',n:'Castelo',e:'🏰',c:1000}
 ];
 // Quando as artes chegarem, cada presente ganha a imagem: GIFT_IMG.rosa='img/presentes/rosa.png'
-const GIFT_IMG={};
+const GIFT_IMG={};GIFTS.forEach(g=>GIFT_IMG[g.id]='img/presentes/'+g.id+'.webp');
+(function(){GIFTS.forEach(g=>{const i=new Image();i.src=GIFT_IMG[g.id];});})();
 const GEM_GANHO={dia:30,partida:5,vitoria:10,inicio:100};
 if(S.gem==null){S.gem=GEM_GANHO.inicio;S.charm=0;S.giftIn=0;S.giftOut=0;}
 function gemAdd(n,why){S.gem=(S.gem||0)+n;save();if(why)toast(`💎 +${n} diamantes — ${why}`);}
