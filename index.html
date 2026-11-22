@@ -181,6 +181,12 @@ video.cav{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;bord
 .livepane video.lvid,#liveFull>video.lvid{width:100%;height:100%;object-fit:cover;display:block;background:#000}
 video.lvid.mir{transform:scaleX(-1)}
 .lnov{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#fff;background:radial-gradient(circle,#3a1260,#0b0620)}.lnov small{color:var(--mut)}
+body.lvduo #camDockT,body.lvduo #camDockB,body.lvduo .camwin{display:none!important}
+.lduo{display:flex;height:100%;gap:2px;background:#000}.lduo>.lhalf{flex:1;position:relative;min-width:0;overflow:hidden}
+.lhalf video.lvid{width:100%;height:100%;object-fit:cover;display:block}.lhalf .lnov{height:100%}
+.lhalf .lnm{position:absolute;left:0;right:0;bottom:0;padding:14px 6px 5px;text-align:center;font-size:12px;font-weight:800;color:#fff;background:linear-gradient(0deg,#000c,#0000);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lduo .lvs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#fff;background:linear-gradient(135deg,#ff2d55,#7a1cff);border:2px solid #fff;box-shadow:0 0 14px #ff2d55}
+#liveFull>.lduo{position:absolute;inset:0}#liveFull .lhalf .lnm{bottom:70px;font-size:15px}
 .ltag{position:absolute;left:8px;top:8px;padding:3px 9px;border-radius:999px;background:#ff2d55;color:#fff;font-size:12px;font-weight:800;box-shadow:0 0 10px #ff2d55}
 .lguests{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px;z-index:2}
 .lguest{position:relative;width:86px;height:64px;border-radius:12px;overflow:hidden;border:2px solid #ffc23d;background:#111;display:flex;align-items:center;justify-content:center}
@@ -3033,14 +3039,21 @@ function onLiveMsg(o){
   if(o.t==='liveno'){if(o.to!==S.uid||!fromHost)return true;LIVE.asked=false;liveUI();toast(o.full?'A live já está cheia (2 convidados)':'O dono da live não aceitou agora');return true;}
   if(o.t==='liveleave'){if(NET.host&&LIVE.guests.includes(o.from)){LIVE.guests=LIVE.guests.filter(x=>x!==o.from);livePub();liveUI();}return true;}
   return false;}
+function liveOpp(){const host=liveHostId();if(!NET.players||NET.players.length!==2)return null;const o=NET.players.find(p=>p.id!==host);return o?o.id:null;}
+function liveDuo(L,host,opp,full){const d=h('div','lduo');[host,opp].forEach(id=>{const v=L.find(x=>x.id===id);const half=h('div','lhalf');
+    if(v)half.append(liveVid(v.st,v.me));else half.append(h('div','lnov',`<b style="font-size:26px">📷</b><small>${id===host?'câmera carregando…':'câmera desligada'}</small>`));
+    half.append(h('div','lnm',(id===host?'🔴 ':'')+esc(camName(id))));d.append(half);});
+  d.append(h('div','lvs','VS'));return d;}
 function liveVid(st,mir){const v=camVid(st,mir);v.classList.add('lvid');return v;}
 function liveUI(){
   const panes=[$('#livePane'),$('#wLivePane')];const show=NET.on&&LIVE.on;
   const L=show?camLive():[];const host=liveHostId();const hv=L.find(x=>x.id===host);const gs=LIVE.guests.map(id=>L.find(x=>x.id===id)||{id,none:1});
-  const key=[show,hv&&hv.id,gs.map(g=>g.id+(g.none?'-':'')).join(),LIVE.asked,NET.host,LIVE.guests.includes(S.uid)].join('|');
+  const opp=show?liveOpp():null;const ov=opp&&L.find(x=>x.id===opp);
+  document.body.classList.toggle('lvduo',!!opp);
+  const key=[show,hv&&hv.id,opp,ov&&ov.id,gs.map(g=>g.id+(g.none?'-':'')).join(),LIVE.asked,NET.host,LIVE.guests.includes(S.uid)].join('|');
   panes.forEach(p=>{if(!p)return;p.style.display=show?'':'none';if(!show||p.dataset.k===key)return;p.dataset.k=key;p.innerHTML='';
     const main=h('div','lmain');
-    if(hv){main.append(liveVid(hv.st,hv.me));}else main.append(h('div','lnov',`<b>🔴 ${esc(camName(host))}</b><small>${NET.spec?'Live com vídeo cheia — você está ouvindo':'câmera carregando…'}</small>`));
+    if(opp)main.append(liveDuo(L,host,opp));else if(hv){main.append(liveVid(hv.st,hv.me));}else main.append(h('div','lnov',`<b>🔴 ${esc(camName(host))}</b><small>${NET.spec?'Live com vídeo cheia — você está ouvindo':'câmera carregando…'}</small>`));
     main.append(h('span','ltag','🔴 AO VIVO · '+esc(camName(host))));main.onclick=()=>liveFull(true);p.append(main);
     if(gs.length){const gw=h('div','lguests');gs.forEach(g=>{const b=h('div','lguest');if(!g.none)b.append(liveVid(g.st,g.me));else b.append(h('span','lnog','📷'));b.append(h('small',null,esc(camName(g.id))));
       if(NET.host&&!NET.spec){const x=h('button','lkick','✕');x.title='Tirar da live';x.onclick=e=>{e.stopPropagation();liveKick(g.id);};b.append(x);}gw.append(b);});p.append(gw);}
@@ -3056,9 +3069,10 @@ function liveUI(){
 function liveFull(on,refresh){
   if(!on||!(NET.on&&LIVE.on)){LIVE.full=false;const fo=$('#liveFull');if(fo)fo.remove();return;}
   LIVE.full=true;const L=camLive(),host=liveHostId(),hv=L.find(x=>x.id===host);
-  let fo=$('#liveFull');const key=[hv&&hv.id,LIVE.guests.join(),LIVE.asked].join('|');if(fo&&fo.dataset.k===key)return;
+  const opp=liveOpp(),ov=opp&&L.find(x=>x.id===opp);
+  let fo=$('#liveFull');const key=[hv&&hv.id,opp,ov&&ov.id,LIVE.guests.join(),LIVE.asked].join('|');if(fo&&fo.dataset.k===key)return;
   if(!fo){fo=h('div');fo.id='liveFull';document.body.append(fo);}fo.dataset.k=key;fo.innerHTML='';
-  if(hv)fo.append(liveVid(hv.st,hv.me));else fo.append(h('div','lnov',`<b>🔴 ${esc(camName(host))}</b><small>ouvindo a live</small>`));
+  if(opp)fo.append(liveDuo(L,host,opp,1));else if(hv)fo.append(liveVid(hv.st,hv.me));else fo.append(h('div','lnov',`<b>🔴 ${esc(camName(host))}</b><small>ouvindo a live</small>`));
   fo.append(h('div','lftop',`<span class="ltag">🔴 AO VIVO · ${esc(camName(host))}</span>`));
   const x=h('button','lfx','✕');x.onclick=()=>liveFull(false);fo.querySelector('.lftop').append(x);
   if(LIVE.guests.length){const gw=h('div','lfguests');LIVE.guests.forEach(id=>{const g=L.find(y=>y.id===id);const b=h('div','lguest');if(g)b.append(liveVid(g.st,g.me));else b.append(h('span','lnog','📷'));b.append(h('small',null,esc(camName(id))));gw.append(b);});fo.append(gw);}
