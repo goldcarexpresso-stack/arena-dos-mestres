@@ -173,6 +173,8 @@ video.cav{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;bord
 @keyframes ePlate{0%{opacity:0;transform:translateX(-50%) translateY(30px) scale(.8)}14%{opacity:1;transform:translateX(-50%) scale(1.04)}22%{transform:translateX(-50%) scale(1)}86%{opacity:1}100%{opacity:0;transform:translateX(-50%) scale(.96)}}
 .ent-ew_unicornio .entbg{background:radial-gradient(circle at 50% 40%,#ff9ad8aa,#3a1a7aee 60%)}
 .lvprev{margin:8px 0 4px;border-radius:14px;overflow:hidden;border:2px solid #ff2d55;height:150px}.lvprev video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.backcard{border:2px solid #ffc23d;background:linear-gradient(135deg,#3a2a06,#160c36);box-shadow:0 0 14px #ffc23d44}.backcard b{display:block;font-size:16px}.backcard small{color:var(--mut);display:block;margin:4px 0 10px}
+#opbar.subon{border-color:#ff9f1a!important;box-shadow:0 0 12px #ff9f1a55}#opbar.subon small{color:#ffcf7a}
 .livepane{position:relative;margin:6px 0 8px;border-radius:18px;overflow:hidden;background:#000;border:2px solid #ff2d55;box-shadow:0 0 18px #ff2d5566}
 .livepane .lmain{position:relative;height:30vh;max-height:300px;min-height:170px;cursor:pointer}
 .livepane video.lvid,#liveFull>video.lvid{width:100%;height:100%;object-fit:cover;display:block;background:#000}
@@ -1056,6 +1058,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
   <div id="onStrip"></div>
   <button id="bagCard" class="bagcard phbg" data-img="bag" style="display:none!important"></button>
   <button id="bingoCard" class="bingocard phbg" data-img="bingo" style="display:none"></button>
+  <div id="backCard" class="card backcard" style="display:none"></div>
   <div class="sec1"><h2>Escolha o jogo</h2><span>5 jogos + torneios</span></div>
   <div class="grid" id="games"></div>
   <div class="card livecard" id="liveCard"></div>
@@ -1792,6 +1795,7 @@ let RKW=weekId(),RKM=monthId();
 setInterval(()=>{const w=weekId(),m=monthId();if(w!==RKW){busUnsub(TOP.rank(RKW)+'/+');RANK.clear();RKW=w;busSub(TOP.rank(w)+'/+');}
   if(m!==RKM){busUnsub(TOP.rank(RKM)+'/+');RANKM.clear();RKM=m;busSub(TOP.rank(m)+'/+');}renderRank();},60e3);
 /* W.O. só vale no ranking se a partida já tinha andado: uma rodada completa ou ~metade dos lances */
+const SUBOK=['dama','xadrez'];
 function woValid(){if(!M)return false;if((M.me||0)+(M.op||0)>=1)return true;const need={dama:24,xadrez:30,domino:M.duo?14:12,sinuca:8,ludo:30}[M.g&&M.g.id]||20;return (M.acts||0)>=need;}
 function addWeek(win){const k=myWeek(),m=myMonth();k.games++;m.games++;if(win){k.wins++;m.wins++;}save();pubRank();}
 function pubRank(){const k=myWeek(),m=myMonth(),base={name:S.name,thumb:thumb(),cos:myCos()};
@@ -2537,6 +2541,12 @@ function onRoom(o){
     if(!NET.host)return;
     if(isBlk(o.from)){roomPub({t:'full',to:o.from});return;}
     if(NET.players.some(p=>p.id===o.from)){pubRoster();return;}
+    if(NET.started&&M&&M.subOn&&M.subOn.id===o.from&&!M.over){
+      NET.players.push({id:o.from,name:(o.info&&o.info.name)||M.subOn.name,photo:o.info&&o.info.photo,cos:o.info&&o.info.cos});
+      const snap=M.snap?M.snap():null;if(M.sub)M.sub(false);const nm=M.subOn.name;M.subOn=null;
+      if(snap)snap.side=snap.side==='A'?'B':'A';
+      roomPub({t:'resume',to:o.from,snap,score:{me:M.op,op:M.me},round:M.round,players:NET.players,woOK:M.woOK?1:0});pubRoster();drawBars();
+      toast('🙌 '+nm+' voltou — o robô saiu e ele continua a partida');return;}
     if(NET.started||NET.players.length>=NET.max){roomPub({t:'full',to:o.from});return;}
     const ntm=NET.game&&NET.game.duo?(NET.players.filter(x=>x.tm==='B').length<NET.players.filter(x=>(x.tm||'A')==='A').length?'B':'A'):undefined;
     NET.players.push({id:o.from,name:(o.info&&o.info.name)||'Jogador',photo:o.info&&o.info.photo,cos:o.info&&o.info.cos,tm:ntm});
@@ -2549,6 +2559,12 @@ function onRoom(o){
     NET.players=o.players;NET.max=o.max;rosterExtra(o);entCheck();clearInterval(NET.joinT);if(!NET.started)renderRoom();return;
   }
   if(o.t==='full'&&o.to===S.uid&&!NET.players.some(p=>p.id===S.uid)){netLeave(false);modal('Sala cheia','Essa partida já começou ou não tem mais vaga.',[{t:'OK',pri:1}]);return;}
+  if(o.t==='resume'&&o.to===S.uid){
+    if(o.players)NET.players=o.players;NET.started=true;presence();clearInterval(NET.joinT);$('#mod').classList.remove('on');
+    NET.rm=new Set();startNetMatch(NET.game);M.me=o.score.me|0;M.op=o.score.op|0;M.round=o.round|0;drawBars();delete S.back;save();
+    if(o.snap){const stg=$('#stage');stg.innerHTML='';st('');M.cleanup=GAMEFN[M.g.id](stg,roundEnd,netCtx({snap:o.snap,side:o.snap.side}));}
+    else st('Você voltou! A próxima rodada já vai começar…');
+    toast('🙌 Você voltou pra partida');return;}
   if(o.t==='start'&&!NET.host){
     if(o.players)NET.players=o.players;
     if(!NET.players.some(p=>p.id===S.uid))return;
@@ -2579,6 +2595,9 @@ function onBye(id){
     renderRoom();return;
   }
   if(M&&M.net&&!M.over&&NET.players.length>=2){toast(p.name+' saiu da partida');if(M.onLeave)M.onLeave(id);drawBars();return;}
+  if(M&&M.net&&!M.over&&NET.players.length===1&&SUBOK.includes(M.g.id)&&!M.duo){
+    M.woOK=woValid();M.subOn={id,name:p.name,photo:p.photo};if(M.sub)M.sub(true);NET.host=true;pubRoster();presence();drawBars();
+    toast('📴 '+p.name+' saiu — 🤖 um robô assumiu o lugar dele. Se ele voltar, ele continua.');return;}
   const wasPlaying=M&&M.net&&!M.over;
   if(M&&M.net){if(M.cleanup)M.cleanup();M.over=true;}
   const nq=NET.queue.map(id=>NET.specs.find(x=>x.id===id)).filter(Boolean)[0];
@@ -2597,6 +2616,7 @@ function onBye(id){
   modal('Sala encerrada','Os outros jogadores saíram.',[{t:'Voltar ao lobby',pri:1,f:()=>go('lobby')}]);
 }
 function netLeave(sendBye){
+  if(sendBye&&NET.on&&NET.started&&!NET.spec&&M&&M.net&&!M.over&&NET.players.length===2&&NET.game&&SUBOK.includes(NET.game.id)){S.back={room:NET.room,g:NET.game.id,t:Date.now()};save();}
   if(sendBye&&NET.on&&NET.room)roomPub({t:'bye'});
   clearInterval(NET.joinT);voiceClose();
   const r=NET.room;
@@ -2877,7 +2897,7 @@ function renderOwnerBingo(){const b=oDraft.bingo=Object.assign({on:true,ms:3500,
 function readOwnerBingo(){const b=oDraft.bingo||{};return{on:$('#obOn').checked,ms:+$('#obMs').value,max:+$('#obMax').value,rew:$('#obRew').value.trim(),spName:$('#obSp').value.trim(),spLink:$('#obSpL').value.trim(),spLogo:b.spLogo||null};}
 function netCtx(init){
   const idx=NET.players.findIndex(p=>p.id===S.uid);
-  return{net:true,side:idx===0?'A':'B',seat:idx,players:NET.players.map(p=>({id:p.id,name:p.name,tm:p.tm})),init,
+  return{net:true,sub:!!(M&&M.subOn),side:init&&init.side?init.side:(idx===0?'A':'B'),seat:idx,players:NET.players.map(p=>({id:p.id,name:p.name,tm:p.tm})),init,
     send:d=>{if(M)M.acts=(M.acts||0)+1;roomPub({t:'g',d});},
     share:data=>roomPub({t:'start',round:M.round,init:data,players:NET.players}),
     onMsg:fn=>{M.recv=fn;},onLeave:fn=>{M.onLeave=fn;}};
@@ -2948,6 +2968,13 @@ function voiceUI(){
 }
 document.addEventListener('click',()=>VOICE.audios.forEach(a=>{if(a.paused)a.play().catch(()=>{});}),true);
 
+/* voltar pra partida: quem saiu tem 15 min pra voltar; enquanto isso um robô joga no lugar */
+function backCardUI(){const el=$('#backCard');if(!el)return;const b=S.back,ok=b&&Date.now()-b.t<15*60e3&&!NET.on;el.style.display=ok?'':'none';if(!ok){if(b&&Date.now()-b.t>=15*60e3){delete S.back;save();}return;}
+  const g=GAMES.find(x=>x.id===b.g);if(el.dataset.k===b.room)return;el.dataset.k=b.room;
+  el.innerHTML=`<b>⚡ Sua partida de ${esc(g?g.name:'jogo')} continua</b><small>Um robô está jogando no seu lugar. Volte pra continuar de onde parou.</small><div class="row"><button class="pri" data-b>↩ Voltar pra partida</button><button data-x>Deixar pra lá</button></div>`;
+  el.querySelector('[data-b]').onclick=()=>{const gg=GAMES.find(x=>x.id===b.g);if(gg){el.dataset.k='';joinRoom(b.room,gg);}};
+  el.querySelector('[data-x]').onclick=()=>{delete S.back;save();el.dataset.k='';backCardUI();};}
+setInterval(()=>{if($('#lobby').classList.contains('on'))backCardUI();},1500);
 /* ========== LIVE DENTRO DA SALA DE JOGO ========== */
 // O dono da sala abre a live (câmera dele em destaque). Quem está na sala vê a tela dividida: live em cima, jogo embaixo.
 // Visitantes pedem pra entrar na live; o dono aceita (no máximo 2 convidados em janelinhas).
@@ -3727,20 +3754,22 @@ function drawBars(){
   $('#mebar').innerHTML=`<div class="av"></div><div><b>${nmHTML(S.name,S.uid)}</b><small>${M.duo&&M.duoNames&&M.duoNames.mine.length?'Você + '+esc(M.duoNames.mine[0]):'Você'} <span id="voiceInfo" style="color:var(--grn)"></span></small></div>${M.net?'<button id="micBtn" style="margin-left:auto;padding:8px 12px;font-size:13px">🔇 Microfone</button><button id="camBtn" style="padding:8px 10px;font-size:13px;margin-left:6px">📷 Câmera</button><button id="liveBtn" style="padding:8px 10px;font-size:13px;margin-left:6px;display:none">🔴 Live</button>':''}${M.net&&others.length>1&&!M.duo?'':dots(M.me)}`;
   setAv($('#mebar .av'),S.photo,S.name,null,S.uid);
   const mb=$('#micBtn');if(mb){mb.onclick=toggleMic;voiceUI();}const cb=$('#camBtn');if(cb){cb.onclick=toggleCam;camUI();}const lb=$('#liveBtn');if(lb){lb.onclick=liveToggle;liveUI();}
+  if(M.subOn){const sm=$('#opbar small');if(sm)sm.innerHTML='📴 saiu · 🤖 robô jogando no lugar — se voltar, continua';$('#opbar').classList.add('subon');}else $('#opbar').classList.remove('subon');
   specUI();frStrip();applySkin(M&&M.g);hintUI();
 }
 function startRound(){
   if(!M||M.over)return;
   $('#mod').classList.remove('on');
-  const stg=$('#stage');stg.innerHTML='';st('');M.round++;M.recv=null;M.onLeave=null;M.hint=null;
+  const stg=$('#stage');stg.innerHTML='';st('');M.round++;M.recv=null;M.onLeave=null;M.hint=null;M.snap=null;M.sub=null;
   if(M.net&&!NET.host)return;
   M.cleanup=GAMEFN[M.g.id](stg,roundEnd,M.net?netCtx(null):{net:false,side:'A',seat:0});
 }
 function roundEnd(res,label){
   if(!M||M.over)return;
   if(M.cleanup){M.cleanup();M.cleanup=null;}
-  if(res==='me'){M.me++;addWeek(true);chestOnWin();if(!M.net)botEmoji(pick(['😡','😭','🤬']));}
-  else if(res==='op'){M.op++;addWeek(false);if(!M.net)botEmoji(pick(['😎','😂','🫵']));}
+  M.snap=null;M.sub=null;
+  if(res==='me'){M.me++;if(!M.subOn||M.woOK)addWeek(true);chestOnWin();if(!M.net)botEmoji(pick(['😡','😭','🤬']));}
+  else if(res==='op'){M.op++;if(!M.subOn||M.woOK)addWeek(false);if(!M.net)botEmoji(pick(['😎','😂','🫵']));}
   drawBars();
   if(M.me>=M.need)return finishMatch(true,label);
   if(M.op>=M.need)return finishMatch(false,label);
@@ -3782,6 +3811,7 @@ function Dama(el,end,ctx){
   const net=ctx.net,my=(net&&ctx.side==='B')?'b':'w',op=my==='w'?'b':'w',flip=my==='b',ON=net?'Amigo':'Adversário';
   const b=[...Array(8)].map(()=>Array(8).fill(null));let turn='w',sel=null,lock=null,done=false;
   for(let r=0;r<8;r++)for(let c=0;c<8;c++)if((r+c)%2){if(r<3)b[r][c]={c:'b',k:0};else if(r>4)b[r][c]={c:'w',k:0};}
+  let SUB=!!ctx.sub;if(net&&ctx.init&&ctx.init.snap){const s=ctx.init.snap;for(let r=0;r<8;r++)for(let c=0;c<8;c++)b[r][c]=s.b[r][c];turn=s.turn;lock=s.lock;}
   if(net&&!ctx.init)ctx.share({});
   const D=[[-1,-1],[-1,1],[1,-1],[1,1]],inb=(r,c)=>r>=0&&r<8&&c>=0&&c<8;
   function caps(B,r,c){const p=B[r][c],o=[];
@@ -3802,19 +3832,20 @@ function Dama(el,end,ctx){
     if(done||!b[m.fr][m.fc])return;
     if(net&&!remote)ctx.send({m});
     apply(b,m);const p=b[m.tr][m.tc];sel=null;
-    if(m.cr!=null&&caps(b,m.tr,m.tc).length){lock={r:m.tr,c:m.tc};if(turn===my){sel={...lock};st('Continue capturando!');}draw();if(turn===op&&!net)setTimeout(bot,550);return;}
+    if(m.cr!=null&&caps(b,m.tr,m.tc).length){lock={r:m.tr,c:m.tc};if(turn===my){sel={...lock};st('Continue capturando!');}draw();if(turn===op&&(!net||SUB))setTimeout(bot,550);return;}
     lock=null;if((p.c==='w'&&m.tr===0)||(p.c==='b'&&m.tr===7))p.k=1;
     turn=turn==='w'?'b':'w';draw();
     if(!moves(b,turn).length){done=true;st(turn===my?'Você ficou sem jogadas':ON+' sem jogadas!');setTimeout(()=>end(turn===my?'op':'me'),900);return;}
-    if(turn===op){st(net?'Vez do amigo…':'Vez do adversário...');if(!net)setTimeout(bot,650);}else st(moves(b,my)[0].cr!=null?'Sua vez — captura obrigatória!':'Sua vez');
+    if(turn===op){st(SUB?'🤖 Robô jogando…':net?'Vez do amigo…':'Vez do adversário...');if(!net||SUB)setTimeout(bot,650);}else st(moves(b,my)[0].cr!=null?'Sua vez — captura obrigatória!':'Sua vez');
   }
-  function bot(){if(done)return;const ms=cur();let best=null,bs=-1e9;
+  function bot(){if(done||(net&&!SUB)||turn!==op)return;const ms=cur();if(!ms.length)return;let best=null,bs=-1e9;
     for(const m of ms){const B=b.map(r=>r.map(x=>x&&{...x}));apply(B,m);let s=Math.random();
-      if(m.cr!=null)s+=10;const p=B[m.tr][m.tc];if(!p.k&&m.tr===7)s+=5;
+      if(m.cr!=null)s+=10;const p=B[m.tr][m.tc];if(!p.k&&m.tr===(p.c==='b'?7:0))s+=5;
       if(moves(B,my).some(w=>w.cr===m.tr&&w.cc===m.tc))s-=8;
       if(s>bs){bs=s;best=m;}}
     doMove(best);}
   if(net)ctx.onMsg(d=>{if(d.m)doMove(d.m,true);});
+  if(net&&M){M.snap=()=>({b:b.map(r=>r.map(x=>x&&{...x})),turn,lock,side:ctx.side});M.sub=on=>{SUB=on;if(on){if(turn===op&&!done){st('🤖 Robô jogando…');setTimeout(bot,800);}}else if(!done)st(turn===my?'Sua vez':'Vez do amigo…');draw();};if(SUB&&turn===op)setTimeout(bot,900);}
   if(!net&&M)M.hint=()=>{if(done||turn!==my)return false;const ms=cur();if(!ms.length)return false;let best=null,bs=-1e9;
     for(const m of ms){const B=b.map(r=>r.map(x=>x&&{...x}));apply(B,m);let sc=Math.random();if(m.cr!=null)sc+=10;const p=B[m.tr][m.tc];if(!p.k&&m.tr===(my==='w'?0:7))sc+=5;
       if(moves(B,op).some(w=>w.cr===m.tr&&w.cc===m.tc))sc-=8;if(sc>bs){bs=sc;best=m;}}
@@ -3838,7 +3869,8 @@ function Xadrez(el,end,ctx){
   const init='rnbqkbnr';let B=Array(64).fill(null);
   for(let c=0;c<8;c++){B[c]={t:init[c],c:'b'};B[8+c]={t:'p',c:'b'};B[48+c]={t:'p',c:'w'};B[56+c]={t:init[c],c:'w'};}
   if(net&&!ctx.init)ctx.share({});
-  let turn='w',sel=null,last=null,done=false,plies=0;
+  let turn='w',sel=null,last=null,done=false,plies=0;let SUB=!!ctx.sub;
+  if(net&&ctx.init&&ctx.init.snap){const s=ctx.init.snap;B=s.B.slice();turn=s.turn;plies=s.plies;last=s.last;}
   const N=[[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]],K=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]],DI=[[-1,-1],[-1,1],[1,-1],[1,1]],OR=[[-1,0],[1,0],[0,-1],[0,1]];
   const V={p:1,n:3,b:3.2,r:5,q:9,k:0};
   function pseudo(B,col){const o=[];
@@ -3856,10 +3888,10 @@ function Xadrez(el,end,ctx){
   const inCheck=(B,col)=>{const k=kingSq(B,col);return pseudo(B,col==='w'?'b':'w').some(m=>m.t===k);};
   const legal=(B,col)=>pseudo(B,col).filter(m=>!inCheck(mv(B,m),col));
   const ev=B=>{let s=0;for(const p of B)if(p)s+=(p.c==='b'?1:-1)*V[p.t];return s;};
-  function bot(){if(done)return;const ms=legal(B,'b');let best=null,bs=-1e9;
-    for(const m of ms){const B1=mv(B,m),rs=legal(B1,'w');let s;
-      if(!rs.length)s=inCheck(B1,'w')?1000:-3;else{s=1e9;for(const r of rs){const e=ev(mv(B1,r));if(e<s)s=e;}}
-      const tc=m.t&7,tr=m.t>>3;s+=(3.5-Math.abs(3.5-tc))*0.03+(B[m.f].t==='p'?tr*0.02:0)+Math.random()*0.2;
+  function bot(){if(done||(net&&!SUB)||turn!==op)return;const oc=op,xc=oc==='w'?'b':'w',sg=oc==='b'?1:-1;const ms=legal(B,oc);if(!ms.length)return;let best=null,bs=-1e9;
+    for(const m of ms){const B1=mv(B,m),rs=legal(B1,xc);let s;
+      if(!rs.length)s=inCheck(B1,xc)?1000:-3;else{s=1e9;for(const r of rs){const e=sg*ev(mv(B1,r));if(e<s)s=e;}}
+      const tc=m.t&7,tr=m.t>>3;s+=(3.5-Math.abs(3.5-tc))*0.03+(B[m.f].t==='p'?(oc==='b'?tr:7-tr)*0.02:0)+Math.random()*0.2;
       if(s>bs){bs=s;best=m;}}
     play(best);}
   function play(m,remote){
@@ -3869,8 +3901,9 @@ function Xadrez(el,end,ctx){
     const ms=legal(B,turn),chk=inCheck(B,turn);
     if(!ms.length){done=true;if(chk){st(turn===my?'Xeque-mate! Você perdeu':'Xeque-mate! Você venceu');setTimeout(()=>end(turn===my?'op':'me'),1300);}else{st('Afogamento — empate');setTimeout(()=>end('draw'),1300);}return;}
     if(plies>=200){done=true;st('Limite de lances — empate');setTimeout(()=>end('draw'),1300);return;}
-    if(turn===op){st(chk?(net?'Xeque no amigo!':'Xeque no adversário!'):(net?'Vez do amigo…':'Adversário pensando...'));if(!net)setTimeout(bot,450);}else st(chk?'Xeque! Proteja o rei':'Sua vez');}
+    if(turn===op){st(chk?(net?'Xeque no amigo!':'Xeque no adversário!'):(SUB?'🤖 Robô pensando…':net?'Vez do amigo…':'Adversário pensando...'));if(!net||SUB)setTimeout(bot,450);}else st(chk?'Xeque! Proteja o rei':'Sua vez');}
   if(net)ctx.onMsg(d=>{if(d.m)play(d.m,true);});
+  if(net&&M){M.snap=()=>({B:B.slice(),turn,plies,last,side:ctx.side});M.sub=on=>{SUB=on;if(on&&turn===op&&!done){st('🤖 Robô pensando…');setTimeout(bot,800);}else if(!on&&!done)st(turn===my?'Sua vez':'Vez do amigo…');draw();};if(SUB&&turn===op)setTimeout(bot,900);}
   const G={k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'};
   const bd=h('div','bd');el.append(bd);
   bd.onclick=e=>{const q=e.target.closest('.sq');if(!q||done||turn!==my)return;const i=+q.dataset.i;const ms=legal(B,my);
