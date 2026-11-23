@@ -2066,17 +2066,26 @@ const RANK=new Map(),RANKM=new Map();
 function myWeek(){const w=weekId();if(!S.wk||S.wk.id!==w)S.wk={id:w,wins:0,games:0};return S.wk;}
 function myMonth(){const m=monthId();if(!S.mo||S.mo.id!==m)S.mo={id:m,wins:0,games:0};return S.mo;}
 let RKW=weekId(),RKM=monthId();
-setInterval(()=>{const w=weekId(),m=monthId();if(w!==RKW){busUnsub(TOP.rank(RKW)+'/+');RANK.clear();RKW=w;busSub(TOP.rank(w)+'/+');}
-  if(m!==RKM){busUnsub(TOP.rank(RKM)+'/+');RANKM.clear();RKM=m;busSub(TOP.rank(m)+'/+');}renderRank();},60e3);
+setInterval(()=>{const w=weekId(),m=monthId();if(w!==RKW){busUnsub(TOP.rank(RKW)+'/+');RANK.clear();RKW=w;busSub(TOP.rank(w)+'/+');rankLoad();}
+  if(m!==RKM){busUnsub(TOP.rank(RKM)+'/+');RANKM.clear();RKM=m;busSub(TOP.rank(m)+'/+');rankLoad();}renderRank();},60e3);
 /* W.O. só vale no ranking se a partida já tinha andado: uma rodada completa ou ~metade dos lances */
 const SUBOK=['dama','xadrez'];
 function woValid(){if(!M)return false;if((M.me||0)+(M.op||0)>=1)return true;const need={dama:24,xadrez:30,domino:M.duo?14:12,sinuca:8,ludo:30}[M.g&&M.g.id]||20;return (M.acts||0)>=need;}
 function addWeek(win){const k=myWeek(),m=myMonth();k.games++;m.games++;if(win){k.wins++;m.wins++;}save();pubRank();}
 function pubRank(){const k=myWeek(),m=myMonth(),base={name:S.name,thumb:thumb(),cos:myCos()};
   if(k.games)busPub(TOP.rank(k.id)+'/'+S.uid,{...base,wins:k.wins,games:k.games},true);
-  if(m.games)busPub(TOP.rank(m.id)+'/'+S.uid,{...base,wins:m.wins,games:m.games},true);}
+  if(m.games)busPub(TOP.rank(m.id)+'/'+S.uid,{...base,wins:m.wins,games:m.games},true);rankSave();}
+/* ranking fixo no banco: não some quando a página atualiza */
+function rkAnon(fn,args){return fetch(SB.url+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:SB.key,Authorization:'Bearer '+SB.key,'Content-Type':'application/json'},body:JSON.stringify(args)}).then(r=>r.ok?r.json().catch(()=>null):null).catch(()=>null);}
+function rankSave(){const k=myWeek(),m=myMonth(),c=(()=>{try{return myCos();}catch(e){return null;}})();
+  [k,m].forEach(x=>{if(x.games)rkAnon('arena_rank_put',{p_per:x.id,p_uid:S.uid,p_name:S.name||'Jogador',p_thumb:thumb()||null,p_cos:c,p_wins:x.wins,p_games:x.games});});}
+async function rankLoad(){for(const [per,map] of [[weekId(),RANK],[monthId(),RANKM]]){const r=await rkAnon('arena_rank_get',{p_per:per});
+  if(Array.isArray(r))r.forEach(x=>{if(x.uid===S.uid)return;const cur=map.get(x.uid);if(cur&&cur.games>=x.games)return;try{if(x.cos)cosSet(x.uid,x.cos);}catch(e){}
+    map.set(x.uid,{id:x.uid,name:x.name||'Jogador',thumb:x.thumb,wins:x.wins|0,games:x.games|0});});}
+  renderRank();}
 function onRank(o,t){if(!o||o.wins==null)return;cosSet(o.from,o.cos);const per=(t||'').split('/')[3]||'';
-  (per.startsWith('m')?RANKM:RANK).set(o.from,{id:o.from,name:o.name||'Jogador',thumb:o.thumb,wins:o.wins|0,games:o.games|0});renderRank();}
+  const mp=per.startsWith('m')?RANKM:RANK,cu=mp.get(o.from);if(cu&&cu.games>(o.games|0))return;
+  mp.set(o.from,{id:o.from,name:o.name||'Jogador',thumb:o.thumb,wins:o.wins|0,games:o.games|0});renderRank();}
 function rankList(month){
   const map=month?RANKM:RANK,me=month?myMonth():myWeek();
   if(me.games)map.set(S.uid,{id:S.uid,name:S.name,thumb:S.thumb||S.photo,wins:me.wins,games:me.games});
@@ -4663,7 +4672,7 @@ $('#friendBtn').onclick=()=>{const body=h('div');body.innerHTML='Qual jogo você
   modal('👥 Jogar com um amigo',body,[{t:'Cancelar'}]);};
 busSub(TOP.lobby);busSub(TOP.me());busSub(TOP.cfg);busSub(TOP.freq+'/'+S.uid+'/+');busSub(TOP.fol+'/'+S.uid+'/+');bimgSubs();
 if(OKEY)setTimeout(()=>{(O.banners||[]).map(banObj).forEach(b=>{const im=banImg(b);if(b.h&&im)busPub(TOP.bimg+'/'+b.h,{img:im},true);});},6000);busSub(TOP.rank(weekId())+'/+');busSub(TOP.rank(monthId())+'/+');busSub(TOP.ib(S.uid)+'/+');busConnect();
-busSub(TOP.unb+'/'+S.uid);setTimeout(()=>{pubRank();fetchIce();pubStat();},2500);setInterval(pubStat,5*60e3);chatBadge();tourSubs();if(OKEY){busSub(TOP.parc+'/+');renderParc();}
+busSub(TOP.unb+'/'+S.uid);setTimeout(()=>{pubRank();fetchIce();pubStat();},2500);rankLoad();setInterval(rankLoad,5*60e3);setInterval(pubStat,5*60e3);chatBadge();tourSubs();if(OKEY){busSub(TOP.parc+'/+');renderParc();}
 function ownerVis(){$('#ownerBtn').style.display=OKEY?'block':'none';}
 ownerVis();
 let pTaps=[];$('#pTitle').onclick=()=>{const n=Date.now();pTaps=pTaps.filter(t=>n-t<3000);pTaps.push(n);if(pTaps.length>=7){pTaps=[];$('#ownerBtn').click();}};
