@@ -549,6 +549,42 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#b026ff!import
 #owner .card>b{font-size:19px}
 #owner input,#owner select,#owner textarea{color:#cfc6e8;font-size:15px}
 #owner input::placeholder,#owner textarea::placeholder{color:#6f6890}
+/* Painel do dono: gráficos interativos */
+.dash{--s1:#0f1328;--s2:#0b0e20;--bd:#2d2466;--muted:#9a90c4;--gold:#ffc23d}
+.dash-chips{display:flex;gap:8px;margin:14px 0 10px}
+.dash-chips button{flex:1;border:1px solid var(--bd);background:var(--s1);color:#d9c8ff;border-radius:99px;padding:9px 6px;font-size:13px;font-weight:800}
+.dash-chips button.on{background:linear-gradient(90deg,#b026ff,#ff2bd6);color:#fff;border-color:transparent;box-shadow:0 0 16px #b026ff66}
+.dash-card{background:linear-gradient(170deg,#12163a,#0d0f26);border:1px solid #b026ff44;border-radius:20px;padding:14px 12px 10px;margin-bottom:12px}
+.dash-h{padding:0 4px 8px}.dash-h b{display:block;font-size:15px;color:#fff}.dash-h small{color:var(--muted);font-size:12px}
+.dash-nota{font-size:11px;color:var(--muted);line-height:1.4;margin:6px 4px 10px}
+.dash-lista{display:grid;gap:8px;margin-top:10px}
+.dash-pessoa{background:rgba(255,255,255,.05);border-radius:12px;padding:9px 12px}
+.dash-pessoa span{display:block;font-weight:800;font-size:14px;color:#fff}.dash-pessoa small{color:var(--muted);font-size:11px}
+.gf{position:relative}
+.gf-svg{display:block;width:100%;height:auto;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.gf-grade{stroke:rgba(255,255,255,.07);stroke-width:1}
+.gf-eixo{fill:#8f86b8;font-size:9px}
+.gf-bar{transform-box:fill-box;transform-origin:bottom;animation:gfgrow .55s cubic-bezier(.2,.8,.2,1) both;transition:opacity .15s}
+.gf-bar.dim{opacity:.35}
+@keyframes gfgrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.gf-linha{stroke-dasharray:1;stroke-dashoffset:1;animation:gfdraw 1s ease forwards}
+@keyframes gfdraw{to{stroke-dashoffset:0}}
+.gf-area{animation:gffade .9s ease both}
+@keyframes gffade{from{opacity:0}to{opacity:1}}
+.gf-guia{stroke:rgba(255,255,255,.35);stroke-width:1;stroke-dasharray:3 3}
+.gf-tip{position:absolute;z-index:4;transform:translate(-50%,-100%);margin-top:-6px;background:rgba(8,5,26,.95);border:1px solid #b026ff88;border-radius:12px;padding:7px 10px;font-size:12px;line-height:1.35;pointer-events:none;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.5);color:#fff}
+.gf-tip[data-lado="esq"]{transform:translate(-12%,-100%)}.gf-tip[data-lado="dir"]{transform:translate(-88%,-100%)}
+.gf-tip b{display:block;margin-bottom:2px}.gf-tip div i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.gf-tip div b{display:inline;margin-left:3px;font-size:13px}
+.gf-vazio{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;border:1px dashed var(--bd);border-radius:14px}
+.gf-rwrap{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}
+.gf-rosca{width:150px;height:150px;flex:0 0 auto}
+.gf-fatia{cursor:pointer;transition:opacity .2s,stroke-width .2s}.gf-fatia.dim{opacity:.28}.gf-fatia.on{stroke-width:20}
+.gf-c1{fill:#fff;font-size:22px;font-weight:800}.gf-c2{fill:#a79bd6;font-size:9px}
+.gf-leg{flex:1;min-width:170px;display:grid;gap:6px}
+.gf-li{display:flex;align-items:center;gap:8px;width:100%;background:rgba(255,255,255,.05);border:1px solid transparent;border-radius:12px;padding:8px 10px;color:#e6dcff;font-size:13px;text-align:left}
+.gf-li i{width:10px;height:10px;border-radius:50%;flex:0 0 auto}.gf-li span{flex:1}.gf-li b{color:#fff}.gf-li em{font-style:normal;color:var(--muted);font-size:11px;width:34px;text-align:right}
+.gf-li.on{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.09)}
 .stiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
 .stile{background:#0f1328;border:1px solid color-mix(in srgb,var(--c) 45%,transparent);border-radius:14px;padding:10px 12px}
 .stile b{display:block;font-size:26px;color:var(--c);text-shadow:0 0 12px color-mix(in srgb,var(--c) 50%,transparent)}.stile span{color:#d9c8ff;font-size:12.5px;font-weight:700}
@@ -1392,6 +1428,207 @@ body:has(#legalGate) #mod{z-index:100000!important}
 <div class="toast" id="toast"></div>
 
 <script src="https://unpkg.com/mqtt@5/dist/mqtt.min.js"></script>
+<script>
+/* ========== GRÁFICOS (SVG, sem biblioteca) ========== */
+(function(){
+// Gráficos do Painel do Dono — sem biblioteca externa, só SVG.
+// Funciona com toque e mouse: arrastar o dedo sobre o gráfico mostra o valor de cada ponto.
+
+const NS = 'http://www.w3.org/2000/svg';
+const W = 340;
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c]));
+const nf = n => Number(n || 0).toLocaleString('pt-BR');
+
+// Arredonda o topo da escala para um número "bonito" (5, 10, 20, 50...)
+function topoBonito(max) {
+  if (max <= 4) return 4;
+  const p = Math.pow(10, Math.floor(Math.log10(max)));
+  const f = max / p;
+  const n = f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10;
+  return n * p;
+}
+
+function esqueleto(el) {
+  el.classList.add('gf');
+  el.innerHTML = '<div class="gf-tip" hidden></div>';
+  return el.querySelector('.gf-tip');
+}
+
+function mostrarTip(el, tip, xPct, yPct, html) {
+  tip.hidden = false;
+  tip.innerHTML = html;
+  tip.style.left = xPct + '%';
+  tip.style.top = yPct + '%';
+  const meio = xPct < 22 ? 'esq' : xPct > 78 ? 'dir' : 'meio';
+  tip.dataset.lado = meio;
+}
+
+function linhaTip(nome, cor, valor) {
+  return '<div><i style="background:' + cor + '"></i>' + esc(nome) + ' <b>' + nf(valor) + '</b></div>';
+}
+
+// ---------- BARRAS (uma ou várias séries) ----------
+function barras(el, { labels, series, altura = 170, vazio = 'Sem dados ainda' }) {
+  const tip = esqueleto(el);
+  const n = labels.length;
+  const H = altura, ML = 26, MR = 6, MT = 12, MB = 24;
+  const iw = W - ML - MR, ih = H - MT - MB;
+  const max = Math.max(0, ...series.flatMap(s => s.valores));
+  if (!n || max === 0) {
+    el.insertAdjacentHTML('afterbegin', '<div class="gf-vazio" style="height:' + H + 'px">' + esc(vazio) + '</div>');
+    return;
+  }
+  const topo = topoBonito(max);
+  const passo = iw / n;
+  const grupo = passo * 0.72;
+  const bw = grupo / series.length;
+  let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="gf-svg" role="img"><defs>';
+  series.forEach((s, k) => { svg += '<linearGradient id="gb' + k + el.id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + s.cor + '"/><stop offset="1" stop-color="' + s.cor + '" stop-opacity=".45"/></linearGradient>'; });
+  svg += '</defs>';
+  [0, .5, 1].forEach(f => {
+    const y = MT + ih - f * ih;
+    svg += '<line x1="' + ML + '" x2="' + (W - MR) + '" y1="' + y + '" y2="' + y + '" class="gf-grade"/><text x="' + (ML - 5) + '" y="' + (y + 3) + '" class="gf-eixo" text-anchor="end">' + nf(Math.round(topo * f)) + '</text>';
+  });
+  const cada = n > 24 ? 4 : n > 14 ? 3 : n > 8 ? 2 : 1;
+  labels.forEach((lb, i) => {
+    const x0 = ML + i * passo + (passo - grupo) / 2;
+    svg += '<rect class="gf-hit" data-i="' + i + '" x="' + (ML + i * passo) + '" y="' + MT + '" width="' + passo + '" height="' + ih + '" fill="transparent"/>';
+    series.forEach((s, k) => {
+      const h = Math.max(s.valores[i] > 0 ? 2 : 0, (s.valores[i] / topo) * ih);
+      svg += '<rect class="gf-bar" data-i="' + i + '" x="' + (x0 + k * bw + 0.5) + '" y="' + (MT + ih - h) + '" width="' + Math.max(2, bw - 1.5) + '" height="' + h + '" rx="' + Math.min(4, bw / 2) + '" fill="url(#gb' + k + el.id + ')" style="transform-origin:0 ' + (MT + ih) + 'px;animation-delay:' + Math.min(i * 18, 400) + 'ms"/>';
+    });
+    if ((n - 1 - i) % cada === 0) svg += '<text x="' + (ML + i * passo + passo / 2) + '" y="' + (H - 7) + '" class="gf-eixo" text-anchor="middle">' + esc(lb.curto || lb) + '</text>';
+  });
+  svg += '</svg>';
+  el.insertAdjacentHTML('afterbegin', svg);
+  const sv = el.querySelector('svg');
+  const sel = i => {
+    el.querySelectorAll('.gf-bar').forEach(b => b.classList.toggle('dim', b.dataset.i !== String(i)));
+    const xPct = ((ML + i * passo + passo / 2) / W) * 100;
+    const topV = Math.max(...series.map(s => s.valores[i]));
+    const yPct = ((MT + ih - (topV / topo) * ih) / H) * 100;
+    mostrarTip(el, tip, xPct, Math.max(8, yPct), '<b>' + esc(labels[i].longo || labels[i]) + '</b>' + series.map(s => linhaTip(s.nome, s.cor, s.valores[i])).join(''));
+  };
+  const limpar = () => { el.querySelectorAll('.gf-bar').forEach(b => b.classList.remove('dim')); tip.hidden = true; };
+  const mover = e => {
+    const r = sv.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width) * W;
+    const i = Math.floor((x - ML) / passo);
+    if (i >= 0 && i < n) sel(i);
+  };
+  sv.addEventListener('pointerdown', mover);
+  sv.addEventListener('pointermove', e => { if (e.pointerType === 'mouse' || e.buttons || e.pressure) mover(e); });
+  sv.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') limpar(); });
+  if (el._gfDoc) document.removeEventListener('pointerdown', el._gfDoc);
+  el._gfDoc = e => { if (!el.contains(e.target)) limpar(); };
+  document.addEventListener('pointerdown', el._gfDoc, { passive: true });
+  // mostra o último ponto logo de início
+  sel(n - 1);
+  tip.hidden = false;
+}
+
+// ---------- LINHA / ÁREA ----------
+function linha(el, { labels, series, altura = 170, area = true, vazio = 'Sem dados ainda' }) {
+  const tip = esqueleto(el);
+  const n = labels.length;
+  const H = altura, ML = 26, MR = 10, MT = 14, MB = 24;
+  const iw = W - ML - MR, ih = H - MT - MB;
+  const max = Math.max(0, ...series.flatMap(s => s.valores));
+  if (n < 2 || max === 0) {
+    el.insertAdjacentHTML('afterbegin', '<div class="gf-vazio" style="height:' + H + 'px">' + esc(vazio) + '</div>');
+    return;
+  }
+  const topo = topoBonito(max);
+  const X = i => ML + (i / (n - 1)) * iw;
+  const Y = v => MT + ih - (v / topo) * ih;
+  const caminho = vals => {
+    let d = 'M' + X(0) + ' ' + Y(vals[0]);
+    for (let i = 1; i < n; i++) {
+      const mx = (X(i - 1) + X(i)) / 2;
+      d += ' C' + mx + ' ' + Y(vals[i - 1]) + ' ' + mx + ' ' + Y(vals[i]) + ' ' + X(i) + ' ' + Y(vals[i]);
+    }
+    return d;
+  };
+  let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="gf-svg" role="img"><defs>';
+  series.forEach((s, k) => { svg += '<linearGradient id="gl' + k + el.id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + s.cor + '" stop-opacity=".42"/><stop offset="1" stop-color="' + s.cor + '" stop-opacity="0"/></linearGradient>'; });
+  svg += '</defs>';
+  [0, .5, 1].forEach(f => {
+    const y = MT + ih - f * ih;
+    svg += '<line x1="' + ML + '" x2="' + (W - MR) + '" y1="' + y + '" y2="' + y + '" class="gf-grade"/><text x="' + (ML - 5) + '" y="' + (y + 3) + '" class="gf-eixo" text-anchor="end">' + nf(Math.round(topo * f)) + '</text>';
+  });
+  series.forEach((s, k) => {
+    const d = caminho(s.valores);
+    if (area) svg += '<path d="' + d + ' L' + X(n - 1) + ' ' + (MT + ih) + ' L' + X(0) + ' ' + (MT + ih) + ' Z" fill="url(#gl' + k + el.id + ')" class="gf-area"/>';
+    svg += '<path d="' + d + '" fill="none" stroke="' + s.cor + '" stroke-width="2.4" stroke-linecap="round" class="gf-linha" pathLength="1"/>';
+  });
+  const cada = n > 24 ? Math.ceil(n / 6) : n > 12 ? 3 : n > 7 ? 2 : 1;
+  labels.forEach((lb, i) => { if ((n - 1 - i) % cada === 0) svg += '<text x="' + X(i) + '" y="' + (H - 7) + '" class="gf-eixo" text-anchor="' + (i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle') + '">' + esc(lb.curto || lb) + '</text>'; });
+  svg += '<line class="gf-guia" x1="0" x2="0" y1="' + MT + '" y2="' + (MT + ih) + '" style="opacity:0"/>';
+  series.forEach((s, k) => { svg += '<circle class="gf-ponto" data-k="' + k + '" r="4.5" fill="' + s.cor + '" stroke="#0d1628" stroke-width="2" style="opacity:0"/>'; });
+  svg += '</svg>';
+  el.insertAdjacentHTML('afterbegin', svg);
+  const sv = el.querySelector('svg'), guia = el.querySelector('.gf-guia');
+  const sel = i => {
+    guia.setAttribute('x1', X(i)); guia.setAttribute('x2', X(i)); guia.style.opacity = 1;
+    el.querySelectorAll('.gf-ponto').forEach(p => { const k = +p.dataset.k; p.setAttribute('cx', X(i)); p.setAttribute('cy', Y(series[k].valores[i])); p.style.opacity = 1; });
+    const topV = Math.max(...series.map(s => s.valores[i]));
+    mostrarTip(el, tip, (X(i) / W) * 100, Math.max(8, (Y(topV) / H) * 100), '<b>' + esc(labels[i].longo || labels[i]) + '</b>' + series.map(s => linhaTip(s.nome, s.cor, s.valores[i])).join(''));
+  };
+  const mover = e => {
+    const r = sv.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width) * W;
+    sel(Math.max(0, Math.min(n - 1, Math.round(((x - ML) / iw) * (n - 1)))));
+  };
+  sv.addEventListener('pointerdown', mover);
+  sv.addEventListener('pointermove', e => { if (e.pointerType === 'mouse' || e.buttons || e.pressure) mover(e); });
+  sel(n - 1);
+}
+
+// ---------- ROSCA (donut) ----------
+function rosca(el, { fatias, centro = 'Total', aoEscolher, selecionada = -1 }) {
+  const tip = esqueleto(el);
+  tip.remove();
+  const total = fatias.reduce((a, f) => a + f.valor, 0);
+  const R = 52, C = 2 * Math.PI * R;
+  let acc = 0;
+  let svg = '<svg viewBox="0 0 140 140" class="gf-rosca" role="img"><circle cx="70" cy="70" r="' + R + '" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="16"/>';
+  if (total > 0) {
+    fatias.forEach((f, i) => {
+      if (!f.valor) return;
+      const len = (f.valor / total) * C;
+      const gap = fatias.filter(x => x.valor).length > 1 ? 2 : 0;
+      svg += '<circle class="gf-fatia" data-i="' + i + '" cx="70" cy="70" r="' + R + '" fill="none" stroke="' + f.cor + '" stroke-width="16" stroke-dasharray="' + Math.max(0, len - gap) + ' ' + (C - Math.max(0, len - gap)) + '" stroke-dashoffset="' + (-acc) + '" transform="rotate(-90 70 70)"/>';
+      acc += len;
+    });
+  }
+  svg += '<text x="70" y="66" text-anchor="middle" class="gf-c1">' + nf(total) + '</text><text x="70" y="82" text-anchor="middle" class="gf-c2">' + esc(centro) + '</text></svg>';
+  const leg = '<div class="gf-leg">' + fatias.map((f, i) => '<button type="button" class="gf-li" data-i="' + i + '"><i style="background:' + f.cor + '"></i><span>' + esc(f.nome) + '</span><b>' + nf(f.valor) + '</b><em>' + (total ? Math.round(f.valor / total * 100) : 0) + '%</em></button>').join('') + '</div>';
+  el.innerHTML = '<div class="gf-rwrap">' + svg + leg + '</div>';
+  const centroSvg = el.querySelector('.gf-c1'), centroTxt = el.querySelector('.gf-c2');
+  let atual = -1;
+  const marcar = i => {
+    atual = i;
+    el.querySelectorAll('.gf-fatia').forEach(c => { const on = +c.dataset.i === i; c.classList.toggle('on', on); c.classList.toggle('dim', i >= 0 && !on); });
+    el.querySelectorAll('.gf-li').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
+    if (i >= 0) {
+      centroSvg.textContent = nf(fatias[i].valor);
+      centroTxt.textContent = fatias[i].nome.length > 16 ? fatias[i].nome.slice(0, 15) + '…' : fatias[i].nome;
+    } else { centroSvg.textContent = nf(total); centroTxt.textContent = centro; }
+  };
+  el.onclick = e => {
+    const alvo = e.target.closest('[data-i]');
+    if (!alvo || !el.contains(alvo)) return;
+    const i = +alvo.dataset.i;
+    const novo = atual === i ? -1 : i;
+    marcar(novo);
+    if (aoEscolher) aoEscolher(novo, novo >= 0 ? fatias[novo] : null);
+  };
+  if (selecionada >= 0) marcar(selecionada);
+}
+
+window.GF={barras,linha,rosca};
+})();
+</script>
 <script>
 /* ========== BASE ========== */
 const $=s=>document.querySelector(s);
@@ -3391,7 +3628,13 @@ function statGame(id){const st=S.st=S.st||{first:Date.now(),days:[],g:{},n:0};st
 const STATS=new Map();let statT=null;
 function onStat(t,o){const id=t.split('/').pop();if(!o){STATS.delete(id);}else STATS.set(id,o);
   if(OKEY&&$('#owner').classList.contains('on')){clearTimeout(statT);statT=setTimeout(renderStats,300);}}
-let statMode='ativos';
+let statPer='semana',statSlice=-1;
+function statPeriodos(g){const h=new Date();h.setHours(0,0,0,0);const L=[];const c=d=>String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0');
+  const MS=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  if(g==='dia'){for(let i=13;i>=0;i--){const a=new Date(h);a.setDate(a.getDate()-i);const b=new Date(a);b.setDate(b.getDate()+1);L.push({a:dkey(a),b:dkey(b),curto:c(a),longo:a.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'})});}}
+  else if(g==='semana'){const seg=new Date(h);seg.setDate(seg.getDate()-((seg.getDay()+6)%7));for(let i=7;i>=0;i--){const a=new Date(seg);a.setDate(a.getDate()-i*7);const b=new Date(a);b.setDate(b.getDate()+7);const f=new Date(b);f.setDate(f.getDate()-1);L.push({a:dkey(a),b:dkey(b),curto:c(a),longo:'Semana de '+c(a)+' a '+c(f)});}}
+  else{for(let i=5;i>=0;i--){const a=new Date(h.getFullYear(),h.getMonth()-i,1),b=new Date(h.getFullYear(),h.getMonth()-i+1,1);L.push({a:dkey(a),b:dkey(b),curto:MS[a.getMonth()],longo:MS[a.getMonth()]+' de '+a.getFullYear()});}}
+  return L;}
 let oTab='geral';
 function ownerTab(t){oTab=t;document.querySelectorAll('#oTabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
   document.querySelectorAll('#owner .ocard').forEach(c=>c.style.display=c.dataset.tab===t?'':'none');window.scrollTo({top:0,behavior:'smooth'});}
@@ -3402,20 +3645,45 @@ function renderStats(){ownerChips();
   const act=n=>L.filter(x=>now-(x.last||0)<n*864e5).length;
   const games=L.reduce((a,x)=>a+(x.n||0),0);const inst=L.filter(x=>x.inst).length;
   const tile=(v,t,c)=>`<div class="stile" style="--c:${c}"><b>${v}</b><span>${t}</span></div>`;
-  const days=[];for(let i=13;i>=0;i--)days.push(dkey(now-i*864e5));
-  const vals=days.map(d=>statMode==='ativos'?L.filter(x=>(x.days||[]).includes(d)).length:L.filter(x=>dkey(x.first||0)===d).length);
-  const mx=Math.max(1,...vals);
   const gc={};L.forEach(x=>Object.entries(x.g||{}).forEach(([k,v])=>gc[k]=(gc[k]||0)+v));
   const gl=GAMES.map(g=>[g.name,gc[g.id]||0]).sort((a,b)=>b[1]-a[1]);const gm=Math.max(1,...gl.map(x=>x[1]));
-  box.innerHTML=`<div class="stiles">${tile(L.length,'Pessoas que já abriram','#00e5ff')}${tile(inst,'Instalaram na tela inicial','#b026ff')}${tile(ONLINE.size,'Online agora','#25d366')}
+  const per=statPeriodos(statPer);const labels=per.map(p=>({curto:p.curto,longo:p.longo}));
+  const dentro=(p,d)=>!!d&&d>=p.a&&d<p.b;
+  const novos=per.map(p=>L.filter(x=>dentro(p,dkey(x.first||0))).length);
+  const usando=per.map(p=>L.filter(x=>(x.days||[]).some(d=>dentro(p,d))).length);
+  const cresc=per.map(p=>L.filter(x=>dkey(x.first||0)<p.b).length);
+  const ult=x=>x.last?dkey(x.last):((x.days||[]).slice().sort().pop()||null);
+  const ha=n=>dkey(now-n*864e5);
+  const faixas=[{nome:'Usou hoje',cor:'#22c55e',f:l=>l===td},{nome:'1 a 3 dias',cor:'#84cc16',f:l=>l&&l<td&&l>=ha(3)},{nome:'4 a 7 dias',cor:'#facc15',f:l=>l&&l<ha(3)&&l>=ha(7)},{nome:'8 a 14 dias',cor:'#fb923c',f:l=>l&&l<ha(7)&&l>=ha(14)},{nome:'15 dias ou mais',cor:'#ef4444',f:l=>l&&l<ha(14)}].map(f=>{f.membros=L.filter(x=>f.f(ult(x)));f.valor=f.membros.length;return f;});
+  const parou=L.filter(x=>{const l=ult(x);return l&&l<=ha(7);}).length;
+  const novos7=L.filter(x=>dkey(x.first||0)>ha(7)).length,novosAntes=L.filter(x=>dkey(x.first||0)>ha(14)&&dkey(x.first||0)<=ha(7)).length;
+  const nomePer={dia:'por dia (14 dias)',semana:'por semana (8 semanas)',mes:'por mês (6 meses)'}[statPer];
+  const chip=(k,t)=>`<button type="button" data-per="${k}" class="${statPer===k?'on':''}">${t}</button>`;
+  box.innerHTML=`<div class="dash"><div class="stiles">${tile(L.length,'Pessoas que já abriram','#00e5ff')}${tile(inst,'Instalaram na tela inicial','#b026ff')}${tile(ONLINE.size,'Online agora','#25d366')}
     ${tile(L.filter(x=>(x.days||[]).includes(td)).length,'Usaram hoje','#ffc23d')}${tile(act(7),'Últimos 7 dias','#ff2bd6')}${tile(act(30),'Últimos 30 dias','#7df9ff')}
+    ${tile(novos7,'Novos em 7 dias ('+(novos7===novosAntes?'igual':(novos7>novosAntes?'+':'')+(novos7-novosAntes))+')','#2dd4bf')}${tile(parou,'Pararam de usar (8+ dias)','#fb923c')}
     ${tile(games,'Partidas online jogadas','#ffe27a')}${tile(L.filter(x=>x.blk&&x.blk.until>now).length,'Bloqueados agora','#ff5a5f')}</div>
-    <div class="stab"><button class="${statMode==='ativos'?'on':''}" data-m="ativos">Quem usou por dia</button><button class="${statMode==='novos'?'on':''}" data-m="novos">Novos por dia</button></div>
-    <div class="schart">${vals.map((v,i)=>`<div class="sbar"><em>${v||''}</em><i style="height:${Math.round(v/mx*100)}%"></i><small>${days[i].slice(8)}/${days[i].slice(5,7)}</small></div>`).join('')}</div>
-    <div class="lbl">🎮 Jogos mais jogados (partidas online)</div>
-    ${gl.map(([n,v])=>`<div class="sgame"><span>${esc(n)}</span><div><i style="width:${Math.round(v/gm*100)}%"></i></div><b>${v}</b></div>`).join('')}
-    <small style="color:var(--mut);display:block;margin-top:10px">Conta cada celular que abriu esta versão do app. Os números ficam guardados no servidor público e são aproximados até o app ter banco de dados.</small>`;
-  box.querySelectorAll('.stab button').forEach(b=>b.onclick=()=>{statMode=b.dataset.m;renderStats();});
+    <div class="dash-chips">${chip('dia','14 dias')}${chip('semana','8 semanas')}${chip('mes','6 meses')}</div>
+    <div class="dash-card"><div class="dash-h"><b>🆕 Novos jogadores</b><small>Quem baixou e abriu pela 1ª vez, ${nomePer}</small></div><div id="g-novos"></div></div>
+    <div class="dash-card"><div class="dash-h"><b>🔥 Pessoas usando o app</b><small>Quem abriu, ${nomePer}</small></div><div id="g-usando"></div></div>
+    <div class="dash-card"><div class="dash-h"><b>📈 Crescimento</b><small>Total de pessoas ao longo do tempo</small></div><div id="g-cresc"></div></div>
+    <div class="dash-card"><div class="dash-h"><b>⏳ Quem parou de usar</b><small>Toque numa fatia para ver as pessoas</small></div><div id="g-parou"></div><div id="g-parou-lista" class="dash-lista"></div></div>
+    <div class="dash-card"><div class="dash-h"><b>📲 Instalação</b><small>Quem colocou o app na tela inicial</small></div><div id="g-inst"></div></div>
+    <div class="dash-card"><div class="dash-h"><b>🎮 Jogos mais jogados</b><small>Partidas online</small></div>
+    ${gl.map(([n,v])=>`<div class="sgame"><span>${esc(n)}</span><div><i style="width:${Math.round(v/gm*100)}%"></i></div><b>${v}</b></div>`).join('')}</div>
+    <small class="dash-nota" style="display:block">Conta cada celular que abriu esta versão do app. O uso guarda os últimos 60 dias de cada pessoa, então "por mês" mostra o uso só desses 60 dias. Os números ficam no servidor público e são aproximados até o app ter banco de dados.</small></div>`;
+  if(window.GF){
+    GF.barras($('#g-novos'),{labels,series:[{nome:'Novos',cor:'#00e5ff',valores:novos}]});
+    GF.barras($('#g-usando'),{labels,series:[{nome:'Pessoas',cor:'#ff2bd6',valores:usando}]});
+    GF.linha($('#g-cresc'),{labels,series:[{nome:'Pessoas',cor:'#ffc23d',valores:cresc}]});
+    const lista=$('#g-parou-lista');
+    const mostra=i=>{statSlice=i;if(i<0){lista.innerHTML='';return;}const m=faixas[i].membros;
+      lista.innerHTML=m.length?m.map(x=>{const l=ult(x);return `<div class="dash-pessoa"><span>${esc(x.name||'Jogador')}</span><small>${l?'último uso '+l.split('-').reverse().join('/'):''}</small></div>`;}).join(''):'<small class="dash-nota">Ninguém nesta faixa.</small>';};
+    GF.rosca($('#g-parou'),{fatias:faixas.map(f=>({nome:f.nome,valor:f.valor,cor:f.cor})),centro:'pessoas',selecionada:statSlice,aoEscolher:mostra});
+    if(statSlice>=0)mostra(statSlice);
+    GF.rosca($('#g-inst'),{fatias:[{nome:'Instalaram',valor:inst,cor:'#b026ff'},{nome:'Só pelo navegador',valor:L.length-inst,cor:'#475569'}],centro:'pessoas'});
+  }
+  box.querySelectorAll('.dash-chips button').forEach(b=>b.onclick=()=>{statPer=b.dataset.per;statSlice=-1;renderStats();});
   const bl=$('#oBlk');const B=L.map((x,i)=>x).filter(x=>x.blk&&x.blk.until>now);
   bl.innerHTML=B.length?'':'<small style="color:var(--mut)">Ninguém bloqueado agora. 👍</small>';
   B.forEach(x=>{const min=Math.ceil((x.blk.until-now)/60000);const r=h('div','sl banrow',`<span><b>${esc(x.name||'Jogador')}</b><br><small style="color:#ff9aa5">${esc(x.blk.cat||'')} · falta ${min>=60?Math.ceil(min/60)+'h':min+' min'}</small></span>`);
