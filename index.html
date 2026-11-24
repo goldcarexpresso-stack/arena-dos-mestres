@@ -207,6 +207,36 @@ body.lvduo #camDockT,body.lvduo #camDockB,body.lvduo .camwin{display:none!import
 .lnog{font-size:22px}.lkick{position:absolute;right:2px;top:2px;padding:0 5px;font-size:11px;line-height:16px;border-radius:999px}
 .lbar{display:flex;gap:6px;padding:6px;background:#120a2a;flex-wrap:wrap}.lbar button{flex:1;padding:7px 8px;font-size:12px}
 #liveFull{position:fixed;inset:0;z-index:92;background:#000}
+/* ===== COMUNIDADE ===== */
+.comcard{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:0 0 12px;padding:14px;border-radius:20px;border:1px solid #f472b666;background:linear-gradient(135deg,#4a0f3a,#5b21b6 60%,#1d0a3e);color:#fff;box-shadow:0 0 24px #f472b622}
+.comcard .pi{font-size:32px}.comcard div{flex:1}.comcard b{display:block;font-size:16px;color:#f9a8d4}.comcard small{opacity:.85;font-size:12px}.comcard .go{background:#f472b6;color:#2a0018;font-weight:900;border-radius:12px;padding:8px 10px;font-size:13px;white-space:nowrap}
+.cvb{margin-left:auto;font-size:12px;padding:8px 10px;border-radius:12px}
+.stry{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:none}
+.sty{flex:0 0 auto;width:70px;text-align:center;background:none;border:0;color:var(--txt);padding:0}
+.sty .sr{width:64px;height:64px;margin:0 auto 4px;border-radius:50%;padding:3px;background:conic-gradient(#f472b6,#a855f7,#22d3ee,#f472b6)}
+.sty .sr.vis{background:#3a3f63}.sty .sr .av{width:100%;height:100%;border:3px solid #0b0d1a;font-size:20px}
+.sty small{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sty.add .sr{background:#2c3463;display:flex;align-items:center;justify-content:center;font-size:28px}
+.comnew textarea{width:100%;min-height:64px;resize:vertical;font:inherit;padding:10px;border-radius:12px;border:1px solid #2c3463;background:#0f1328;color:#fff}
+.comnew .row{margin-top:8px;flex-wrap:wrap}.comnew .row button,.comnew .row select{padding:9px 10px;font-size:13px}
+.comnew select{border-radius:12px;background:#0f1328;color:#fff;border:1px solid #2c3463;font:inherit}
+.cprev{position:relative;margin-top:8px}.cprev img{max-width:100%;max-height:220px;border-radius:12px;display:block}.cprev button{position:absolute;top:6px;right:6px;background:#000a;border:0;color:#fff;border-radius:50%;width:30px;height:30px}
+.cmemb{display:flex;gap:10px;overflow-x:auto;margin:4px 0 12px;scrollbar-width:none}.cmemb button{flex:0 0 auto;background:none;border:0;color:var(--txt);width:56px;padding:0;text-align:center}.cmemb .av{width:46px;height:46px;margin:0 auto 3px;font-size:16px}.cmemb small{font-size:10px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cpost{background:#ffffff0a;border:1px solid #ffffff17;border-radius:18px;padding:12px;margin-bottom:12px}
+.cpost .ch{display:flex;align-items:center;gap:10px}.cpost .ch .av{width:42px;height:42px;font-size:15px;flex:0 0 auto}.cpost .ch div{flex:1;min-width:0}.cpost .ch b{display:block}.cpost .ch small{color:var(--mut);font-size:12px}
+.cpost .cm{background:none;border:0;color:var(--mut);font-size:20px;padding:4px 8px}
+.cpost p{margin:10px 0 0;white-space:pre-wrap;word-wrap:break-word;line-height:1.4}.cpost .cimg{width:100%;max-height:420px;object-fit:cover;border-radius:14px;margin-top:10px;display:block;background:#0006}
+.cpost .ca{display:flex;gap:8px;margin-top:10px}.cpost .ca button{flex:1;padding:9px;border-radius:12px;font-size:14px}.cpost .ca button.on{background:#f472b622;border-color:#f472b6;color:#f9a8d4}
+.cmore{width:100%;margin:4px 0 20px}
+.cclist{display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow:auto;margin-bottom:10px}.ccit{display:flex;gap:8px}.ccit .av{width:32px;height:32px;font-size:12px;flex:0 0 auto}.ccit div{background:#ffffff0d;border-radius:12px;padding:7px 10px;flex:1}.ccit b{font-size:12px;display:block}
+#stv{position:fixed;inset:0;z-index:96;background:#000;display:flex;flex-direction:column;color:#fff}
+#stv .sb{display:flex;gap:4px;padding:10px 10px 6px;padding-top:max(10px,env(safe-area-inset-top))}#stv .sb i{flex:1;height:3px;border-radius:2px;background:#ffffff44;overflow:hidden}#stv .sb i b{display:block;height:100%;width:0;background:#fff}
+#stv .sh{display:flex;align-items:center;gap:10px;padding:4px 12px}#stv .sh .av{width:36px;height:36px;flex:0 0 36px;font-size:13px}#stv .sh div{flex:1}#stv .sh button{background:none;border:0;color:#fff;font-size:24px}
+#stv .sc{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}#stv .sc img{max-width:100%;max-height:100%;object-fit:contain}
+#stv .st{position:absolute;left:16px;right:16px;bottom:40px;text-align:center;font-size:22px;font-weight:800;text-shadow:0 2px 10px #000;white-space:pre-wrap}
+#stv .st.solo{position:static;font-size:26px;padding:20px;background:linear-gradient(135deg,#7a1cff,#ff2d55);border-radius:20px;margin:20px}
+#stv .tz{position:absolute;top:0;bottom:0;width:35%;z-index:2}#stv .tz.l{left:0}#stv .tz.r{right:0}
+
 /* ===== PREMIUM / LOJA ===== */
 .pmb{display:inline-block;margin-left:3px;font-size:.85em;filter:drop-shadow(0 0 4px #ffc23d)}
 .premcard{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:12px 0;padding:14px;border-radius:20px;border:1px solid #ffc23d66;background:linear-gradient(135deg,#3a2400,#5c1a6e 55%,#1d0a3e);color:#fff;box-shadow:0 0 24px #ffc23d22}
@@ -1189,6 +1219,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
   <div class="card livecard" id="liveCard"></div>
   <button class="premcard" id="premLobby"></button>
   <button class="servcard" id="servLobby"></button>
+  <button class="comcard" id="comLobby"></button>
   <div class="lfoot">© 2026 Arena dos Mestres · Todos os direitos reservados<br><a id="lfT">Termos de Uso</a> · <a id="lfP">Privacidade</a> · Proibido para menores de 18 anos</div>
 </section>
 
@@ -1225,6 +1256,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
     <button id="pBlk" class="ptile t3"><span>🚫</span><b>Bloqueados</b><small id="pBlkS"></small></button>
     <button id="pTour" class="ptile t4"><span>💡</span><b>Tutorial</b><small>ver de novo</small></button>
   </div>
+  <button class="comcard" id="comProf"></button>
   <div class="card premprof" id="premCard"></div>
   <div class="card" id="repCard"></div>
   <div class="card" id="styleCard"></div>
@@ -1382,6 +1414,16 @@ body:has(#legalGate) #mod{z-index:100000!important}
   <div class="scrban" data-img="online"></div>
   <div style="color:var(--mut);font-size:13px;margin:-6px 0 12px">Convide alguém pra jogar agora. <span id="onConn"></span></div>
   <div class="card" id="onList"></div>
+</section>
+
+<!-- COMUNIDADE -->
+<section id="com" class="scr">
+  <div class="ph1"><span class="phi">🌐</span><h2>Comunidade</h2><button id="comVisB" class="cvb">👁️ Quem me vê</button></div>
+  <div class="stry" id="comStories"></div>
+  <div class="card comnew" id="comNew"></div>
+  <div class="cmemb" id="comMemb"></div>
+  <div id="comFeed"></div>
+  <button id="comMore" class="cmore" style="display:none">Ver mais posts</button>
 </section>
 
 <!-- TORNEIOS -->
@@ -1874,7 +1916,7 @@ function go(id){
   document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id===id));
   document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.go===id));
   $('#nav').style.display=(id==='match'||id==='chat')?'none':'flex';
-  if(id==='lobby')renderLobby();if(id==='wallet')renderWallet();if(id==='profile')renderProfile();if(id==='online')renderOnline();if(id==='chats')renderChats();if(id==='torneio')renderTours();if(id==='bingo')bingoOpen();if(id==='bag')renderBag();if(id==='profile')frRefresh();
+  if(id==='lobby')renderLobby();if(id==='wallet')renderWallet();if(id==='profile')renderProfile();if(id==='online')renderOnline();if(id==='chats')renderChats();if(id==='torneio')renderTours();if(id==='bingo')bingoOpen();if(id==='bag')renderBag();if(id==='com')renderCom();if(id==='profile')frRefresh();
   window.scrollTo(0,0);
 }
 document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>go(b.dataset.go));
@@ -2011,7 +2053,7 @@ $('#rmf').onclick=()=>{S.photo=null;save();renderProfile();};
 $('#file').onchange=e=>{
   const f=e.target.files[0];if(!f)return;const r=new FileReader();
   r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=160;const s=Math.min(im.width,im.height);
-    c.getContext('2d').drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,160,160);S.photo=c.toDataURL('image/jpeg',0.82);save();renderProfile();toast('Foto atualizada');};im.src=r.result;};
+    c.getContext('2d').drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,160,160);S.photo=c.toDataURL('image/jpeg',0.82);save();renderProfile();toast('Foto atualizada');setTimeout(()=>comVisAsk(true),700);};im.src=r.result;};
   r.readAsDataURL(f);e.target.value='';
 };
 $('#psave').onclick=()=>{const n=$('#pname').value.trim();if(n&&modCheck(n)){modal('Nome não permitido','Esse nome tem termos restritos. Escolha outro nome pro seu perfil.',[{t:'OK',pri:1}]);return;}if(n)S.name=n;save();renderProfile();toast('Perfil salvo');if(typeof presence==='function')presence();};
@@ -3624,7 +3666,7 @@ function ajdOpen(){const bg=h('div','ajd-fundo');const sh=h('div','ajd-folha');b
   window.addEventListener('scroll',onScroll,{passive:true});document.addEventListener('scroll',onScroll,{passive:true,capture:true});
   setInterval(()=>{const s=document.querySelector('.scr.on');
     const busy=document.querySelector('#mod.on,.ajd-fundo,.gfx,#liveFull,.camwin[style=""]')||vis($('#chestFx'))||vis($('#entFx'))||vis($('#tourFx'))||[...document.querySelectorAll('[class*=tour]')].some(vis);
-    b.style.display=(s&&['match','watch','owner','chat'].includes(s.id))||busy?'none':'';},400);})();
+    b.style.display=(s&&['match','watch','owner','chat','com'].includes(s.id))||busy||document.querySelector('#stv')?'none':'';},400);})();
 
 /* ========== PRESENTES AO VIVO (grátis agora; compra fica pronta pra ligar depois) ========== */
 // Diamantes 💎: saldo só no banco (compra liberada pelo dono + bônus do Premium).
@@ -5008,6 +5050,106 @@ async function servTroca(x,use,fica){if(!CL.ses){needLogin();return;}await dirLo
   else modal('🎉 Pedido feito!',`Você usou <b style="color:var(--txt)">${r.gem} 💎</b> e não precisa pagar nada.<br>Código: <b style="color:var(--txt)">${esc(r.codigo)}</b><br><br>Agora fale com a gente no Direct do Instagram <b>@arenadosmesstres</b> pra mandar as informações.`,[{t:'📩 Abrir Instagram',pri:1,f:()=>servZap(x,msg)}]);}
 function servUI(){const l=$('#servLobby');if(!l)return;l.innerHTML=`<span class="pi">🛠️</span><div><b>Serviços NEXA</b><small>Página, Google Maps e IA no WhatsApp pro seu negócio — use seus 💎 de desconto</small></div><span class="go">Ver</span>`;l.onclick=servOpen;}
 servUI();
+
+/* ========== COMUNIDADE: stories, posts, curtidas e comentários (sem propaganda) ========== */
+const COM_FOTO_BASE=SB.url+'/storage/v1/object/public/arena-posts/';
+const COM_RX=/(https?:\/\/|www\.|wa\.me|bit\.ly|linktr|t\.me\/|chat\.whatsapp|\.(com|net|org|app|store|shop|site|online|io|me|link)(\.br)?(\b|\/)|@[a-z0-9_.]{3,}|(\d[\s().-]*){8,}|\b(vendo|vende-se|vendemos|compre|promo[cç][aã]o|promo|desconto|frete|pix|or[cç]amento|loja|delivery|encomenda|encomende|cupom|divulg\w*|patroc\w*|whats\w*|zap|instagram|telegram|tiktok)\b|link na bio|chama no pv|chama no privado|r\$)/i;
+const COM={feed:[],antes:null,foto:null,sto:[],memb:[]};
+function comBlock(t){if(OKEY)return null;if(COM_RX.test(t||''))return 'comercial';if(modCheck(t||''))return 'ofensa';return null;}
+function comAgo(d){const m=Math.floor((Date.now()-Date.parse(d))/60000);if(m<1)return 'agora';if(m<60)return m+' min';const hh=Math.floor(m/60);if(hh<24)return hh+' h';const dd=Math.floor(hh/24);return dd<7?dd+' d':new Date(d).toLocaleDateString('pt-BR');}
+function comAv(th,nm){const a=h('div','av');setAv(a,th,(nm||'?').slice(0,1).toUpperCase(),'#2b3260');return a;}
+function comPerm(){return [...new Set([...Object.keys(S.fr||{}),...Object.keys(S.fol||{})])].slice(0,300);}
+function comVisLabel(v){return v==='amigos'?'👥 Só amigos':v==='oculto'?'🙈 Não apareço':'🌍 Todos';}
+function comVisAsk(fromPhoto){const body=h('div');
+  body.innerHTML=`<p style="margin-top:0">${fromPhoto?'Foto nova! ':''}Quem pode ver seu perfil e seus posts na <b style="color:var(--txt)">🌐 Comunidade</b>?</p>`;
+  const opts=[['todos','🌍 Todo mundo','Seu perfil aparece pra galera e seus posts ficam abertos'],['amigos','👥 Só amigos','Só seus amigos e quem você segue veem seus posts'],['oculto','🙈 Não quero aparecer','Você não aparece na Comunidade (pode só olhar)']];
+  opts.forEach(([v,t,d])=>{const b=h('button','shi'+(S.comVis===v?' shhot':''),`<div style="flex:1;text-align:left"><b>${t}</b><small>${d}</small></div>`);b.style.width='100%';b.style.marginBottom='8px';
+    b.onclick=()=>{S.comVis=v;save();$('#mod').classList.remove('on');comMembSave();toast(comVisLabel(v));if($('#com').classList.contains('on'))renderCom();};body.append(b);});
+  modal('👁️ Quem me vê',body,[{t:'Depois'}]);}
+function comMembSave(){if(!CL.ses||!S.comVis)return;clRpc('arena_membro_salvar',{p_player_uid:S.uid,p_nome:S.name||'Jogador',p_thumb:thumb()||null,p_vis:S.comVis}).catch(()=>{});}
+function comAuth(){try{const tk=CL.ses&&CL.ses.at;return JSON.parse(atob(tk.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).sub;}catch(e){return null;}}
+function comCompress(file){return new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const M=1080,k=Math.min(1,M/Math.max(im.width,im.height));
+  const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+  let q=.82;const tryQ=()=>c.toBlob(b=>{if(b&&b.size>380000&&q>.4){q-=.12;tryQ();}else b?ok(b):no(new Error('foto'));},'image/jpeg',q);tryQ();};im.onerror=()=>no(new Error('foto'));im.src=r.result;};r.onerror=()=>no(new Error('foto'));r.readAsDataURL(file);});}
+async function comUpload(blob){const tk=await clToken(),uid=comAuth();if(!tk||!uid)throw new Error('login');
+  const path=uid+'/'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)+'.jpg';
+  const r=await fetch(SB.url+'/storage/v1/object/arena-posts/'+path,{method:'POST',headers:{Authorization:'Bearer '+tk,apikey:SB.key,'Content-Type':'image/jpeg','x-upsert':'false'},body:blob});
+  if(!r.ok)throw new Error('upload');return COM_FOTO_BASE+path;}
+function comComposer(){const el=$('#comNew');if(!el)return;
+  if(!CL.ses){el.innerHTML=`<b>✍️ Poste na Comunidade</b><br><small style="color:var(--mut)">Entre na sua conta pra postar, curtir e comentar.</small><div class="row" style="margin-top:8px"><button class="pri" id="comLog">☁️ Entrar na conta</button></div>`;$('#comLog').onclick=needLogin;return;}
+  if(S.comVis==='oculto'){el.innerHTML=`<b>🙈 Você está escondido da Comunidade</b><br><small style="color:var(--mut)">Pra postar, escolha aparecer pra todos ou só pros amigos.</small><div class="row" style="margin-top:8px"><button class="pri" id="comVis2">👁️ Mudar</button></div>`;$('#comVis2').onclick=()=>comVisAsk();return;}
+  el.innerHTML=`<textarea id="comTxt" maxlength="500" placeholder="Conte como foi a partida, chame a galera pra jogar…"></textarea><div id="comPrev"></div>
+   <div class="row"><button id="comFotoB">📷 Foto</button><select id="comVisS"><option value="todos">🌍 Todos</option><option value="amigos">👥 Amigos</option></select><button id="comSto">⭕ Story</button><button class="pri" id="comPub" style="flex:1">Publicar</button></div>
+   <small style="color:var(--mut);display:block;margin-top:6px">Só coisas do jogo e do seu dia a dia. Links, telefones e propaganda não vão pro ar.</small><input type="file" id="comFile" accept="image/*" hidden>`;
+  $('#comVisS').value=S.comVis==='amigos'?'amigos':'todos';
+  const prev=()=>{const p=$('#comPrev');p.innerHTML='';if(COM.foto){const d=h('div','cprev');const im=h('img');im.src=URL.createObjectURL(COM.foto);const x=h('button',null,'✕');x.onclick=()=>{COM.foto=null;prev();};d.append(im,x);p.append(d);}};prev();
+  $('#comFotoB').onclick=()=>$('#comFile').click();
+  $('#comFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{COM.foto=await comCompress(f);prev();}catch(x){toast('Não deu pra usar essa foto');}};
+  const send=async(tipo,btn)=>{const t=$('#comTxt').value.trim();if(!t&&!COM.foto){toast(tipo==='story'?'Escreva algo ou escolha uma foto pro story':'Escreva algo ou escolha uma foto');return;}
+    const bl=comBlock(t);if(bl){modal('🚫 Não pode ir pro ar',bl==='comercial'?'A Comunidade é só pra coisas do jogo e do dia a dia. Links, telefones, @perfis e propaganda não são permitidos.':'Seu texto tem termos que não são permitidos aqui.',[{t:'Entendi',pri:1}]);return;}
+    btn.disabled=true;const old=btn.textContent;btn.textContent='Enviando…';
+    try{let foto=null;if(COM.foto)foto=await comUpload(COM.foto);
+      const vis=$('#comVisS').value;const r=await clRpc('arena_postar',{p_tipo:tipo,p_texto:t,p_foto:foto,p_vis:vis,p_permitidos:vis==='amigos'?comPerm():[],p_player_uid:S.uid,p_nome:S.name||'Jogador',p_thumb:thumb()||null});
+      if(!r||!r.ok){toast(r&&r.erro==='comercial'?'🚫 Propaganda e links não vão pro ar':r&&r.erro==='rapido'?'Calma! Muitos posts seguidos — tente daqui a pouco':'Não deu pra postar agora');}
+      else{COM.foto=null;$('#comTxt').value='';prev();toast(tipo==='story'?'⭕ Story no ar por 24h':'✅ Postado!');comMembSave();comLoad(true);}}
+    catch(x){toast(x.message==='login'?'Entre na conta de novo':'Não deu pra enviar a foto agora');}
+    btn.disabled=false;btn.textContent=old;};
+  $('#comPub').onclick=e=>send('post',e.currentTarget);$('#comSto').onclick=e=>send('story',e.currentTarget);}
+function comAuthorSheet(p){if(!p.player_uid||p.player_uid===S.uid)return;const body=h('div');const top=h('div');top.style.cssText='display:flex;align-items:center;gap:12px;margin-bottom:10px';top.append(comAv(p.thumb,p.nome),h('b',null,esc(p.nome||'Jogador')));body.append(top);
+  const B=[{t:'💬 Mandar mensagem',pri:1,f:()=>openChat(p.player_uid,p.nome,p.thumb)},{t:isFol(p.player_uid)?'✓ Seguindo':'👣 Seguir',f:()=>{toggleFollow({id:p.player_uid,name:p.nome,thumb:p.thumb});}},{t:'Fechar'}];
+  body.append(h('small',null,'Pela conversa você também pode ligar 📞'));modal('Perfil',body,B);}
+function comPostEl(p){const c=h('div','cpost');const hd=h('div','ch');const av=comAv(p.thumb,p.nome);av.onclick=()=>comAuthorSheet(p);
+  const inf=h('div',null,`<b>${esc(p.nome||'Jogador')}</b><small>${comAgo(p.criado)} · ${p.vis==='amigos'?'👥':'🌍'}</small>`);inf.onclick=()=>comAuthorSheet(p);
+  const m=h('button','cm','⋯');m.onclick=()=>{const B=[];if(p.meu||OKEY)B.push({t:'🗑️ Apagar',f:()=>clRpc('arena_apagar_post',{p_id:p.id}).then(ok=>{if(ok){toast('Post apagado');comLoad(true);}else toast('Não deu pra apagar');}).catch(()=>toast('Entre na conta'))});
+    if(!p.meu)B.push({t:'🚩 Denunciar',f:()=>{if(!CL.ses){needLogin();return;}clRpc('arena_denunciar',{p_id:p.id}).then(()=>toast('Obrigado! Com 3 denúncias o post sai do ar.')).catch(()=>{});}});B.push({t:'Fechar'});modal('Post',p.meu?'Esse post é seu.':'Viu propaganda, ofensa ou algo fora do jogo? Denuncie.',B);};
+  hd.append(av,inf,m);c.append(hd);
+  if(p.texto)c.append(h('p',null,esc(p.texto)));
+  if(p.foto&&p.foto.startsWith(COM_FOTO_BASE)){const im=h('img','cimg');im.loading='lazy';im.src=p.foto;im.alt='';im.onclick=()=>goLink(p.foto);c.append(im);}
+  const a=h('div','ca');const lk=h('button',p.curti?'on':'',`${p.curti?'❤️':'🤍'} ${p.curt||0}`);
+  lk.onclick=async()=>{if(!CL.ses){needLogin();return;}p.curti=!p.curti;p.curt=(p.curt|0)+(p.curti?1:-1);lk.className=p.curti?'on':'';lk.textContent=`${p.curti?'❤️':'🤍'} ${p.curt}`;try{const r=await clRpc('arena_curtir',{p_post:p.id});if(r&&r.n!=null){p.curt=r.n;lk.textContent=`${p.curti?'❤️':'🤍'} ${p.curt}`;}}catch(e){}};
+  const cm=h('button',null,`💬 ${p.coms||0}`);cm.onclick=()=>comComments(p,cm);a.append(lk,cm);c.append(a);return c;}
+async function comComments(p,btn){const body=h('div');const list=h('div','cclist','<small style="color:var(--mut)">Carregando…</small>');body.append(list);
+  const fill=async()=>{let L=[];try{L=await rpcAnon('arena_comentarios',{p_post:p.id})||[];}catch(e){}list.innerHTML=L.length?'':'<small style="color:var(--mut)">Seja o primeiro a comentar.</small>';
+    L.forEach(x=>{const it=h('div','ccit');it.append(comAv(x.thumb,x.nome),h('div',null,`<b>${esc(x.nome||'Jogador')} · ${comAgo(x.criado)}</b>${esc(x.texto)}`));list.append(it);});p.coms=L.length;if(btn)btn.textContent=`💬 ${p.coms}`;list.scrollTop=1e6;};
+  fill();
+  if(CL.ses){const row=h('div','row');const inp=h('input');inp.maxLength=200;inp.placeholder='Comente…';inp.style.cssText='flex:1;font:inherit;padding:10px;border-radius:12px;border:1px solid #2c3463;background:#0f1328;color:#fff';
+    const sb=h('button','pri','Enviar');sb.onclick=async()=>{const t=inp.value.trim();if(!t)return;const bl=comBlock(t);if(bl){toast(bl==='comercial'?'🚫 Links e propaganda não vão pro ar':'Termo não permitido');return;}
+      sb.disabled=true;try{const r=await clRpc('arena_comentar',{p_post:p.id,p_texto:t,p_player_uid:S.uid,p_nome:S.name||'Jogador',p_thumb:thumb()||null});if(r&&r.ok){inp.value='';fill();}else toast(r&&r.erro==='comercial'?'🚫 Links e propaganda não vão pro ar':r&&r.erro==='rapido'?'Calma! Muitos comentários seguidos':'Não deu agora');}catch(e){toast('Não deu agora');}sb.disabled=false;};
+    row.append(inp,sb);body.append(row);}else body.append(h('small',null,'Entre na conta pra comentar.'));
+  modal('💬 Comentários',body,[{t:'Fechar'}]);}
+async function rpcAnon(fn,args){if(CL.ses){try{return await clRpc(fn,args);}catch(e){}}return rkAnon(fn,args);}
+async function comLoad(reset){if(reset){COM.feed=[];COM.antes=null;}
+  let L=[];try{L=await rpcAnon('arena_feed',{p_viewer:S.uid,p_tipo:'post',p_antes:COM.antes})||[];}catch(e){}
+  COM.feed=reset?L:COM.feed.concat(L);if(L.length)COM.antes=L[L.length-1].id;
+  const f=$('#comFeed');if(!f)return;if(reset)f.innerHTML='';
+  if(!COM.feed.length)f.innerHTML='<div class="empty1">Nenhum post ainda. Seja o primeiro a postar! 🎉</div>';
+  else (reset?COM.feed:L).forEach(p=>f.append(comPostEl(p)));
+  $('#comMore').style.display=L.length>=30?'':'none';
+  if(reset){comStories();comMembros();}}
+async function comStories(){let L=[];try{L=await rpcAnon('arena_feed',{p_viewer:S.uid,p_tipo:'story',p_antes:null})||[];}catch(e){}
+  const g=new Map();L.slice().reverse().forEach(p=>{const k=p.player_uid||p.nome;if(!g.has(k))g.set(k,[]);g.get(k).push(p);});COM.sto=[...g.values()].reverse();
+  const el=$('#comStories');if(!el)return;el.innerHTML='';
+  if(CL.ses&&S.comVis!=='oculto'){const a=h('button','sty add','<div class="sr">＋</div><small>Seu story</small>');a.onclick=()=>{const t=$('#comTxt');if(t){t.focus();toast('Escreva ou escolha foto e toque em ⭕ Story');}};el.append(a);}
+  COM.sto.forEach((arr,i)=>{const p=arr[0];const seen=(S.stSeen||{})[arr[arr.length-1].id];const b=h('button','sty');const r=h('div','sr'+(seen?' vis':''));r.append(comAv(p.thumb,p.nome));b.append(r,h('small',null,esc(p.meu?'Você':p.nome||'Jogador')));b.onclick=()=>comStoryView(i,0);el.append(b);});
+  if(!el.children.length)el.style.display='none';else el.style.display='';}
+function comStoryView(gi,si){const arr=COM.sto[gi];if(!arr){const o=$('#stv');if(o)o.remove();comStories();return;}const p=arr[si];if(!p){comStoryView(gi+1,0);return;}
+  S.stSeen=S.stSeen||{};S.stSeen[p.id]=1;const ks=Object.keys(S.stSeen);if(ks.length>300)ks.slice(0,ks.length-300).forEach(k=>delete S.stSeen[k]);save();
+  let o=$('#stv');if(!o){o=h('div');o.id='stv';document.body.append(o);}clearTimeout(o._t);
+  o.innerHTML=`<div class="sb">${arr.map((_,k)=>`<i><b style="width:${k<si?100:0}%"></b></i>`).join('')}</div><div class="sh"></div><div class="sc"><div class="tz l"></div><div class="tz r"></div></div>`;
+  const sh=o.querySelector('.sh');sh.append(comAv(p.thumb,p.nome),h('div',null,`<b>${esc(p.meu?'Você':p.nome||'Jogador')}</b><br><small>${comAgo(p.criado)}</small>`));
+  if(p.meu||OKEY){const d=h('button',null,'🗑️');d.onclick=()=>clRpc('arena_apagar_post',{p_id:p.id}).then(()=>{o.remove();toast('Story apagado');comStories();});sh.append(d);}
+  const x=h('button',null,'✕');x.onclick=()=>{clearTimeout(o._t);o.remove();comStories();};sh.append(x);
+  const sc=o.querySelector('.sc');if(p.foto&&p.foto.startsWith(COM_FOTO_BASE)){const im=h('img');im.src=p.foto;sc.append(im);if(p.texto)sc.append(h('div','st',esc(p.texto)));}else sc.append(h('div','st solo',esc(p.texto||'')));
+  const bar=o.querySelectorAll('.sb i b')[si];requestAnimationFrame(()=>{bar.style.transition='width 5s linear';bar.style.width='100%';});
+  const next=()=>comStoryView(gi,si+1),prev=()=>si>0?comStoryView(gi,si-1):gi>0?comStoryView(gi-1,0):comStoryView(gi,0);
+  o.querySelector('.tz.r').onclick=next;o.querySelector('.tz.l').onclick=prev;o._t=setTimeout(next,5000);}
+async function comMembros(){let L=[];try{L=await rpcAnon('arena_membros',{p_viewer:S.uid})||[];}catch(e){}const el=$('#comMemb');if(!el)return;el.innerHTML='';
+  L.filter(x=>x.player_uid!==S.uid).slice(0,30).forEach(x=>{const b=h('button');b.append(comAv(x.thumb,x.nome),h('small',null,esc(x.nome||'Jogador')));b.onclick=()=>comAuthorSheet({player_uid:x.player_uid,nome:x.nome,thumb:x.thumb});el.append(b);});
+  el.style.display=el.children.length?'':'none';}
+function renderCom(){$('#comVisB').textContent='👁️ '+(S.comVis?comVisLabel(S.comVis):'Quem me vê');$('#comVisB').onclick=()=>comVisAsk();$('#comMore').onclick=()=>comLoad(false);
+  comComposer();comLoad(true);if(CL.ses&&!S.comVis)setTimeout(()=>comVisAsk(),600);}
+function comCardsUI(){[['#comLobby','Stories e posts da galera da Arena'],['#comProf','Poste, veja stories e escolha quem te vê']].forEach(([id,t])=>{const el=$(id);if(!el)return;el.innerHTML=`<span class="pi">🌐</span><div><b>Comunidade</b><small>${t}</small></div><span class="go">Abrir</span>`;el.onclick=()=>go('com');});}
+comCardsUI();
 /* ========== INSTALAR (PWA) ========== */
 let instEv=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();instEv=e;$('#instBtn').style.display='block';});
