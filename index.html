@@ -207,6 +207,24 @@ body.lvduo #camDockT,body.lvduo #camDockB,body.lvduo .camwin{display:none!import
 .lnog{font-size:22px}.lkick{position:absolute;right:2px;top:2px;padding:0 5px;font-size:11px;line-height:16px;border-radius:999px}
 .lbar{display:flex;gap:6px;padding:6px;background:#120a2a;flex-wrap:wrap}.lbar button{flex:1;padding:7px 8px;font-size:12px}
 #liveFull{position:fixed;inset:0;z-index:92;background:#000}
+/* ===== ORGANIZAÇÃO ===== */
+.tchip{font-style:normal;background:#ffffff22;border-radius:99px;padding:1px 6px;font-size:10px;margin-left:4px}
+#balTeste{cursor:pointer}
+.adlinks{display:flex;gap:8px;margin-top:8px}.adlinks button{flex:1;padding:9px;font-size:13px;border-radius:12px;background:#ffc23d1a;border:1px solid #ffc23d66;color:#ffd77a;font-weight:800}
+.agora{margin:4px 0 14px}.agh{font-weight:900;font-size:16px;margin:0 2px 8px}
+.agsc{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px;scrollbar-width:none}
+.agsc{align-items:stretch}.agsc>*{flex:0 0 88%!important;max-width:360px;scroll-snap-align:start;margin:0!important}
+.tourmini{border-color:#ffc23d66!important;background-size:cover!important;background-position:right center!important}
+.livemini{display:flex;flex-direction:column;justify-content:center;gap:4px;text-align:left;padding:16px;border-radius:20px;border:1px solid #ff2d5566;background:radial-gradient(circle at 20% 20%,#ff2d5533,#1d0a3e 70%);color:#fff;min-height:150px}
+.livemini b{font-size:18px}.livemini small{opacity:.85}.livemini .ldot{color:#ff5577;font-weight:900;font-size:12px}
+.pgrp{background:#ffffff08;border:1px solid #ffffff17;border-radius:18px;margin-bottom:12px;padding:0 10px}
+.pgrp>summary{list-style:none;cursor:pointer;padding:14px 4px;font-weight:900;font-size:16px}.pgrp>summary::-webkit-details-marker{display:none}
+.pgrp>summary{position:relative;padding-right:30px!important}.pgrp>summary::after{content:'▾';position:absolute;right:8px;top:16px;color:var(--mut)}.pgrp[open]>summary::after{content:'▴'}
+.pgrp>summary small{display:block;font-weight:600;font-size:12px;color:var(--mut);margin-top:2px}
+.pgrp>.card,.pgrp>details.card{margin-bottom:10px}
+.pvis{width:100%;margin-bottom:10px;padding:12px;border-radius:14px}
+.gemloja{background:linear-gradient(135deg,#0c3a4a,#2a1660);border-color:#22d3ee55}
+
 /* ===== COMUNIDADE ===== */
 .comcard{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:0 0 12px;padding:14px;border-radius:20px;border:1px solid #f472b666;background:linear-gradient(135deg,#4a0f3a,#5b21b6 60%,#1d0a3e);color:#fff;box-shadow:0 0 24px #f472b622}
 .comcard .pi{font-size:32px}.comcard div{flex:1}.comcard b{display:block;font-size:16px;color:#f9a8d4}.comcard small{opacity:.85;font-size:12px}.comcard .go{background:#f472b6;color:#2a0018;font-weight:900;border-radius:12px;padding:8px 10px;font-size:13px;white-space:nowrap}
@@ -1207,30 +1225,31 @@ body:has(#legalGate) #mod{z-index:100000!important}
   <div class="top">
     <div class="av" id="lav"></div>
     <div class="hello"><small>Olá,</small><div id="lname"></div></div>
-    <div class="bal bal1"><small>SALDO DE TESTE</small><span id="lbal"></span></div>
+    <div class="bal bal1" id="balTeste" role="button"><small>SALDO DE TESTE <i class="tchip">🧪 teste</i></small><span id="lbal"></span></div>
   </div>
-  <div class="banner">🧪 <b>Modo teste:</b> o saldo é fictício, nenhum dinheiro real entra ou sai. Partidas valendo saldo são contra robôs de treino. Com amigos e jogadores online é grátis.</div>
   <button id="instBtn" class="pri" style="display:none;width:100%;margin-bottom:12px">📲 Instalar o app no celular</button>
   <div id="heroBox"></div>
   <div class="duo"><div id="rankBox" class="rankbox"></div><div id="vitBox"></div></div>
   <div id="neonBox"></div>
   <div id="socBox"></div>
+  <div class="agora" id="agora"><div class="agh">🎉 Acontecendo agora</div><div class="agsc" id="agoraSc"><button id="bingoCard" class="bingocard phbg" data-img="bingo" style="display:none"></button><button class="livemini" id="liveMini"></button></div></div>
+  <div id="backCard" class="card backcard" style="display:none"></div>
   <button class="fbanner fb1 phbg" data-img="amigo" id="friendBtn"><span class="fic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3.5-6 6.5-6s6 2 6.5 6"/><circle cx="17.5" cy="9" r="2.6"/><path d="M16.5 14c2.5 0 4.5 1.6 5 4.6"/></svg></span><div><b>Jogar com um amigo</b><span id="friendSub" class="finfo">Escolha o jogo e mande o link no WhatsApp</span></div><span class="fgo">›</span></button>
   <div id="onStrip"></div>
   <button id="bagCard" class="bagcard phbg" data-img="bag" style="display:none!important"></button>
-  <button id="bingoCard" class="bingocard phbg" data-img="bingo" style="display:none"></button>
-  <div id="backCard" class="card backcard" style="display:none"></div>
+
   <div class="sec1"><h2>Escolha o jogo</h2><span>5 jogos + torneios</span></div>
   <div class="grid" id="games"></div>
-  <div class="card livecard" id="liveCard"></div>
-  <button class="premcard" id="premLobby"></button>
-  <button class="servcard" id="servLobby"></button>
   <div class="lfoot">© 2026 Arena dos Mestres · Todos os direitos reservados<br><a id="lfT">Termos de Uso</a> · <a id="lfP">Privacidade</a> · Proibido para menores de 18 anos</div>
 </section>
 
 <!-- WALLET -->
 <section id="wallet" class="scr">
-  <div class="ph1"><span class="phi">💰</span><h2>Carteira</h2></div>
+  <div class="ph1"><span class="phi">🛍️</span><h2>Loja</h2></div>
+  <div class="card gemloja" id="gemLoja"></div>
+  <div class="card premprof" id="premCard"></div>
+  <button class="servcard" id="servLobby"></button>
+  <details class="pgrp" open><summary>🧪 Saldo de teste e histórico</summary>
   <div class="card wcard phbg" data-img="wallet">
     <small>SALDO DE TESTE</small>
     <div id="wbal"></div>
@@ -1239,6 +1258,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
     <button id="saque" style="width:100%;margin-top:10px">Sacar (mínimo R$ 10,00)</button>
   </div>
   <div class="card"><div style="display:flex;align-items:center"><b class="ct" style="flex:1">🧾 Histórico</b><button id="histClr" style="font-size:12px;padding:7px 10px">🧹 Limpar</button></div><div id="histOld"></div><div class="hist" id="hist"></div></div>
+  </details>
 </section>
 
 <!-- PROFILE -->
@@ -1261,12 +1281,16 @@ body:has(#legalGate) #mod{z-index:100000!important}
     <button id="pBlk" class="ptile t3"><span>🚫</span><b>Bloqueados</b><small id="pBlkS"></small></button>
     <button id="pTour" class="ptile t4"><span>💡</span><b>Tutorial</b><small>ver de novo</small></button>
   </div>
-  <button class="comcard" id="comProf"></button>
-  <div class="card premprof" id="premCard"></div>
-  <div class="card" id="repCard"></div>
-  <div class="card" id="styleCard"></div>
-  <div class="card" id="giftCard"></div>
+  <details class="pgrp" id="gVis"><summary>✨ Meu visual <small>acessórios, estilo e presentes</small></summary>
+    <div class="card" id="styleCard"></div>
+    <div class="card" id="giftCard"></div>
+  </details>
+  <details class="pgrp" id="gPart"><summary>🎬 Minhas partidas <small>replays e melhores lances</small></summary>
+    <div class="card" id="repCard"></div>
+  </details>
+  <details class="pgrp" id="gConta"><summary>⚙️ Conta e privacidade <small id="gContaS">conta, quem me vê, segurança</small></summary>
   <div class="card" id="cloudCard"></div>
+  <button class="pvis" id="pVisB">👁️ Quem me vê na Comunidade</button>
   <details class="card pedit"><summary>✏️ Editar perfil <small>foto e nome</small></summary>
     <div class="row" style="margin-top:12px"><button id="pickf2">📷 Escolher foto</button><button id="rmf">Remover foto</button></div>
     <input type="file" id="file" accept="image/*" hidden>
@@ -1277,6 +1301,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
   <div class="card plegal"><b class="ct">🛡️ Segurança e privacidade</b>
     <button id="lgTerms">📜 Termos de Uso</button><button id="lgPriv">🔒 Política de Privacidade</button>
     <button id="lgReq">✉️ Pedido sobre meus dados / denúncia</button><button id="lgDel" class="lgdel">🗑️ Apagar meus dados</button></div>
+  </details>
   <button id="ownerBtn" style="width:100%;margin-bottom:12px;display:none">🔐 Painel do dono</button>
 </section>
 
@@ -1416,6 +1441,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
 <!-- ONLINE -->
 <section id="online" class="scr">
   <div class="ph1"><span class="phi">🟢</span><h2>Jogadores online</h2></div>
+  <div class="card livecard" id="liveCard"></div>
   <div class="scrban" data-img="online"></div>
   <div style="color:var(--mut);font-size:13px;margin:-6px 0 12px">Convide alguém pra jogar agora. <span id="onConn"></span></div>
   <div class="card" id="onList"></div>
@@ -1533,7 +1559,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
   <button data-go="lobby" class="on"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="12" rx="6"/><path d="M7 11v4M5 13h4"/><circle cx="16" cy="12" r="1"/><circle cx="18" cy="14.5" r="1"/></svg>Jogos</button>
   <button data-go="online"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3.5-6 6.5-6s6 2 6.5 6"/><circle cx="17.5" cy="9" r="2.6"/><path d="M16.5 14c2.5 0 4.5 1.6 5 4.6"/></svg>Online<span class="badge" id="onBadge">0</span></button>
   <button data-go="chats"><svg viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M8 10h8M8 13h5"/></svg>Conversas<span class="badge" id="chBadge">0</span></button>
-  <button data-go="wallet"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 10h18M16 15h2"/><path d="M6 6l9-3 1.5 3"/></svg>Carteira</button>
+  <button data-go="wallet"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 10h18M16 15h2"/><path d="M6 6l9-3 1.5 3"/></svg>Loja</button>
   <button data-go="profile"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.4-7 8-7s7 2.5 8 7"/></svg>Perfil</button>
 </nav>
 
@@ -2018,6 +2044,7 @@ function renderLobby(){
   const g=$('#games');g.innerHTML='';
   GAMES.forEach((x,j)=>{const c=h('button','gc'+(PHOTO[x.id]?' phc':''),`${j===0?'<span class="gpill">MAIS JOGADO</span>':''}${PHOTO[x.id]?`<div class="art ph"><img src="${PHOTO[x.id]}" alt="" style="animation-delay:-${j*2.3}s"><i class="shine"></i></div>`:`<div class="art">${ART[x.id]}</div>`}<div class="tx"><b>${x.name}</b><span>${x.desc}</span><span class="bcppl gppl" data-g="${x.id}">👥 0 na mesa · comece agora</span></div><button class="glive" data-g="${x.id}" style="display:none"></button>`);c.onclick=()=>openStake(x);g.append(c);});
   liveBadges();
+  setTimeout(agTourUI,0);
   const n=(O.tours||[]).length;const tc=h('button','gc tourcard'+(PHOTO.torneio?' phc tph':''),`${PHOTO.torneio?`<img class="tbg" src="${PHOTO.torneio}" alt=""><i class="shine"></i>`:`<div class="tic">${ARTF.trofeu('TC')}</div>`}<span class="tneon">TORNEIOS</span><div class="tcta" id="tcCta"></div>`);tc.id='tourCard';tc.onclick=()=>{go('torneio');setTimeout(()=>{const f=document.querySelector('#torneio .tcard');if(f)f.scrollIntoView({block:'start',behavior:'smooth'});},250);};g.append(tc);try{tourCardFill();}catch(e){setTimeout(()=>{try{tourCardFill();}catch(_){}},0);}
 }
 function noFunds(stake,g){
@@ -2053,7 +2080,8 @@ function openStake(g){
 }
 
 /* ========== WALLET ========== */
-function renderWallet(){
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#balTeste'))modal('🧪 Modo teste','O saldo é fictício: nenhum dinheiro real entra ou sai. Partidas valendo saldo são contra robôs de treino. Com amigos e jogadores online é grátis.',[{t:'Entendi',pri:1}]);});
+function renderWallet(){gemLojaUI();
   $('#wbal').textContent=fmt(S.bal);
   const d=$('#deps');d.innerHTML='';
   [200,500,1000,2000].forEach(v=>{const b=h('button',null,'+ '+fmt(v));b.onclick=()=>{S.bal+=v;addHist('Depósito (simulado)',v);renderWallet();toast('Saldo de teste adicionado');};d.append(b);});
@@ -2285,7 +2313,7 @@ function onTourReg(t,o){const tid=t.split('/')[3];if(!tid)return;if(!TREG.has(ti
   if(o.off)TREG.get(tid).delete(o.from);else TREG.get(tid).set(o.from,{id:o.from,name:o.name||'Jogador',thumb:o.thumb});
   if($('#torneio').classList.contains('on'))renderTours();tourCardFill();}
 function tourSubs(){(O.tours||[]).forEach(t=>busSub(TOP.tour(t.id)+'/+'));}
-function tourCardFill(){const el=$('#tcCta');if(!el)return;const ts=O.tours||[];
+function tourCardFill(){try{agTourUI();}catch(e){}const el=$('#tcCta');if(!el)return;const ts=O.tours||[];
   if(!ts.length){el.className='tcta off';el.innerHTML='<small>Em breve</small>';return;}
   const t=ts[0],r=regs(t.id),inn=r.has(S.uid),full=t.max&&r.size>=t.max&&!inn;
   el.className='tcta'+(inn?' in':'');
@@ -2586,8 +2614,7 @@ function renderVit(){
   html+=`<div class="adneon"><b>📣 ANÚNCIOS</b><small>Sua marca aqui pra toda a Arena</small></div>`;
   if(slides.length)html+=`<div class="rot" id="rotBox">${slides.join('')}${slides.length>1?`<div class="rdots">${slides.map(()=>'<i></i>').join('')}</div>`:''}</div>`;
   else html+=`<button class="adhere" id="adHere"><span>📣</span><div><b>ANUNCIE AQUI</b><small>${priceLine()||'Sua loja ou serviço pra toda a comunidade da Arena'}</small></div><em>→</em></button>`;
-  if(slides.length)html+=`<button class="adhere sm" id="adHere"><span>📣</span><div><b>ANUNCIE AQUI TAMBÉM</b><small>${priceLine()||'Veja os planos'}</small></div><em>→</em></button>`;
-  html+=`<button class="parc" id="parcBtn">🤝 QUER FAZER PARCERIA?</button>`;
+  html+=slides.length?`<div class="adlinks"><button id="adHere">📣 Anuncie aqui</button><button id="parcBtn">🤝 Parceria</button></div>`:`<button class="parc" id="parcBtn">🤝 QUER FAZER PARCERIA?</button>`;
   if(box.dataset.k===html&&box.querySelector('#rotBox,#adHere'))return;box.dataset.k=html;
   box.innerHTML=html;
   const cta=box.querySelector('#vCta');if(cta)cta.onclick=()=>goLink(v.url);
@@ -3514,7 +3541,15 @@ function liveFull(on,refresh){
   if(NET.spec&&!LIVE.guests.includes(S.uid)){const a=h('button','lfask',LIVE.asked?'⏳':'🙋 Entrar');a.onclick=liveAsk;bot.append(a);}
   fo.append(bot);
 }
-function liveCardUI(){const el=$('#liveCard');if(!el)return;const L=liveList().filter(p=>p.live.lv);const n=L.length;const k=n+'|'+L.map(p=>p.live.room).join();if(el.dataset.k===k)return;el.dataset.k=k;
+function agTourUI(){const ag=$('#agoraSc');if(!ag)return;const gt=document.querySelector('#games #tourCard');if(gt)gt.remove();
+  let b=$('#agTour');if(!b){b=h('button','livemini tourmini');b.id='agTour';ag.prepend(b);b.onclick=()=>go('torneio');}
+  const ts=O.tours||[];let n=0;ts.forEach(t=>{n+=regs(t.id).size;});
+  b.style.backgroundImage=PHOTO.torneio?`linear-gradient(90deg,#14082ef2 45%,#14082e55),url(${PHOTO.torneio})`:'';
+  b.innerHTML=`<span class="ldot" style="color:#ffd77a">🏆 TORNEIOS</span><b>${ts.length?esc(ts[0].title||'Torneio')+(ts.length>1?` +${ts.length-1}`:''):'Torneios da Arena'}</b><small>${ts.length?`👥 ${n} inscrito${n===1?'':'s'} · toque pra participar →`:'Em breve · fique de olho →'}</small>`;}
+function liveMiniUI(n){const m=$('#liveMini');if(!m)return;const k='m'+n;if(m.dataset.k===k)return;m.dataset.k=k;
+  m.innerHTML=n?`<span class="ldot">● AO VIVO</span><b>🔴 ${n} live${n>1?'s':''} no ar</b><small>Assista, mande presente e peça pra entrar →</small>`:`<span class="ldot">● LIVES</span><b>🎥 Lives nos jogos</b><small>Abra a sua live na mesa ou assista a galera →</small>`;
+  m.onclick=()=>go('online');}
+function liveCardUI(){const L0=liveList().filter(p=>p.live.lv);liveMiniUI(L0.length);const el=$('#liveCard');if(!el)return;const L=L0;const n=L.length;const k=n+'|'+L.map(p=>p.live.room).join();if(el.dataset.k===k)return;el.dataset.k=k;
   el.innerHTML=`<div class="lc-t"><span class="ldot">● LIVE</span><b>Lives nos jogos</b></div><small>Assista quem está ao vivo jogando, mande presentes 🎁 e peça pra entrar na live.</small>
     <div class="row"><button class="pri" data-v>👀 Ver lives${n?' ('+n+')':''}</button><button data-m>🎥 Fazer minha live</button></div>`;
   el.querySelector('[data-v]').onclick=()=>{const body=h('div');const box=h('div','livebox');const L2=liveList().filter(p=>p.live.lv);
@@ -5013,7 +5048,8 @@ async function dirLoad(silent){if(!CL.ses)return null;let d=null;try{d=await clR
   premUI();return d;}
 setInterval(()=>{if(CL.ses&&(DIR.ped.some(p=>p.status==='pago'||p.status==='aguardando')||Date.now()-DIR.t>6e5))dirLoad();},45e3);
 setTimeout(()=>dirLoad(true),3500);
-function needLogin(){modal('☁️ Entre na sua conta',`Pra comprar, sua compra precisa ficar guardada na sua conta — assim você não perde nada se trocar de celular.<br><br>É grátis: vá em <b style="color:var(--txt)">Perfil → ☁️ Conta na nuvem</b> e crie com seu e-mail.`,[{t:'Agora não'},{t:'Ir pro Perfil',pri:1,f:()=>{go('profile');setTimeout(()=>{const c=$('#cloudCard');if(c)c.scrollIntoView({block:'center',behavior:'smooth'});},300);}}]);}
+function openCloud(){go('profile');setTimeout(()=>{const g=$('#gConta');if(g)g.open=true;const c=$('#cloudCard');if(c){c.scrollIntoView({block:'center',behavior:'smooth'});const i=c.querySelector('input');if(i)setTimeout(()=>i.focus(),500);}},350);}
+function needLogin(){modal('☁️ Entre na sua conta',`Pra comprar, sua compra precisa ficar guardada na sua conta — assim você não perde nada se trocar de celular.<br><br>É grátis: vá em <b style="color:var(--txt)">Perfil → ☁️ Conta na nuvem</b> e crie com seu e-mail.`,[{t:'Agora não'},{t:'Ir pro Perfil',pri:1,f:openCloud}]);}
 function shopOpen(tab){tab=tab||'prem';const body=h('div');
   const tabs=h('div','shtabs');[['prem','👑 Premium'],['gem','💎 Diamantes'],['pac','🎁 Pacotes']].forEach(([k,t])=>{const b=h('button',k===tab?'on':'',t);b.onclick=()=>{tab=k;draw();};tabs.append(b);});
   const list=h('div','shl');body.append(tabs,list);
@@ -5036,7 +5072,12 @@ async function buy(x){if(!CL.ses){needLogin();return;}
    <ol style="padding-left:18px;margin:10px 0;line-height:1.5"><li>Toque em <b>📋 Copiar Pix</b></li><li>Abra o app do seu banco → <b>Pix → Pix Copia e Cola</b></li><li>Cole, confira o valor e pague</li><li>Volte aqui e toque em <b>✅ Já paguei</b></li></ol>
    <div class="pixb">${esc(code)}</div><small style="color:var(--mut)">Ou use a chave Pix: ${PIX_CHAVE} — e escreva o código <b>${esc(r.codigo)}</b> na mensagem. Assim que o dono confirmar, libera sozinho na sua conta.</small>`;
   modal('💠 Pagar com Pix · '+x.n,body,[{t:'📋 Copiar Pix',f:()=>{copyTxt(code,'📋 Pix copiado — cole no app do banco');return false;}},{t:'✅ Já paguei',pri:1,f:async()=>{try{await clRpc('arena_paguei',{p_codigo:r.codigo});}catch(e){}toast('🙌 Avisado! Assim que o dono conferir, libera sozinho.');dirLoad(true);}}]);}
-function premUI(){const pm=isPrem(),ate=pm?new Date(S.premAte).toLocaleDateString('pt-BR'):'';
+function gemLojaUI(){const el=$('#gemLoja');if(!el)return;
+  el.innerHTML=`<div style="display:flex;align-items:center;gap:12px"><span style="font-size:36px">💎</span><div style="flex:1"><small style="color:var(--mut)">SEUS DIAMANTES</small><b style="display:block;font-size:26px">${S.gem||0}</b></div></div>
+   <small style="color:var(--mut)">Pra mandar presentes e ganhar desconto nos Serviços NEXA. ${CL.ses?'':'<b style="color:var(--txt)">Entre na conta pra usar.</b>'}</small>
+   <div class="row" style="margin-top:10px"><button class="pri" id="glGem">💎 Comprar diamantes</button><button id="glPac">🎁 Pacotes</button></div>`;
+  $('#glGem').onclick=()=>shopOpen('gem');$('#glPac').onclick=()=>shopOpen('pac');}
+function premUI(){try{gemLojaUI();}catch(e){}const pm=isPrem(),ate=pm?new Date(S.premAte).toLocaleDateString('pt-BR'):'';
   const l=$('#premLobby');if(l){l.innerHTML=pm?`<span class="pi">👑</span><div><b>Você é Premium</b><small>Até ${ate} · modo invisível, selo e sem anúncios</small></div><span class="go">Loja</span>`:`<span class="pi">👑</span><div><b>Arena Premium</b><small>Fique invisível, ganhe selo 👑, sem anúncios e diamantes toda semana</small></div><span class="go">A partir de R$ 4,90</span>`;l.onclick=()=>shopOpen(pm?'gem':'prem');}
   const c=$('#premCard');if(c){c.innerHTML=`<div class="ph"><span>👑</span><div style="flex:1"><b>${pm?'Premium ativo até '+ate:'Arena Premium'}</b><br><small style="color:var(--mut)">${pm?'Obrigado por apoiar a Arena!':'Modo invisível, selo 👑, sem anúncios e mais'}</small></div></div>
     ${pm||OKEY?`<label class="tgl"><input type="checkbox" id="pInv" ${S.invis?'checked':''}> <span>👻 Modo invisível ${S.invis?'(ninguém te vê online)':''}</span></label>`:''}
@@ -5053,7 +5094,7 @@ function donoCodigo(){const body=h('div');const inp=h('input');inp.placeholder='
   setTimeout(()=>inp.focus(),150);}
 async function vendasUI(){const el=$('#oVendas');if(!el)return;
   if(!CL.ses){el.innerHTML=`<div class="vdi"><b>1º passo: entrar na sua conta</b><small>Os pedidos ficam ligados à sua conta de e-mail. Entre (ou crie) e volte aqui.</small></div><div class="row" style="margin-top:8px"><button class="pri" id="oVLog">☁️ Entrar na minha conta</button></div>`;
-    $('#oVLog').onclick=()=>{go('profile');setTimeout(()=>{const c=$('#cloudCard');if(c){c.scrollIntoView({block:'center',behavior:'smooth'});const i=c.querySelector('input');if(i)setTimeout(()=>i.focus(),500);}},350);};return;}
+    $('#oVLog').onclick=openCloud;return;}
   if(!DIR.dono){el.innerHTML='<small style="color:var(--mut)">Conferindo sua conta…</small>';await dirLoad(true);}
   if(!DIR.dono){el.innerHTML=`<div class="vdi"><b>2º passo: ativar o código do dono</b><small>Conta: ${esc(CL.ses.email||'')}<br>Só precisa fazer uma vez.</small></div><div class="row" style="margin-top:8px"><button class="pri" id="oDonoB">🔑 Digitar código do dono</button></div>`;
     $('#oDonoB').onclick=donoCodigo;return;}
@@ -5219,7 +5260,8 @@ function comSocUI(){const el=$('#comSoc');if(!el)return;const SOCACT={instagram:
 function renderCom(){comSocUI();const vb=$('#comVisB');if(vb){vb.textContent='👁️ '+(S.comVis?comVisLabel(S.comVis):'Quem me vê');vb.onclick=()=>comVisAsk();}
   const mo=$('#comMore');if(mo)mo.onclick=()=>comLoad(false);
   comComposer();comLoad(true);if(CL.ses&&!S.comVis&&!S.comVisAsked){S.comVisAsked=1;save();setTimeout(()=>comVisAsk(),600);}}
-function comCardsUI(){[['#comLobby','Stories e posts da galera da Arena'],['#comProf','Poste, veja stories e escolha quem te vê']].forEach(([id,t])=>{const el=$(id);if(!el)return;el.innerHTML=`<span class="pi">🌐</span><div><b>Comunidade</b><small>${t}</small></div><span class="go">Abrir</span>`;el.onclick=()=>go('com');});}
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#pVisB'))comVisAsk();});
+function comCardsUI(){[].forEach(([id,t])=>{const el=$(id);if(!el)return;el.innerHTML=`<span class="pi">🌐</span><div><b>Comunidade</b><small>${t}</small></div><span class="go">Abrir</span>`;el.onclick=()=>go('com');});}
 comCardsUI();
 /* ========== INSTALAR (PWA) ========== */
 let instEv=null;
