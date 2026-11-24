@@ -207,6 +207,24 @@ body.lvduo #camDockT,body.lvduo #camDockB,body.lvduo .camwin{display:none!import
 .lnog{font-size:22px}.lkick{position:absolute;right:2px;top:2px;padding:0 5px;font-size:11px;line-height:16px;border-radius:999px}
 .lbar{display:flex;gap:6px;padding:6px;background:#120a2a;flex-wrap:wrap}.lbar button{flex:1;padding:7px 8px;font-size:12px}
 #liveFull{position:fixed;inset:0;z-index:92;background:#000}
+/* ===== PREMIUM / LOJA ===== */
+.pmb{display:inline-block;margin-left:3px;font-size:.85em;filter:drop-shadow(0 0 4px #ffc23d)}
+.premcard{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:12px 0;padding:14px;border-radius:20px;border:1px solid #ffc23d66;background:linear-gradient(135deg,#3a2400,#5c1a6e 55%,#1d0a3e);color:#fff;box-shadow:0 0 24px #ffc23d22}
+.premcard .pi{font-size:34px;filter:drop-shadow(0 0 8px #ffc23d)}.premcard div{flex:1}.premcard b{display:block;font-size:16px;color:#ffd77a}.premcard small{opacity:.85;font-size:12px}
+.premcard .go{background:#ffc23d;color:#2a1a00;font-weight:900;border-radius:12px;padding:8px 10px;font-size:13px;white-space:nowrap}
+.premprof .ph{display:flex;align-items:center;gap:10px}.premprof .ph span{font-size:30px}
+.tgl{display:flex;align-items:center;gap:10px;margin-top:10px;font-weight:700}.tgl input{width:22px;height:22px;accent-color:#ffc23d}
+.shtabs{display:flex;gap:6px;margin-bottom:10px}.shtabs button{flex:1;padding:10px 4px;border-radius:12px;font-size:13px;font-weight:800}.shtabs button.on{background:#ffc23d;color:#2a1a00;border-color:#ffc23d}
+.shl{display:flex;flex-direction:column;gap:8px;max-height:52vh;overflow:auto}
+.shi{display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;background:#ffffff0d;border:1px solid #ffffff1a}
+.shi.shhot{border-color:#ffc23d;background:#ffc23d14}.shi .ic{font-size:28px;width:38px;text-align:center}.shi div{flex:1;min-width:0}.shi b{display:block}.shi small{opacity:.75;font-size:12px}
+.shi .tag{display:inline-block;background:#ffc23d;color:#2a1a00;font-size:10px;font-weight:900;border-radius:99px;padding:2px 7px;margin-left:4px;vertical-align:middle}
+.shi button{white-space:nowrap;font-weight:900}
+.pixb{background:#fff;color:#111;border-radius:14px;padding:12px;margin:10px 0;word-break:break-all;font:12px/1.35 ui-monospace,monospace;max-height:90px;overflow:auto}
+.pixv{font-size:28px;font-weight:900;color:#5ef08f;text-align:center;margin:4px 0}.pixc{text-align:center;font-size:14px}.pixc b{font-size:20px;letter-spacing:.12em;color:#ffd77a}
+.vd{display:flex;flex-direction:column;gap:8px}.vdi{padding:10px;border-radius:12px;background:#ffffff0c;border:1px solid #ffffff18}.vdi.pago{border-color:#22c55e;background:#22c55e14}
+.vdi>b{display:block}.vdi small{color:var(--mut)}.vdi .row{margin-top:8px}
+
 /* ===== REPLAY ===== */
 #rp{position:fixed;inset:0;z-index:95;background:radial-gradient(circle at 50% 0,#2a1660,#07051a 70%);display:flex;flex-direction:column;color:#fff}
 #rp .rph{display:flex;align-items:center;gap:8px;padding:10px 12px;padding-top:max(10px,env(safe-area-inset-top))}
@@ -1163,6 +1181,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
   <div class="sec1"><h2>Escolha o jogo</h2><span>5 jogos + torneios</span></div>
   <div class="grid" id="games"></div>
   <div class="card livecard" id="liveCard"></div>
+  <button class="premcard" id="premLobby"></button>
   <div class="lfoot">© 2026 Arena dos Mestres · Todos os direitos reservados<br><a id="lfT">Termos de Uso</a> · <a id="lfP">Privacidade</a> · Proibido para menores de 18 anos</div>
 </section>
 
@@ -1199,6 +1218,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
     <button id="pBlk" class="ptile t3"><span>🚫</span><b>Bloqueados</b><small id="pBlkS"></small></button>
     <button id="pTour" class="ptile t4"><span>💡</span><b>Tutorial</b><small>ver de novo</small></button>
   </div>
+  <div class="card premprof" id="premCard"></div>
   <div class="card" id="repCard"></div>
   <div class="card" id="styleCard"></div>
   <div class="card" id="giftCard"></div>
@@ -1221,6 +1241,16 @@ body:has(#legalGate) #mod{z-index:100000!important}
   <div class="ohero" data-img="perfil"><div class="ohero2"><span>🔐</span><div><small>ÁREA DO DONO</small><b>Painel de controle</b></div></div><div class="ochips" id="oChips"></div></div>
   <div class="otabs" id="oTabs"><button data-t="geral" class="on">📊<b>Geral</b></button><button data-t="anun">📣<b>Anúncios</b></button><button data-t="jogos">🎮<b>Jogos</b></button><button data-t="comu">✨<b>Comunidade</b></button><button data-t="conf">⚙️<b>Config.</b></button></div>
   <div class="mtop" style="display:none"><button id="ownBack">← Voltar</button><div class="ph1" style="margin:0 0 0 6px"><span class="phi">🔐</span><h2>Painel do dono</h2></div></div>
+  <div class="card ocard" data-tab="geral">
+    <b>💰 Vendas por Pix</b>
+    <div class="lbl">Pedidos de Premium, diamantes e pacotes. Confira no seu banco se o Pix caiu e toque em Liberar.</div>
+    <div id="oVendas"></div>
+  </div>
+  <div class="card ocard" data-tab="geral">
+    <b>👻 Ficar invisível</b>
+    <div class="lbl">Ninguém vê que você está online. Só você sabe.</div>
+    <label class="tgl"><input type="checkbox" id="oInv"> <span>Invisível</span></label>
+  </div>
   <div class="card ocard" data-tab="geral">
     <b>📊 Visão geral do app</b>
     <div class="lbl">Números de quem abriu o app neste e nos outros celulares. Atualiza sozinho.</div>
@@ -1713,9 +1743,9 @@ const POOL={dama:['ew_unicornio','fw_borboleta','fm_louros','f_neon','f_ouro','f
 const GNAME={dama:'Dama',xadrez:'Xadrez',domino:'Dominó',sinuca:'Sinuca',ludo:'Ludo',bingo:'Bingo'};
 const COS=new Map();const cosSet=(id,c)=>{if(id&&c&&typeof c==='object')COS.set(id,{f:c.f,n:c.n,s:c.s,e:c.e,b:c.b});};
 const own=id=>!!(S.inv&&S.inv[id]);
-function myCos(){const e=S.eq||{};return{f:e.fr||null,n:e.nm||null,s:e.sl||null,e:e.en||null,b:e.bu||null};}
+function myCos(){const e=S.eq||{};return{f:e.fr||null,n:e.nm||null,s:e.sl||null,e:e.en||null,b:e.bu||null,p:isPrem()?1:0};}
 function nmHTML(name,id,short){const c=id?(id===S.uid?myCos():COS.get(id)):null;const n=esc(name||'');const sl=c&&c.s&&ITEMS[c.s];
-  return `<span class="nm ${c&&c.n&&ITEMS[c.n]?'nm-'+c.n:''}">${n}</span>${sl&&!short?` <span class="slo" style="--c:${sl.col||RAR[sl.r].col}" title="${esc(sl.n)}">${sl.i}</span>`:''}`;}
+  return `<span class="nm ${c&&c.n&&ITEMS[c.n]?'nm-'+c.n:''}">${n}</span>${c&&c.p?'<span class="pmb" title="Premium">👑</span>':''}${sl&&!short?` <span class="slo" style="--c:${sl.col||RAR[sl.r].col}" title="${esc(sl.n)}">${sl.i}</span>`:''}`;}
 function ownedEmojis(){return Object.keys(ITEMS).filter(k=>ITEMS[k].c==='em'&&own(k)).flatMap(k=>ITEMS[k].e);}
 function addBrilho(n){S.bri=(S.bri||0)+n;save();bagCardUI();}
 function rollItem(pool){const P=(POOL[pool]||POOL.dama).filter(k=>ITEMS[k]&&(!ITEMS[k].g||!S.sexo||ITEMS[k].g===S.sexo));let x=Math.random()*100,rr='c';for(const k of ['l','e','r','c']){if(x<RAR[k].w){rr=k;break;}x-=RAR[k].w;}
@@ -2075,7 +2105,7 @@ $('#oSave').onclick=async()=>{
 };
 $('#ownBack').onclick=()=>go('profile');
 $('#oLogout').onclick=()=>modal('Sair do modo dono?','O botão do painel some deste celular. Pra entrar de novo, toque 7 vezes em "Meu perfil" e cole a chave.',[{t:'Cancelar'},{t:'Sair',pri:1,f:()=>{OKEY=null;try{localStorage.removeItem('arena_owner_key'+SK);}catch(e){}ownerVis();go('profile');toast('Modo dono desligado neste celular');}}]);
-function openOwner(){oDraft={neon:O.neon,ncol:O.ncol,soc:O.soc.map(s=>({...s})),banners:(O.banners||[]).slice(),turn:{...(O.turn||{})},tours:(O.tours||[]).map(t=>({...t})),tann:O.tann||'',tannImg:O.tannImg||null,vit:{...(O.vit||{mode:'off'})},ads:(O.ads||[]).map(a=>({...a})),rot:O.rot||8,prices:{...(O.prices||{})},bingo:{...(O.bingo||{})}};go('owner');ownerTab(oTab);renderOwnerBingo();busSub(TOP.st+'/+');renderStats();renderOwner();renderOwnerAds();renderOwnerTours();renderOwnerVit();renderParc();}
+function openOwner(){setTimeout(()=>{vendasUI();const oi=$('#oInv');if(oi){oi.checked=!!S.invis;oi.onchange=()=>invSet(oi.checked);}},60);oDraft={neon:O.neon,ncol:O.ncol,soc:O.soc.map(s=>({...s})),banners:(O.banners||[]).slice(),turn:{...(O.turn||{})},tours:(O.tours||[]).map(t=>({...t})),tann:O.tann||'',tannImg:O.tannImg||null,vit:{...(O.vit||{mode:'off'})},ads:(O.ads||[]).map(a=>({...a})),rot:O.rot||8,prices:{...(O.prices||{})},bingo:{...(O.bingo||{})}};go('owner');ownerTab(oTab);renderOwnerBingo();busSub(TOP.st+'/+');renderStats();renderOwner();renderOwnerAds();renderOwnerTours();renderOwnerVit();renderParc();}
 async function keyOk(k){try{const kk=await crypto.subtle.importKey('jwk',{...OWNER_PUB,d:k.replace(/^ARENA-/,''),ext:true},{name:'ECDSA',namedCurve:'P-256'},false,['sign']);
   const s=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},kk,new TextEncoder().encode('teste'));return await verifyCfg('teste',b64u.enc(s));}catch(e){return false;}}
 $('#ownerBtn').onclick=()=>{
@@ -2283,7 +2313,7 @@ function mediaHTML(kind,img,video,label,fmt){
 }
 function vitMediaHTML(v){return mediaHTML(v.mode==='video'?'video':'banner',v.mode==='banner'?v.img:null,v.video,v.title,v.vfmt);}
 function waLink(num,msg){let n=String(num||'').replace(/\D/g,'');if(!n)return '';if(n.length<=11)n='55'+n;return 'https://wa.me/'+n+(msg?'?text='+encodeURIComponent(msg):'');}
-function activeAds(){return (O.ads||[]).filter(a=>(a.img||a.video)&&(!a.until||a.until>=today()));}
+function activeAds(){if(isPrem())return [];return (O.ads||[]).filter(a=>(a.img||a.video)&&(!a.until||a.until>=today()));}
 const BTYPES={wa:{n:'WhatsApp',ic:'💬',ph:'Ex.: 81 99999-9999',def:'Chamar no WhatsApp',c:'linear-gradient(90deg,#1fbf5b,#25d366)',tc:'#04210f'},
   ig:{n:'Instagram',ic:'📸',ph:'Ex.: @sualoja',def:'Ver no Instagram',c:'linear-gradient(90deg,#feda75,#d62976,#962fbf)',tc:'#fff'},
   site:{n:'Site / Link',ic:'🌐',ph:'Ex.: sualoja.com.br',def:'Visitar o site',c:'linear-gradient(90deg,#00b4ff,#0066ff)',tc:'#fff'},
@@ -2562,7 +2592,7 @@ const QS=new URLSearchParams(location.search);
 const LOCAL=QS.get('local')==='1';
 if(!S.uid){S.uid='u'+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-3);save();}
 const BROKERS=['wss://broker.hivemq.com:8884/mqtt','wss://broker.emqx.io:8084/mqtt'];
-const TOP={fol:'arenadm/v3/fol',freq:'arenadm/v3/freq',bingo:'arenadm/v3/bingo',brank:'arenadm/v3/brank',bimg:'arenadm/v3/bimg',st:'arenadm/v3/st',unb:'arenadm/v3/unb',lobby:'arenadm/v2/lobby',me:()=>'arenadm/v2/u/'+S.uid,user:id=>'arenadm/v2/u/'+id,room:r=>'arenadm/v2/r/'+r,cfg:'arenadm/v3/cfg',tour:id=>'arenadm/v3/tour/'+id,parc:'arenadm/v3/parc',rank:w=>'arenadm/v3/rank/'+w,ib:id=>'arenadm/v3/ib/'+id};
+const TOP={inv:'arenadm/v3/inv',fol:'arenadm/v3/fol',freq:'arenadm/v3/freq',bingo:'arenadm/v3/bingo',brank:'arenadm/v3/brank',bimg:'arenadm/v3/bimg',st:'arenadm/v3/st',unb:'arenadm/v3/unb',lobby:'arenadm/v2/lobby',me:()=>'arenadm/v2/u/'+S.uid,user:id=>'arenadm/v2/u/'+id,room:r=>'arenadm/v2/r/'+r,cfg:'arenadm/v3/cfg',tour:id=>'arenadm/v3/tour/'+id,parc:'arenadm/v3/parc',rank:w=>'arenadm/v3/rank/'+w,ib:id=>'arenadm/v3/ib/'+id};
 const BUS={subs:new Set(),cli:null,clis:[],bc:null,ready:false,q:[]};
 function busConnect(){
   if(LOCAL){BUS.bc=new BroadcastChannel('adm_bus');BUS.bc.onmessage=e=>busRecv(e.data.t,e.data.s);[...BUS.subs].forEach(localRetained);BUS.ready=true;busFlush();setTimeout(()=>{presence();busPub(TOP.lobby,{t:'who'});},50);return;}
@@ -2605,6 +2635,7 @@ function busRecv(t,s){
   if(t.startsWith('arenadm/v3/bimg/')){let o=null;try{o=s?JSON.parse(s):null;}catch(e){}onBimg(t,o);return;}
   if(t.startsWith('arenadm/v3/st/')){let o=null;try{o=s?JSON.parse(s):null;}catch(e){}onStat(t,o);return;}
   if(t.startsWith('arenadm/v3/unb/')){let o=null;try{o=s?JSON.parse(s):null;}catch(e){}if(o)onUnblock(o);return;}
+  if(t.startsWith('arenadm/v3/inv/')){let o=null;try{o=s?JSON.parse(s):null;}catch(e){}if(o&&OKEY){const id=t.split('/').pop();if(id!==S.uid){cosSet(id,o.cos);ONLINE.set(id,{id,name:o.name||'Jogador',thumb:o.thumb,st:o.st,game:o.game,live:null,t:Date.now(),inv:1});onlineUI();}}return;}
   if(t.startsWith('arenadm/v3/parc/')){let o=null;try{o=s?JSON.parse(s):null;}catch(e){}onParc(t,o);return;}
   let o;try{o=JSON.parse(s);}catch(e){return;}
   if(!o)return;
@@ -2625,7 +2656,7 @@ function thumb(){
   im.src=src;return null;
 }
 function myStatus(){return NET.on?(NET.spec?'assistindo':NET.started?'jogando':'sala'):'livre';}
-function presence(){const lvOn=!!(LIVE&&LIVE.on);const live=NET.on&&!NET.spec&&NET.host&&NET.allowSpec&&NET.game&&(NET.started||lvOn)?{room:NET.room,g:NET.game.id,n:NET.players.map(p=>p.name),w:NET.specs.length,lv:lvOn?1:0,wait:NET.started?0:1}:null;
+function presence(){if(invOn()){if(!OKEY)busPub(TOP.inv+'/'+S.uid,{name:S.name,thumb:thumb(),st:myStatus(),game:NET.on&&NET.game?NET.game.name:null,cos:myCos()});return;}const lvOn=!!(LIVE&&LIVE.on);const live=NET.on&&!NET.spec&&NET.host&&NET.allowSpec&&NET.game&&(NET.started||lvOn)?{room:NET.room,g:NET.game.id,n:NET.players.map(p=>p.name),w:NET.specs.length,lv:lvOn?1:0,wait:NET.started?0:1}:null;
   busPub(TOP.lobby,{t:'pres',name:S.name,thumb:thumb(),st:myStatus(),game:NET.on&&NET.game?NET.game.name:null,live,cos:myCos()});}
 function onLobby(o){
   if(o.t==='who'){presence();return;}
@@ -2648,7 +2679,7 @@ function onlineUI(){
 }
 function personRow(p,btnTxt,onBtn){
   const r=h('div','prow');const av=h('div','av');setAv(av,p.thumb,p.name,'#2b3260',p.id);av.style.cursor='pointer';av.onclick=e=>{e.stopPropagation();showPlayer(p);};
-  r.append(av,h('div','pi',`<b>${isFr(p.id)?'⭐ ':''}${nmHTML(p.name,p.id)}</b><small>${ST_TXT[p.st]||''}${p.game?' · '+esc(p.game):''}</small>`));
+  r.append(av,h('div','pi',`<b>${p.inv?'👻 ':''}${isFr(p.id)?'⭐ ':''}${nmHTML(p.name,p.id)}</b><small>${ST_TXT[p.st]||''}${p.game?' · '+esc(p.game):''}</small>`));
   if(btnTxt){const b=h('button','pri',btnTxt);b.disabled=p.st==='jogando';b.onclick=()=>onBtn(p,b);r.append(b);}
   return r;
 }
@@ -3575,7 +3606,7 @@ function ajdOpen(){const bg=h('div','ajd-fundo');const sh=h('div','ajd-folha');b
 
 /* ========== PRESENTES AO VIVO (grátis agora; compra fica pronta pra ligar depois) ========== */
 // Diamantes 💎 = moeda só de presente. Hoje se ganha jogando. PAGO_LIGADO fica false até ter CNPJ + Mercado Pago.
-const GIFT_PAGO_LIGADO=false;
+const GIFT_PAGO_LIGADO=true;
 const GIFTS=[
  {id:'rosa',n:'Rosa',e:'🌹',c:1},{id:'coracao',n:'Coração',e:'💖',c:5},{id:'cafe',n:'Cafezinho',e:'☕',c:10},
  {id:'coroa',n:'Coroa',e:'👑',c:20},{id:'trofeu',n:'Troféu',e:'🏆',c:50},{id:'foguete',n:'Foguete',e:'🚀',c:100},
@@ -3606,10 +3637,7 @@ function giftOpen(){
       roomPub({t:'gift',g:g.id,to,name:S.name,toName:p&&p.name});giftFx(g,S.name||'Você',p?p.name:'');$('#mod').classList.remove('on');});};
   render();modal('🎁 Mandar presente',body,[{t:'Fechar'}]);
 }
-function gemShop(){
-  if(!GIFT_PAGO_LIGADO){modal('💎 Mais diamantes',`Por enquanto os diamantes são <b style="color:var(--txt)">grátis</b> e se ganham jogando:<br><br>🎮 Partida online: +${GEM_GANHO.partida}<br>🏆 Vitória: +${GEM_GANHO.vitoria}<br>📅 Todo dia ao abrir o app: +${GEM_GANHO.dia}<br><br><small>Pacotes de diamantes vão chegar em breve.</small>`,[{t:'OK',pri:1}]);return;}
-  // (futuro) aqui entra a loja paga: pacotes + Pix/Mercado Pago. Só ligar depois de CNPJ e contador.
-}
+function gemShop(){shopOpen('gem');}
 const GQ=[];let GBUSY=false;
 function giftFx(g,from,toName){GQ.push({g,from,toName});if(!GBUSY)giftNext();}
 function giftNext(){const x=GQ.shift();if(!x){GBUSY=false;return;}GBUSY=true;const big=x.g.c>=100;
@@ -4650,7 +4678,7 @@ function Ludo(el,end,ctx){
 /* ========== REPLAY · MELHORES LANCES · FRASES ========== */
 const REPK='arena_rep'+SK;
 let REPS=(()=>{try{return JSON.parse(localStorage.getItem(REPK)||'[]');}catch(e){return [];}})();
-function repStore(){let l=REPS.slice(0,15);for(let k=0;k<20;k++){try{localStorage.setItem(REPK,JSON.stringify(l));REPS=l;return true;}catch(e){if(l.length<=1){REPS=l;return false;}l=l.slice(0,-1);}}return false;}
+function repStore(){let l=REPS.slice(0,isPrem()?40:15);for(let k=0;k<20;k++){try{localStorage.setItem(REPK,JSON.stringify(l));REPS=l;return true;}catch(e){if(l.length<=1){REPS=l;return false;}l=l.slice(0,-1);}}return false;}
 const RGR={g:null,round:-1,fr:[],last:'',key:null};
 function recTick(){if(!M||M.over||!M.snap||M.duo||!GAMEFN[M.g&&M.g.id])return;
   const key=M.g.id+'|'+M.round+'|'+(M.net?NET.room:'off');if(RGR.key!==key){RGR.key=key;RGR.g=M.g.id;RGR.fr=[];RGR.last='';}
@@ -4819,6 +4847,88 @@ function cloudUI(){const el=$('#cloudCard');if(!el)return;
   else setTimeout(cloudAfterLogin,1500);})();
 cloudUI();if(CL.ses)setTimeout(cloudPush,5000);
 
+
+/* ========== PREMIUM · LOJA · PIX (manual, dono confere e libera) ========== */
+const PIX_CHAVE='adfc8f8b-3483-4598-b078-7a6a5f61393a';
+const LOJA={
+  prem:[{id:'prem_sem',n:'Premium Semanal',d:'7 dias',v:4.90,ic:'👑'},{id:'prem_mes',n:'Premium Mensal',d:'30 dias',v:12.90,ic:'👑',hot:'MAIS VENDIDO'},{id:'prem_tri',n:'Premium Trimestral',d:'90 dias · sai R$ 9,97/mês',v:29.90,ic:'💎',hot:'ECONOMIA'}],
+  gem:[{id:'gem100',n:'100 diamantes',d:'Pra presentes e lojinha',v:2.90,ic:'💎'},{id:'gem350',n:'350 diamantes',d:'+20% de bônus',v:9.90,ic:'💎'},{id:'gem800',n:'800 diamantes',d:'+38% de bônus',v:19.90,ic:'💎',hot:'POPULAR'},{id:'gem2000',n:'2.000 diamantes',d:'+45% de bônus',v:44.90,ic:'💰'}],
+  pac:[{id:'pac_rei',n:'Pacote Rei',it:['f_rei','e_rei','fm_leao'],v:9.90,ic:'🤴'},{id:'pac_rainha',n:'Pacote Rainha',it:['f_rainha','e_rainha','fw_perolas'],v:9.90,ic:'👸'}]};
+const PREM_VANT=['👻 Modo invisível — ninguém vê que você está online','👑 Selo Premium no seu nome','🚫 Sem anúncios no app','💎 +50 diamantes toda semana','🎬 Guarda 40 replays (grátis: 15)'];
+const lojaItem=id=>[...LOJA.prem,...LOJA.gem,...LOJA.pac].find(x=>x.id===id);
+const brl=v=>'R$ '+Number(v).toFixed(2).replace('.',',');
+function isPrem(){return (S.premAte||0)>Date.now();}
+function invOn(){return !!S.invis&&(!!OKEY||isPrem());}
+function invSet(on){if(on&&!OKEY&&!isPrem()){toast('O modo invisível é do Premium');return;}S.invis=!!on;save();
+  if(S.invis){busPub(TOP.lobby,{t:'off'});toast('👻 Você está invisível');}else{presence();toast('🟢 Você voltou a aparecer online');}premUI();}
+/* Pix copia-e-cola (BR Code) com valor e código do pedido */
+function pixCode(valor,txid){const f=(id,v)=>id+String(v.length).padStart(2,'0')+v;
+  const mai=f('00','br.gov.bcb.pix')+f('01',PIX_CHAVE);
+  let p=f('00','01')+f('26',mai)+f('52','0000')+f('53','986')+f('54',Number(valor).toFixed(2))+f('58','BR')+f('59','ARENA DOS MESTRES')+f('60','CABO STO AGOST')+f('62',f('05',String(txid).replace(/[^A-Za-z0-9]/g,'').slice(0,25)||'***'))+'6304';
+  let c=0xFFFF;for(let i=0;i<p.length;i++){c^=p.charCodeAt(i)<<8;for(let k=0;k<8;k++)c=(c&0x8000)?((c<<1)^0x1021)&0xFFFF:(c<<1)&0xFFFF;}
+  return p+c.toString(16).toUpperCase().padStart(4,'0');}
+function copyTxt(t,msg){const ok=()=>toast(msg||'📋 Copiado');try{navigator.clipboard.writeText(t).then(ok,()=>{fallback();});}catch(e){fallback();}
+  function fallback(){const a=document.createElement('textarea');a.value=t;document.body.append(a);a.select();try{document.execCommand('copy');ok();}catch(e){toast('Segure no texto pra copiar');}a.remove();}}
+/* direitos vindos do banco (só com conta) */
+let DIR={ped:[],dono:false,t:0};
+async function dirLoad(silent){if(!CL.ses)return null;let d=null;try{d=await clRpc('arena_meus_direitos');}catch(e){return null;}if(!d)return null;
+  DIR={ped:d.pedidos||[],dono:!!d.dono,t:Date.now(),teste:!!d.teste_usado};
+  const ate=d.premium_ate?Date.parse(d.premium_ate):0;const was=isPrem();if(ate!==(S.premAte||0)){S.premAte=ate;save();if(!was&&isPrem())toast('👑 Seu Premium está ativo!');}
+  if(d.gem>0){gemAdd(d.gem,'compra liberada');}
+  (d.itens||[]).forEach(id=>{if(ITEMS[id]&&!own(id)){grant(id);if(!silent)toast('🎁 '+ITEMS[id].n+' chegou na sua mochila');}});
+  if(isPrem()&&S.pwk!==weekId()){S.pwk=weekId();save();gemAdd(50,'bônus semanal do Premium');}
+  if(!isPrem()&&S.invis&&!OKEY){S.invis=false;save();presence();}
+  premUI();return d;}
+setInterval(()=>{if(CL.ses&&(DIR.ped.some(p=>p.status==='pago'||p.status==='aguardando')||Date.now()-DIR.t>6e5))dirLoad();},45e3);
+setTimeout(()=>dirLoad(true),3500);
+function needLogin(){modal('☁️ Entre na sua conta',`Pra comprar, sua compra precisa ficar guardada na sua conta — assim você não perde nada se trocar de celular.<br><br>É grátis: vá em <b style="color:var(--txt)">Perfil → ☁️ Conta na nuvem</b> e crie com seu e-mail.`,[{t:'Agora não'},{t:'Ir pro Perfil',pri:1,f:()=>{go('profile');setTimeout(()=>{const c=$('#cloudCard');if(c)c.scrollIntoView({block:'center',behavior:'smooth'});},300);}}]);}
+function shopOpen(tab){tab=tab||'prem';const body=h('div');
+  const tabs=h('div','shtabs');[['prem','👑 Premium'],['gem','💎 Diamantes'],['pac','🎁 Pacotes']].forEach(([k,t])=>{const b=h('button',k===tab?'on':'',t);b.onclick=()=>{tab=k;draw();};tabs.append(b);});
+  const list=h('div','shl');body.append(tabs,list);
+  function draw(){tabs.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',['prem','gem','pac'][i]===tab));list.innerHTML='';
+    if(tab==='prem'){list.append(h('div','vdi',`<b>${isPrem()?'👑 Seu Premium vai até '+new Date(S.premAte).toLocaleDateString('pt-BR'):'O que o Premium dá'}</b><small>${PREM_VANT.join('<br>')}</small>`));
+      if(!isPrem()&&!DIR.teste){const t=h('div','shi shhot',`<span class="ic">🎁</span><div><b>Testar 3 dias grátis</b><small>Uma vez por conta</small></div>`);const b=h('button','pri','Testar');b.onclick=freeTrial;t.append(b);list.append(t);}}
+    if(tab==='gem')list.append(h('small',null,`Você tem <b style="color:var(--txt)">💎 ${S.gem||0}</b>. Diamantes servem pra presentes e pra lojinha. <b>Não viram dinheiro nem aposta.</b>`));
+    LOJA[tab].forEach(x=>{const desc=x.it?x.it.map(i=>ITEMS[i]?ITEMS[i].n+(own(i)?' ✓':''):i).join(' + '):x.d;
+      const r=h('div','shi'+(x.hot?' shhot':''),`<span class="ic">${x.ic}</span><div><b>${esc(x.n)}${x.hot?`<span class="tag">${x.hot}</span>`:''}</b><small>${esc(desc)}</small></div>`);
+      const b=h('button','pri',brl(x.v));b.onclick=()=>buy(x);r.append(b);list.append(r);});
+    if(DIR.ped.length){list.append(h('h4',null,'Meus pedidos'));DIR.ped.slice(0,5).forEach(p=>{const it=lojaItem(p.item);const stt={aguardando:'⏳ esperando o Pix',pago:'🕐 você avisou que pagou — o dono vai conferir',liberado:'✅ liberado',recusado:'❌ não confirmado'}[p.status]||p.status;
+      list.append(h('div','vdi'+(p.status==='pago'?' pago':''),`<b>${esc(it?it.n:p.item)} · ${brl(p.valor)}</b><small>Código ${esc(p.codigo)} · ${stt}</small>`));});}}
+  draw();modal('🛍️ Loja da Arena',body,[{t:'Fechar'}]);if(CL.ses)dirLoad(true).then(()=>{if($('#mod').classList.contains('on')&&list.isConnected)draw();});}
+async function freeTrial(){if(!CL.ses){needLogin();return;}try{const r=await clRpc('arena_teste_gratis');if(r&&r.ok){await dirLoad();$('#mod').classList.remove('on');modal('👑 Premium liberado!','Você ganhou <b style="color:var(--txt)">3 dias de Premium</b>. Aproveite o modo invisível, o selo e o resto.',[{t:'Oba!',pri:1}]);}else toast('Você já usou o teste grátis');}catch(e){toast('Não deu agora, tente de novo');}}
+async function buy(x){if(!CL.ses){needLogin();return;}
+  let r;try{r=await clRpc('arena_pedir',{p_item:x.id,p_player_uid:S.uid,p_nome:S.name||'Jogador'});}catch(e){toast('Não deu pra criar o pedido agora. Tente de novo.');return;}
+  if(!r||!r.codigo){toast('Muitos pedidos abertos. Espere o dono conferir os anteriores.');return;}
+  const code=pixCode(r.valor,'ARENA'+r.codigo);const body=h('div');
+  body.innerHTML=`<div class="pixv">${brl(r.valor)}</div><div class="pixc">Código do pedido: <b>${esc(r.codigo)}</b></div>
+   <ol style="padding-left:18px;margin:10px 0;line-height:1.5"><li>Toque em <b>📋 Copiar Pix</b></li><li>Abra o app do seu banco → <b>Pix → Pix Copia e Cola</b></li><li>Cole, confira o valor e pague</li><li>Volte aqui e toque em <b>✅ Já paguei</b></li></ol>
+   <div class="pixb">${esc(code)}</div><small style="color:var(--mut)">Ou use a chave Pix: ${PIX_CHAVE} — e escreva o código <b>${esc(r.codigo)}</b> na mensagem. Assim que o dono confirmar, libera sozinho na sua conta.</small>`;
+  modal('💠 Pagar com Pix · '+x.n,body,[{t:'📋 Copiar Pix',f:()=>{copyTxt(code,'📋 Pix copiado — cole no app do banco');return false;}},{t:'✅ Já paguei',pri:1,f:async()=>{try{await clRpc('arena_paguei',{p_codigo:r.codigo});}catch(e){}toast('🙌 Avisado! Assim que o dono conferir, libera sozinho.');dirLoad(true);}}]);}
+function premUI(){const pm=isPrem(),ate=pm?new Date(S.premAte).toLocaleDateString('pt-BR'):'';
+  const l=$('#premLobby');if(l){l.innerHTML=pm?`<span class="pi">👑</span><div><b>Você é Premium</b><small>Até ${ate} · modo invisível, selo e sem anúncios</small></div><span class="go">Loja</span>`:`<span class="pi">👑</span><div><b>Arena Premium</b><small>Fique invisível, ganhe selo 👑, sem anúncios e diamantes toda semana</small></div><span class="go">A partir de R$ 4,90</span>`;l.onclick=()=>shopOpen(pm?'gem':'prem');}
+  const c=$('#premCard');if(c){c.innerHTML=`<div class="ph"><span>👑</span><div style="flex:1"><b>${pm?'Premium ativo até '+ate:'Arena Premium'}</b><br><small style="color:var(--mut)">${pm?'Obrigado por apoiar a Arena!':'Modo invisível, selo 👑, sem anúncios e mais'}</small></div></div>
+    ${pm||OKEY?`<label class="tgl"><input type="checkbox" id="pInv" ${S.invis?'checked':''}> <span>👻 Modo invisível ${S.invis?'(ninguém te vê online)':''}</span></label>`:''}
+    <div class="row" style="margin-top:10px"><button class="pri" id="pShop">${pm?'💎 Loja':'👑 Ver planos'}</button><button id="pShop2">🎁 Pacotes</button></div>`;
+    const pi=$('#pInv');if(pi)pi.onchange=()=>invSet(pi.checked);$('#pShop').onclick=()=>shopOpen(pm?'gem':'prem');$('#pShop2').onclick=()=>shopOpen('pac');}
+  const oi=$('#oInv');if(oi)oi.checked=!!S.invis;}
+premUI();
+/* painel do dono: pedidos */
+async function vendasUI(){const el=$('#oVendas');if(!el)return;
+  if(!CL.ses){el.innerHTML=`<small style="color:var(--mut)">Entre na sua conta (Perfil → ☁️ Conta na nuvem) pra ver os pedidos.</small>`;return;}
+  if(!DIR.dono){await dirLoad(true);}
+  if(!DIR.dono){el.innerHTML=`<small style="color:var(--mut)">Primeira vez: digite o código do dono pra liberar os pedidos nesta conta.</small><div class="row" style="margin-top:8px"><input id="oDonoC" placeholder="DONO-XXXXXXXX" autocapitalize="characters" style="flex:1;font:inherit;padding:10px;border-radius:12px;border:1px solid #2c3463;background:#0f1328;color:#fff"><button class="pri" id="oDonoB">Ativar</button></div>`;
+    $('#oDonoB').onclick=async()=>{let ok=false;try{ok=await clRpc('arena_dono_ativar',{p_codigo:$('#oDonoC').value});}catch(e){}if(ok){DIR.dono=true;toast('✅ Pedidos liberados nesta conta');vendasUI();}else toast('Código errado');};return;}
+  el.innerHTML='<small style="color:var(--mut)">Carregando…</small>';let L=[];try{L=await clRpc('arena_dono_pedidos')||[];}catch(e){el.innerHTML='<small>Não deu pra carregar agora.</small>';return;}
+  const pend=L.filter(p=>p.status==='pago'||p.status==='aguardando'),feito=L.filter(p=>p.status==='liberado');
+  const soma=feito.filter(p=>Date.now()-Date.parse(p.criado)<30*864e5).reduce((a,p)=>a+Number(p.valor),0);
+  el.innerHTML=`<div class="vdi"><b>💵 Vendido nos últimos 30 dias: ${brl(soma)}</b><small>${feito.length} liberados · ${pend.length} esperando</small></div><div class="vd" style="margin-top:8px"></div><div class="row" style="margin-top:8px"><button id="oVRef">🔄 Atualizar</button></div>`;
+  const box=el.querySelector('.vd');if(!pend.length)box.innerHTML='<small style="color:var(--mut)">Nenhum pedido esperando.</small>';
+  pend.forEach(p=>{const it=lojaItem(p.item);const d=h('div','vdi'+(p.status==='pago'?' pago':''),`<b>${p.status==='pago'?'🟢 Disse que pagou · ':'⏳ '}${esc(it?it.n:p.item)} · ${brl(p.valor)}</b><small>${esc(p.nome||'')} · ${esc(p.email||'')}<br>Código <b style="color:var(--txt)">${esc(p.codigo)}</b> · ${new Date(p.criado).toLocaleString('pt-BR')}</small>`);
+    const row=h('div','row');const ok=h('button','pri','✅ Liberar'),no=h('button',null,'Recusar');
+    ok.onclick=()=>modal('Liberar este pedido?',`Confirme no app do seu banco que caiu <b style="color:var(--txt)">${brl(p.valor)}</b> com o código <b style="color:var(--txt)">${esc(p.codigo)}</b>.`,[{t:'Voltar'},{t:'✅ Caiu, liberar',pri:1,f:async()=>{try{await clRpc('arena_dono_liberar',{p_id:p.id,p_ok:true});toast('✅ Liberado — chega na conta da pessoa');}catch(e){toast('Falhou, tente de novo');}vendasUI();}}]);
+    no.onclick=()=>modal('Recusar este pedido?','Use quando o Pix não caiu.',[{t:'Voltar'},{t:'Recusar',f:async()=>{try{await clRpc('arena_dono_liberar',{p_id:p.id,p_ok:false});}catch(e){}vendasUI();}}]);
+    row.append(no,ok);d.append(row);box.append(d);});
+  $('#oVRef').onclick=vendasUI;}
 /* ========== INSTALAR (PWA) ========== */
 let instEv=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();instEv=e;$('#instBtn').style.display='block';});
