@@ -3588,12 +3588,14 @@ function liveUI(){
     if(gs.length){const gw=h('div','lguests');gs.forEach(g=>{const b=h('div','lguest');if(!g.none)b.append(liveVid(g.st,g.me));else b.append(h('span','lnog','📷'));b.append(h('small',null,esc(camName(g.id))));
       if(NET.host&&!NET.spec){const x=h('button','lkick','✕');x.title='Tirar da live';x.onclick=e=>{e.stopPropagation();liveKick(g.id);};b.append(x);}gw.append(b);});p.append(gw);}
     const bar=h('div','lbar');
-    if(NET.spec&&!LIVE.guests.includes(S.uid)){const a=h('button',null,LIVE.asked?'⏳ Pedido enviado':'🙋📷 Pedir pra abrir câmera');a.onclick=liveAsk;bar.append(a);}
+    if(!NET.host&&!LIVE.guests.includes(S.uid)){const a=h('button',null,LIVE.asked?'⏳ Pedido enviado':'🙋📷 Pedir pra abrir câmera');a.onclick=liveAsk;bar.append(a);}
     if(LIVE.guests.includes(S.uid)){const a=h('button',null,'🚪 Sair da live');a.onclick=()=>{camStop();roomPub({t:'liveleave'});LIVE.guests=LIVE.guests.filter(x=>x!==S.uid);liveUI();};bar.append(a);}
     const f=h('button','pri','⛶ Tela cheia');f.onclick=()=>liveFull(true);bar.append(f);p.append(bar);});
   {const wv=$('#wView');if(wv&&NET.spec&&LIVE.on&&!WT.last&&!wv.querySelector('.wwlive'))wv.innerHTML='<div class="wwait wwlive">🔴 Live no ar — a partida ainda não começou.<br><small>Assista a live aqui em cima e peça pra entrar se quiser.</small></div>';}
   {const wa=$('#wLiveAsk');if(wa){const inL=LIVE.guests.includes(S.uid);wa.style.display=NET.spec&&!inL?'':'none';wa.textContent=LIVE.asked?'⏳ Pedido enviado — aguarde o dono permitir':'🙋📷 Pedir pra abrir minha câmera';}}
-  const lb=$('#liveBtn');if(lb){lb.style.display=NET.host&&!NET.spec&&M&&M.net?'':'none';lb.textContent=LIVE.on?'🔴 Ao vivo':'🔴 Live';lb.classList.toggle('pri',LIVE.on);}
+  const lb=$('#liveBtn');if(lb){lb.style.display=!NET.spec&&M&&M.net?'':'none';const inL=LIVE.guests.includes(S.uid);
+    if(NET.host){lb.textContent=LIVE.on?'🔴 Ao vivo':'🔴 Abrir live';lb.classList.toggle('pri',LIVE.on);}
+    else{lb.textContent=inL?'📷 Na live':LIVE.asked?'⏳ Pedido':'🙋📷 Pedir live';lb.classList.toggle('pri',inL);}}
   if(LIVE.full)liveFull(true,true);else{const fo=$('#liveFull');if(fo)fo.remove();}
 }
 function liveFull(on,refresh){
@@ -4420,7 +4422,7 @@ function drawBars(){
   if(M.watch){$('#mebar').innerHTML=`<div class="av"></div><div><b>${esc(M.wMe.n)}</b><small>🏠 Jogador da Casa · robô do app</small></div>${dots(M.me)}`;setAv($('#mebar .av'),null,M.wMe.n,M.wMe.c,M.wMe.id);try{specUI();frStrip();applySkin(M.g);}catch(e){}return;}
   $('#mebar').innerHTML=`<div class="av"></div><div><b>${nmHTML(S.name,S.uid)}</b><small>${M.duo&&M.duoNames&&M.duoNames.mine.length?'Você + '+esc(M.duoNames.mine[0]):'Você'} <span id="voiceInfo" style="color:var(--grn)"></span></small></div>${M.net?'<button id="micBtn" style="margin-left:auto;padding:8px 12px;font-size:13px">🔇 Microfone</button><button id="camBtn" style="padding:8px 10px;font-size:13px;margin-left:6px">📷 Câmera</button><button id="liveBtn" style="padding:8px 10px;font-size:13px;margin-left:6px;display:none">🔴 Live</button>':''}${M.net&&others.length>1&&!M.duo?'':dots(M.me)}`;
   setAv($('#mebar .av'),S.photo,S.name,null,S.uid);
-  const mb=$('#micBtn');if(mb){mb.onclick=toggleMic;voiceUI();}const cb=$('#camBtn');if(cb){cb.onclick=toggleCam;camUI();}const lb=$('#liveBtn');if(lb){lb.onclick=liveToggle;liveUI();}
+  const mb=$('#micBtn');if(mb){mb.onclick=toggleMic;voiceUI();}const cb=$('#camBtn');if(cb){cb.onclick=toggleCam;camUI();}const lb=$('#liveBtn');if(lb){lb.onclick=()=>{if(NET.host)return liveToggle();if(LIVE.guests.includes(S.uid)){camStop();roomPub({t:'liveleave'});LIVE.guests=LIVE.guests.filter(x=>x!==S.uid);liveUI();toast('Você saiu da live');return;}liveAsk();};liveUI();}
   if(M.subOn){const sm=$('#opbar small');if(sm)sm.innerHTML='📴 saiu · 🤖 robô jogando no lugar — se voltar, continua';$('#opbar').classList.add('subon');}else $('#opbar').classList.remove('subon');
   specUI();frStrip();applySkin(M&&M.g);hintUI();
 }
