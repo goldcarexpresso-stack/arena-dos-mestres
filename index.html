@@ -327,7 +327,7 @@ body.lvduo #camDockT,body.lvduo #camDockB,body.lvduo .camwin{display:none!import
 .soc a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;color:#fff;text-decoration:none;font-size:15px;font-weight:800;box-shadow:0 4px 14px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.18)}
 .soc a i{font-style:normal;width:38px;height:38px;flex:none;border-radius:12px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:20px}
 .soc a small{display:block;font-size:11px;font-weight:600;opacity:.9}
-.soc a.instagram{background:linear-gradient(45deg,#f58529,#dd2a7b 55%,#8134af)}
+.soc a.igbig{grid-column:1/-1}.soc a.instagram{background:linear-gradient(45deg,#f58529,#dd2a7b 55%,#8134af)}
 .soc a.whatsapp{background:#1fae54}.soc a.wgrupo{background:#0f7d6e}
 .soc a.tiktok{background:#111;border-color:#25f4ee;box-shadow:-2px -2px 0 #25f4ee55,2px 2px 0 #fe2c5577}
 .soc a.youtube{background:#e62117}.soc a.facebook{background:#1877f2}
@@ -1419,6 +1419,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
 <!-- COMUNIDADE -->
 <section id="com" class="scr">
   <div class="ph1"><span class="phi">🌐</span><h2>Comunidade</h2><button id="comVisB" class="cvb">👁️ Quem me vê</button></div>
+  <div id="comSoc"></div>
   <div class="stry" id="comStories"></div>
   <div class="card comnew" id="comNew"></div>
   <div class="cmemb" id="comMemb"></div>
@@ -2111,7 +2112,7 @@ function renderCommunity(){
   }else{clearInterval(bannerT);hb.innerHTML=`<div class="hero">${HERO}</div>`;}
   $('#neonBox').innerHTML=neonHTML(O.neon,O.ncol);
   const SOCACT={instagram:'Seguir',whatsapp:'Chamar',wgrupo:'Entrar no grupo',tiktok:'Seguir',youtube:'Inscrever-se',facebook:'Curtir',telegram:'Entrar',discord:'Entrar',site:'Visitar'};
-  $('#socBox').innerHTML=O.soc.length?`<div class="comh">📣 ENTRE NA NOSSA COMUNIDADE</div><div class="soc">${O.soc.map(s=>`<a class="${s.k}" href="${esc(socUrl(s))}" target="_blank" rel="noopener"><i>${NETS[s.k].i}</i><span>${NETS[s.k].n}<small>${SOCACT[s.k]||'Abrir'} →</small></span></a>`).join('')}</div>`:'';
+  $('#socBox').innerHTML='';comSocUI();
   renderRank();renderVit();
 }
 let oDraft=null;
@@ -5146,7 +5147,13 @@ function comStoryView(gi,si){const arr=COM.sto[gi];if(!arr){const o=$('#stv');if
 async function comMembros(){let L=[];try{L=await rpcAnon('arena_membros',{p_viewer:S.uid})||[];}catch(e){}const el=$('#comMemb');if(!el)return;el.innerHTML='';
   L.filter(x=>x.player_uid!==S.uid).slice(0,30).forEach(x=>{const b=h('button');b.append(comAv(x.thumb,x.nome),h('small',null,esc(x.nome||'Jogador')));b.onclick=()=>comAuthorSheet({player_uid:x.player_uid,nome:x.nome,thumb:x.thumb});el.append(b);});
   el.style.display=el.children.length?'':'none';}
-function renderCom(){$('#comVisB').textContent='👁️ '+(S.comVis?comVisLabel(S.comVis):'Quem me vê');$('#comVisB').onclick=()=>comVisAsk();$('#comMore').onclick=()=>comLoad(false);
+/* redes da Arena ficam dentro da Comunidade, com o @ do Instagram sempre à mostra */
+const ARENA_IG='arenadosmesstres';
+function comSocUI(){const el=$('#comSoc');if(!el)return;const SOCACT={instagram:'Seguir',whatsapp:'Chamar',wgrupo:'Entrar no grupo',tiktok:'Seguir',youtube:'Inscrever-se',facebook:'Curtir',telegram:'Entrar',discord:'Entrar',site:'Visitar'};
+  const L=(O.soc||[]).filter(x=>NETS[x.k]&&x.k!=='instagram');
+  const ig=`<a class="instagram igbig" href="https://instagram.com/${ARENA_IG}" target="_blank" rel="noopener"><i>${NETS.instagram?NETS.instagram.i:'📸'}</i><span>Instagram da Arena<small>@${ARENA_IG} · siga e fale com a gente →</small></span></a>`;
+  el.innerHTML=`<div class="comh">📣 ENTRE NA NOSSA COMUNIDADE</div><div class="soc">${ig}${L.map(s=>`<a class="${s.k}" href="${esc(socUrl(s))}" target="_blank" rel="noopener"><i>${NETS[s.k].i}</i><span>${NETS[s.k].n}<small>${SOCACT[s.k]||'Abrir'} →</small></span></a>`).join('')}</div>`;}
+function renderCom(){comSocUI();$('#comVisB').textContent='👁️ '+(S.comVis?comVisLabel(S.comVis):'Quem me vê');$('#comVisB').onclick=()=>comVisAsk();$('#comMore').onclick=()=>comLoad(false);
   comComposer();comLoad(true);if(CL.ses&&!S.comVis)setTimeout(()=>comVisAsk(),600);}
 function comCardsUI(){[['#comLobby','Stories e posts da galera da Arena'],['#comProf','Poste, veja stories e escolha quem te vê']].forEach(([id,t])=>{const el=$(id);if(!el)return;el.innerHTML=`<span class="pi">🌐</span><div><b>Comunidade</b><small>${t}</small></div><span class="go">Abrir</span>`;el.onclick=()=>go('com');});}
 comCardsUI();
