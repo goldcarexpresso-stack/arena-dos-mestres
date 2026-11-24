@@ -1316,6 +1316,11 @@ body:has(#legalGate) #mod{z-index:100000!important}
     <div id="oVendas"></div>
   </div>
   <div class="card ocard" data-tab="geral">
+    <b>💎 Diamantes do dono</b>
+    <div class="lbl">Coloque diamantes na sua própria conta (pra testar presentes e descontos). Seu Premium de dono não vence.</div>
+    <div id="oGem"></div>
+  </div>
+  <div class="card ocard" data-tab="geral">
     <b>👻 Ficar invisível</b>
     <div class="lbl">Ninguém vê que você está online. Só você sabe.</div>
     <label class="tgl"><input type="checkbox" id="oInv"> <span>Invisível</span></label>
@@ -5090,9 +5095,13 @@ function donoCodigo(){const body=h('div');const inp=h('input');inp.placeholder='
   inp.style.cssText='font:inherit;font-size:18px;letter-spacing:.06em;width:100%;padding:14px;border-radius:12px;border:1px solid #2c3463;background:#0f1328;color:#fff;text-transform:uppercase';
   body.append('Digite o código do dono (começa com DONO-):',h('br'),h('br'),inp);
   modal('🔑 Código do dono',body,[{t:'Cancelar'},{t:'Ativar',pri:1,f:()=>{const v=inp.value.trim().toUpperCase();if(!v){toast('Digite o código');return false;}
-    clRpc('arena_dono_ativar',{p_codigo:v}).then(ok=>{if(ok===true){DIR.dono=true;toast('✅ Pronto! Os pedidos agora aparecem aqui');vendasUI();}else{toast('Código errado — confira e tente de novo');}}).catch(e=>toast(e.message||'Não deu agora, tente de novo'));}}]);
+    clRpc('arena_dono_ativar',{p_codigo:v}).then(ok=>{if(ok===true){DIR.dono=true;toast('✅ Pronto! Os pedidos agora aparecem aqui');dirLoad(true);vendasUI();}else{toast('Código errado — confira e tente de novo');}}).catch(e=>toast(e.message||'Não deu agora, tente de novo'));}}]);
   setTimeout(()=>inp.focus(),150);}
-async function vendasUI(){const el=$('#oVendas');if(!el)return;
+function donoGemUI(){const el=$('#oGem');if(!el)return;
+  if(!CL.ses||!DIR.dono){el.innerHTML='<small style="color:var(--mut)">Ative as vendas acima (conta + código do dono) pra liberar.</small>';return;}
+  el.innerHTML=`<div class="vdi"><b>Saldo: 💎 ${S.gem||0}</b><small>Premium de dono: sem prazo</small></div><div class="row" style="margin-top:8px">${[100,500,1000,5000].map(n=>`<button data-g="${n}">+${n}</button>`).join('')}</div>`;
+  el.querySelectorAll('[data-g]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{const r=await clRpc('arena_dono_gem',{p_qtd:+b.dataset.g});if(r&&r.ok){gemSet(r.saldo);toast('💎 +'+b.dataset.g+' na sua conta');}else toast('Não deu agora');}catch(e){toast('Não deu agora');}b.disabled=false;donoGemUI();});}
+async function vendasUI(){setTimeout(donoGemUI,50);const el=$('#oVendas');if(!el)return;
   if(!CL.ses){el.innerHTML=`<div class="vdi"><b>1º passo: entrar na sua conta</b><small>Os pedidos ficam ligados à sua conta de e-mail. Entre (ou crie) e volte aqui.</small></div><div class="row" style="margin-top:8px"><button class="pri" id="oVLog">☁️ Entrar na minha conta</button></div>`;
     $('#oVLog').onclick=openCloud;return;}
   if(!DIR.dono){el.innerHTML='<small style="color:var(--mut)">Conferindo sua conta…</small>';await dirLoad(true);}
@@ -5108,7 +5117,7 @@ async function vendasUI(){const el=$('#oVendas');if(!el)return;
     ok.onclick=()=>modal('Liberar este pedido?',`Confirme no app do seu banco que caiu <b style="color:var(--txt)">${brl(p.valor)}</b> com o código <b style="color:var(--txt)">${esc(p.codigo)}</b>.`,[{t:'Voltar'},{t:'✅ Caiu, liberar',pri:1,f:async()=>{try{await clRpc('arena_dono_liberar',{p_id:p.id,p_ok:true});toast('✅ Liberado — chega na conta da pessoa');}catch(e){toast('Falhou, tente de novo');}vendasUI();}}]);
     no.onclick=()=>modal('Recusar este pedido?','Use quando o Pix não caiu.',[{t:'Voltar'},{t:'Recusar',f:async()=>{try{await clRpc('arena_dono_liberar',{p_id:p.id,p_ok:false});}catch(e){}vendasUI();}}]);
     row.append(no,ok);d.append(row);box.append(d);});
-  $('#oVRef').onclick=vendasUI;}
+  $('#oVRef').onclick=vendasUI;donoGemUI();}
 
 /* ========== SERVIÇOS NEXA (Pix ou desconto com diamantes) ========== */
 const SERV_IG='arenadosmesstres'; /* atendimento dos serviços: Direct do Instagram da Arena */
