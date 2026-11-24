@@ -2800,7 +2800,7 @@ function busRecv(t,s){
   if(t.startsWith('arenadm/v3/rank/')){if(o.from!==S.uid)onRank(o,t);return;}
   if(t.startsWith(TOP.ib(S.uid)+'/')){if(o.from!==S.uid)onInbox(o);return;}
   if(o.from===S.uid)return;
-  if(t===TOP.lobby)onLobby(o);else if(t===TOP.me())onPersonal(o);else if(NET.room&&t===TOP.room(NET.room))onRoom(o);
+  if(t===TOP.lobby)onLobby(o);else if(t===TOP.me())onPersonal(o);else if(NET.room&&t===TOP.room(NET.room))onRoom(o);else if(SOLO.room&&t===TOP.room(SOLO.room))onSolo(o);
 }
 
 /* --- presença (quem está online) --- */
@@ -2811,9 +2811,10 @@ function thumb(){
   im.onload=()=>{try{const c=document.createElement('canvas');c.width=c.height=48;c.getContext('2d').drawImage(im,0,0,48,48);S.thumb=c.toDataURL('image/jpeg',0.6);S.thumbSrc=src;save();presence();}catch(e){}};
   im.src=src;return null;
 }
-function myStatus(){return NET.on?(NET.spec?'assistindo':NET.started?'jogando':'sala'):'livre';}
-function presence(){if(invOn()){if(!OKEY)busPub(TOP.inv+'/'+S.uid,{name:S.name,thumb:thumb(),st:myStatus(),game:NET.on&&NET.game?NET.game.name:null,cos:myCos()});return;}const lvOn=!!(LIVE&&LIVE.on);const live=NET.on&&!NET.spec&&NET.host&&NET.allowSpec&&NET.game&&(NET.started||lvOn)?{room:NET.room,g:NET.game.id,n:NET.players.map(p=>p.name),w:NET.specs.length,lv:lvOn?1:0,wait:NET.started?0:1}:null;
-  busPub(TOP.lobby,{t:'pres',name:S.name,thumb:thumb(),st:myStatus(),game:NET.on&&NET.game?NET.game.name:null,live,cos:myCos()});}
+function myStatus(){return NET.on?(NET.spec?'assistindo':NET.started?'jogando':'sala'):(typeof M!=='undefined'&&M&&!M.over&&!M.watch&&!M.net?'jogando':'livre');}
+function presence(){if(invOn()){if(!OKEY)busPub(TOP.inv+'/'+S.uid,{name:S.name,thumb:thumb(),st:myStatus(),game:NET.on&&NET.game?NET.game.name:null,cos:myCos()});return;}const lvOn=!!(LIVE&&LIVE.on);let live=NET.on&&!NET.spec&&NET.allowSpec!==false&&NET.game&&(NET.started||lvOn||NET.players.length>=2)?{room:NET.room,g:NET.game.id,n:NET.players.map(p=>p.name),w:NET.specs.length,lv:lvOn?1:0,wait:NET.started?0:1}:null;
+  if(!live&&SOLO.room&&M&&!M.over&&!M.watch)live={room:SOLO.room,g:M.g.id,n:[S.name,M.opp.name+(M.opp.casa?' 🏠':' 🤖')],w:SOLO.specs.length,bot:1};
+  busPub(TOP.lobby,{t:'pres',name:S.name,thumb:thumb(),st:myStatus(),game:NET.on&&NET.game?NET.game.name:(M&&!M.over&&!M.watch&&!M.net?M.g.name:null),live,cos:myCos()});}
 function onLobby(o){
   if(o.t==='who'){presence();return;}
   if(o.t==='pres'){cosSet(o.from,o.cos);if(!ONLINE.has(o.from)&&isFr(o.from)&&o.cos&&o.cos.e)showEntrance({id:o.from,name:o.name,photo:o.thumb,cos:o.cos},'entrou no app');ONLINE.set(o.from,{id:o.from,name:o.name||'Jogador',thumb:o.thumb,st:o.st,game:o.game,live:o.live||null,t:Date.now()});onlineUI();return;}
@@ -2895,7 +2896,8 @@ function onlineUI(){
 function personRow(p,btnTxt,onBtn){
   const r=h('div','prow');const av=h('div','av');setAv(av,p.thumb,p.name,'#2b3260',p.id);av.style.cursor='pointer';av.onclick=e=>{e.stopPropagation();showPlayer(p);};
   r.append(av,h('div','pi',`<b>${p.inv?'👻 ':''}${isFr(p.id)?'⭐ ':''}${nmHTML(p.name,p.id)}</b><small>${ST_TXT[p.st]||''}${p.game?' · '+esc(p.game):''}</small>`));
-  if(btnTxt){const b=h('button','pri',btnTxt);b.disabled=p.st==='jogando';b.onclick=()=>onBtn(p,b);r.append(b);}
+  if(p.live&&p.live.room&&!(NET.on&&NET.room===p.live.room)){const b=h('button','pri','👀 Assistir');b.onclick=e=>{e.stopPropagation();watchRoom(p.live.room,p.live.g);};r.append(b);}
+  else if(btnTxt){const b=h('button','pri',btnTxt);b.disabled=p.st==='jogando';b.onclick=()=>onBtn(p,b);r.append(b);}
   return r;
 }
 function liveList(){return onlineList().filter(p=>p.live&&p.live.room&&!(NET.on&&NET.room===p.live.room));}
@@ -3259,6 +3261,21 @@ function scrPush(force){if(!(NET.on&&!NET.spec&&NET.host&&NET.started&&NET.specs
   let html='';try{html=scrHTML();}catch(e){return;}if(!force&&html===SCR.last)return;SCR.last=html;
   roomPub({t:'scr',html,sc:M?[M.me,M.op]:null,g:NET.game&&NET.game.id,n:NET.players.map(p=>p.name),need:M?M.need:2});}
 setInterval(()=>scrPush(false),500);
+/* ===== partida contra robô também pode ser assistida (amigos veem, mandam emoji e mensagem) ===== */
+const SOLO={room:null,specs:[],last:''};
+function soloStart(){soloEnd();if(!M||M.watch||M.net||M.over)return;SOLO.room='solo'+Math.random().toString(36).slice(2,9);SOLO.specs=[];SOLO.last='';busSub(TOP.room(SOLO.room));presence();}
+function soloEnd(){if(!SOLO.room)return;const r=SOLO.room;try{busPub(TOP.room(r),{t:'ended'});}catch(e){}SOLO.room=null;SOLO.specs=[];setTimeout(()=>{try{busUnsub(TOP.room(r));}catch(e){}},500);presence();}
+function soloPub(o){if(SOLO.room)busPub(TOP.room(SOLO.room),o);}
+function soloRoster(){soloPub({t:'roster',players:[{id:S.uid,name:S.name},{id:'bot',name:M.opp.name}],max:2,specs:SOLO.specs,queue:[],allowSpec:true,specMic:false,speak:[]});presence();}
+function onSolo(o){if(!M||M.over||M.watch||M.net)return;
+  if(o.t==='watch'){if(isBlk(o.from)){soloPub({t:'nowatch',to:o.from});return;}if(!SOLO.specs.some(x=>x.id===o.from)){SOLO.specs.push({id:o.from,name:(o.info&&o.info.name)||'Jogador',photo:o.info&&o.info.photo});toast('👀 '+((o.info&&o.info.name)||'Alguém')+' está assistindo');}soloRoster();soloScr(true);return;}
+  if(o.t==='unwatch'||o.t==='bye'){SOLO.specs=SOLO.specs.filter(x=>x.id!==o.from);soloRoster();return;}
+  if(o.t==='chat'){if(isBlk(o.from))return;const sp=SOLO.specs.find(x=>x.id===o.from);toast('💬 '+(sp?sp.name:(o.name||'Plateia'))+': '+modShow(o.text));return;}
+  if(o.t==='emo'){fly(o.e,true);return;}}
+function soloScr(force){if(!SOLO.room||!SOLO.specs.length||!M||M.over||M.watch||!$('#match').classList.contains('on'))return;
+  let html='';try{html=scrHTML();}catch(e){return;}if(!force&&html===SOLO.last)return;SOLO.last=html;
+  soloPub({t:'scr',html,sc:[M.me,M.op],g:M.g.id,n:[S.name,M.opp.name],need:M.need});}
+setInterval(()=>{soloScr(false);if(SOLO.room&&(!M||M.over||M.watch||M.net))soloEnd();},600);
 /* lado de quem assiste */
 function watchRoom(room,gid){
   if(NET.on){toast('Saia da sala atual pra assistir');return;}
@@ -3292,7 +3309,7 @@ function watchUI(){if(!NET.spec)return;const o=WT.last||{};const g=GAMES.find(x=
   $('#wTitle').innerHTML=`👀 Assistindo <b>${esc(g?g.name:'')}</b>`;
   $('#wInfo').innerHTML=`${(o.n||NET.players.map(p=>p.name)).map(esc).join(' <i>x</i> ')}${o.sc&&o.need>1?` · Placar <b>${o.sc[0]} x ${o.sc[1]}</b>`:''} · 👀 ${NET.specs.length||1}`;
   const inq=NET.queue.includes(S.uid),qb=$('#wQueue');qb.textContent=inq?`✋ Na fila: ${NET.queue.indexOf(S.uid)+1}º — sair da fila`:'✋ Quero jogar a próxima';qb.classList.toggle('pri',!inq);
-  qb.style.display=g&&g.id==='ludo'?'none':'';voiceUI();renderSeats();}
+  const solo=String(NET.room||'').startsWith('solo');qb.style.display=(g&&g.id==='ludo')||solo?'none':'';{const wa=$('#wLiveAsk');if(wa&&solo)wa.style.display='none';}voiceUI();renderSeats();}
 function wchatAdd(who,text){const l=$('#wChat');const d=h('div','gm',`<b>${esc(who)}:</b> ${esc(text)}`);l.append(d);while(l.children.length>60)l.firstChild.remove();l.scrollTop=l.scrollHeight;}
 function wchatSend(){const i=$('#wIn');const t=i.value.trim();if(!t||!NET.spec)return;if(!modOk(t))return;i.value='';wchatAdd('Você',t);roomPub({t:'chat',text:t,name:S.name});}
 /* ====================== BINGO DA ARENA ======================
@@ -4425,14 +4442,14 @@ function setupMatchUI(){
   go('match');
 }
 function startMatch(g,stake,bo,o){
-  casaWatchEnd();if(stake){S.bal-=stake;addHist('Entrada: '+g.name,-stake);}
+  casaWatchEnd();setTimeout(soloStart,300);if(stake){S.bal-=stake;addHist('Entrada: '+g.name,-stake);}
   M={g,stake,bo,need:Math.ceil(bo/2),me:0,op:0,opp:(o&&o.opp)||{name:pick(NAMES),col:pick(OPCOL)},cleanup:null,over:false,net:false,round:0,duo:!!g.duo,lp:(o&&o.lp)||2};
   if(M.duo){const nm=shuffle(NAMES.slice());M.d4n=[nm[0],nm[1],nm[2]];M.opp.name=nm[0];M.duoNames={mine:[nm[1]],opp:[nm[0],nm[2]]};}
   if(g.id==='ludo'&&M.lp===4)M.opp.name='3 robôs';
   setupMatchUI();startRound();
 }
 function startNetMatch(g){
-  casaWatchEnd();
+  casaWatchEnd();soloEnd();
   if(M&&M.cleanup)M.cleanup();
   const others=NET.players.filter(p=>p.id!==S.uid),o=others[0]||{name:'Amigo'};
   const need=(g.id==='ludo'&&NET.players.length>2)?1:2;
