@@ -110,7 +110,7 @@ h2{margin:4px 0 12px;font-size:20px}
 .cp.w{color:#fff;text-shadow:0 0 2px #000,0 0 1px #000,1px 1px 0 #000}
 .cp.b{color:#111;text-shadow:0 0 1px #fff}
 /* domino */
-.dz{background:#0f5b35;border-radius:14px;padding:10px;min-height:150px;display:flex;flex-wrap:wrap;gap:3px;align-content:center;justify-content:center}
+.dzs{position:relative;margin:auto}.dzt{position:absolute;line-height:0}.dzt svg{display:block}.dz{background:#0f5b35;border-radius:14px;padding:10px;min-height:150px;display:flex;flex-wrap:wrap;gap:3px;align-content:center;justify-content:center}
 .oph{display:flex;gap:3px;justify-content:center;margin-bottom:8px;flex-wrap:wrap}
 .oph i{width:14px;height:26px;border-radius:3px;background:#3a4380;display:block}
 .myh{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px}
@@ -195,7 +195,7 @@ video.cav{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;bord
 video.lvid.mir{transform:scaleX(-1)}
 .lnov{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#fff;background:radial-gradient(circle,#3a1260,#0b0620)}.lnov small{color:var(--mut)}
 body.lvduo #camDockT,body.lvduo #camDockB,body.lvduo .camwin{display:none!important}
-.lduo{display:flex;height:100%;gap:2px;background:#000}.lduo>.lhalf{flex:1;position:relative;min-width:0;overflow:hidden}
+.lp2{margin-top:8px}.lquad{display:flex;gap:2px;height:100%;position:relative;background:#000}.lquad .lqc{flex:1;position:relative;min-width:0;overflow:hidden;border:3px solid transparent}.lquad.tA .lqc{border-color:#2d8cff}.lquad.tB .lqc{border-color:#ff2d55}.lquad .lqc .lvid{width:100%;height:100%;object-fit:cover}.lqnm{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:12px 6px 5px;text-align:center;font-size:12px;font-weight:800;color:#fff;background:linear-gradient(0deg,#000c,#0000);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#shareBtn{font-size:14px;font-weight:800}.lqtag{position:absolute;right:6px;top:6px;z-index:2;font-size:11px;font-weight:900;padding:3px 10px;border-radius:10px;color:#fff;background:#0008}.lquad.tA .lqtag{background:#2d8cffcc}.lquad.tB .lqtag{background:#ff2d55cc}.lp2 .lquad{height:22vh;min-height:130px;max-height:220px}.lp2{border-color:#ff2d55}#livePane:has(.tA){border-color:#2d8cff;box-shadow:0 0 18px #2d8cff66}body.lvsm .livepane .lmain{height:15vh;min-height:92px}body.lvsm .lp2 .lquad{height:13vh;min-height:84px}.lduo{display:flex;height:100%;gap:2px;background:#000}.lduo>.lhalf{flex:1;position:relative;min-width:0;overflow:hidden}
 .lhalf video.lvid{width:100%;height:100%;object-fit:cover;display:block}.lhalf .lnov{height:100%}
 .lhalf .lnm{position:absolute;left:0;right:0;bottom:0;padding:14px 6px 5px;text-align:center;font-size:12px;font-weight:800;color:#fff;background:linear-gradient(0deg,#000c,#0000);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lduo .lvs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#fff;background:linear-gradient(135deg,#ff2d55,#7a1cff);border:2px solid #fff;box-shadow:0 0 14px #ff2d55}
@@ -1541,7 +1541,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
 <section id="match" class="scr">
   <div class="mtop"><button id="quit">✕ Desistir</button><div id="minfo"></div></div>
   <div class="pbar" id="opbar"></div>
-  <div class="accbar"><button id="chestBtn" class="chestbtn"></button><button id="hintBtn" class="hintbtn" style="display:none"></button><button id="sfxBtn" class="sfxbtn" onclick="sfxToggle()">🔊</button></div>
+  <div class="accbar"><button id="chestBtn" class="chestbtn"></button><button id="hintBtn" class="hintbtn" style="display:none"></button><button id="sfxBtn" class="sfxbtn" onclick="sfxToggle()">🔊</button><button id="shareBtn" class="sfxbtn" onclick="matchShare()" style="display:none">📲 WhatsApp</button></div>
   <div id="frStrip" class="frstrip" style="display:none"></div>
   <div id="specBar" class="specbar" style="display:none"></div>
   <div id="livePane" class="livepane" style="display:none"></div>
@@ -1980,6 +1980,21 @@ document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>go(b.dataset.g
 
 /* ========== LOBBY ========== */
 const PIP={0:[],1:[[1,1]],2:[[0,0],[2,2]],3:[[0,0],[1,1],[2,2]],4:[[0,0],[2,0],[0,2],[2,2]],5:[[0,0],[2,0],[1,1],[0,2],[2,2]],6:[[0,0],[0,1],[0,2],[2,0],[2,1],[2,2]]};
+/* dominó em cobrinha: as pedras seguem ligadas, virando nas bordas */
+function dzSnake(chain,W,s){const P=[];let dir=1,x=0,cy=s,first=true,prevDbl=false;
+  for(const t of chain){const d=t[0]===t[1],w=d?s:2*s;
+    if(!first&&(dir>0?x+w>W:x-w<0)){const tx=dir>0?x-s:x,ty=cy+(prevDbl?s:s/2);P.push({x:tx,y:ty,v:1,a:t[0],b:t[1]});
+      cy=ty+1.5*s;dir=-dir;x=dir>0?tx+s:tx;prevDbl=false;first=true;continue;}
+    const tx=dir>0?x:x-w;
+    if(d)P.push({x:tx,y:cy-s,v:1,a:t[0],b:t[1]});else P.push({x:tx,y:cy-s/2,v:0,a:dir>0?t[0]:t[1],b:dir>0?t[1]:t[0]});
+    x=dir>0?x+w:x-w;first=false;prevDbl=d;}
+  return P;}
+function dzFill(z,chain,s0,maxH){if(!chain.length)return;const W=Math.max(120,(z.clientWidth||320)-24);let s=s0,P,bw,bh,mx,my;
+  for(;;){P=dzSnake(chain,W,s);mx=Math.min(...P.map(p=>p.x));my=Math.min(...P.map(p=>p.y));
+    bw=Math.max(...P.map(p=>p.x+(p.v?s:2*s)))-mx;bh=Math.max(...P.map(p=>p.y+(p.v?2*s:s)))-my;if(bh<=(maxH||250)||s<=11)break;s--;}
+  const box=h('div','dzs');box.style.width=bw+'px';box.style.height=bh+'px';
+  P.forEach(p=>{const e=h('i','dzt');e.style.left=(p.x-mx)+'px';e.style.top=(p.y-my)+'px';e.innerHTML=tileSVG(p.a,p.b,!!p.v,s);box.append(e);});
+  z.innerHTML='';z.append(box);}
 function tileSVG(a,b,vert,s){s=s||26;const w=vert?s:2*s,hh=vert?2*s:s;
   let g=`<svg width="${w}" height="${hh}" viewBox="0 0 ${w} ${hh}"><rect x="1" y="1" width="${w-2}" height="${hh-2}" rx="5" fill="#fbf7ee" stroke="#444"/>`;
   g+=vert?`<line x1="4" y1="${s}" x2="${s-4}" y2="${s}" stroke="#999"/>`:`<line x1="${s}" y1="4" x2="${s}" y2="${s-4}" stroke="#999"/>`;
@@ -3529,7 +3544,7 @@ setInterval(()=>{if($('#lobby').classList.contains('on'))backCardUI();},1500);
 /* ========== LIVE DENTRO DA SALA DE JOGO ========== */
 // O dono da sala abre a live (câmera dele em destaque). Quem está na sala vê a tela dividida: live em cima, jogo embaixo.
 // Visitantes pedem pra entrar na live; o dono aceita (no máximo 2 convidados em janelinhas).
-const LIVEMAX=2;
+const LIVEMAX_=2;const liveMax=()=>(typeof M!=='undefined'&&M&&M.duo)?3:LIVEMAX_;
 var LIVE={on:false,guests:[],asked:false,full:false};
 const liveHostId=()=>camHost();
 const liveHas=id=>!!LIVE&&LIVE.on&&(id===liveHostId()||LIVE.guests.includes(id));
@@ -3551,7 +3566,7 @@ function liveReqShow(id,nm){
   const close=()=>{clearTimeout(c._t);c.remove();if(!box.children.length)box.remove();};
   c.querySelector('.lrqno').onclick=()=>{close();roomPub({t:'liveno',to:id});};
   c.querySelector('.lrqok').onclick=async()=>{close();if(!LIVE.on){await liveToggle();if(!LIVE.on)return;}
-    if(LIVE.guests.includes(id))return;if(LIVE.guests.length>=LIVEMAX){toast('A live já tem 2 convidados');roomPub({t:'liveno',to:id,full:1});return;}
+    if(LIVE.guests.includes(id))return;if(LIVE.guests.length>=liveMax()){toast('A live já está cheia');roomPub({t:'liveno',to:id,full:1});return;}
     LIVE.guests.push(id);livePub();roomPub({t:'camok',to:id});liveUI();toast('✅ '+nm+' entrou na live');};
   c._t=setTimeout(()=>{close();roomPub({t:'liveno',to:id});},30000);
   box.append(c);
@@ -3560,11 +3575,11 @@ function liveReqShow(id,nm){
 }
 function onLiveMsg(o){
   const fromHost=o.from===liveHostId();
-  if(o.t==='live'){if(!fromHost&&!(NET.spec&&!NET.players.length))return true;const was=LIVE.on;LIVE.on=!!o.on;LIVE.guests=Array.isArray(o.guests)?o.guests.slice(0,LIVEMAX):[];
+  if(o.t==='live'){if(!fromHost&&!(NET.spec&&!NET.players.length))return true;const was=LIVE.on;LIVE.on=!!o.on;LIVE.guests=Array.isArray(o.guests)?o.guests.slice(0,liveMax()):[];
     if(!LIVE.guests.includes(S.uid)&&!NET.host&&CAM.on&&NET.spec)camStop();if(!LIVE.on){LIVE.asked=false;LIVE.full=false;}
     if(LIVE.on&&!was&&!NET.host)toast('🔴 O dono da sala abriu uma live!');liveUI();return true;}
   if(o.t==='liveask'){if(!NET.host||NET.spec)return true;const nm=o.name||'Visitante';
-    if(LIVE.on&&LIVE.guests.length>=LIVEMAX){roomPub({t:'liveno',to:o.from,full:1});toast(nm+' pediu pra abrir a câmera, mas a live já tem 2 convidados');return true;}
+    if(LIVE.on&&LIVE.guests.length>=liveMax()){roomPub({t:'liveno',to:o.from,full:1});toast(nm+' pediu pra abrir a câmera, mas a live já tem 2 convidados');return true;}
     liveReqShow(o.from,nm);return true;}
   if(o.t==='liveno'){if(o.to!==S.uid||!fromHost)return true;LIVE.asked=false;liveUI();toast(o.full?'A live já está cheia (2 convidados)':'O dono da live não aceitou agora');return true;}
   if(o.t==='liveleave'){if(NET.host&&LIVE.guests.includes(o.from)){LIVE.guests=LIVE.guests.filter(x=>x!==o.from);livePub();liveUI();}return true;}
@@ -3574,28 +3589,47 @@ function liveDuo(L,host,opp,full){const d=h('div','lduo');[host,opp].forEach(id=
     if(v)half.append(liveVid(v.st,v.me));else half.append(h('div','lnov',`<b style="font-size:26px">📷</b><small>${id===host?'câmera carregando…':'câmera desligada'}</small>`));
     half.append(h('div','lnm',(id===host?'🔴 ':'')+esc(camName(id))));d.append(half);});
   d.append(h('div','lvs','VS'));return d;}
+let LVSM=false;try{LVSM=localStorage.getItem('arena_lvsm')==='1';}catch(e){}
+function liveSize(){LVSM=!LVSM;try{localStorage.setItem('arena_lvsm',LVSM?'1':'0');}catch(e){}document.body.classList.toggle('lvsm',LVSM);liveUI();toast(LVSM?'🎲 Jogo grande — a live ficou pequena':'📺 Live grande');}
+document.addEventListener('DOMContentLoaded',()=>document.body.classList.toggle('lvsm',LVSM));setTimeout(()=>document.body.classList.toggle('lvsm',LVSM),0);
+/* dominó em 4: cada dupla numa faixa (sua dupla em cima, a outra embaixo do tabuleiro), cores diferentes */
+function liveQuadRow(L,which){const D=M.d4,host=liveHostId(),base=NET.spec?0:D.me%2,team=which?1-base:base;
+  const row=h('div','lquad '+(team===0?'tA':'tB'));
+  [team,team+2].forEach(si=>{const id=D.ids[si],nm=si===D.me&&!NET.spec?'Você':(D.names[si]||'Jogador');const v=L.find(x=>x.id===id);const c=h('div','lqc');
+    if(v)c.append(liveVid(v.st,v.me));else c.append(h('div','lnov',`<b style="font-size:22px">📷</b><small>câmera desligada</small>`));
+    c.append(h('div','lqnm',(id&&id===host?'🔴 ':'')+esc(nm)));row.append(c);});
+  row.append(h('span','lqtag',team===0?'🔵 DUPLA AZUL':'🔴 DUPLA VERMELHA'));return row;}
+async function matchShare(){if(!NET.on||!NET.room)return toast('Compartilhar funciona em partida online');
+  const url=roomLink(),g=NET.game?NET.game.name:'um jogo';const txt=`🎮 Tô jogando ${g} agora na Arena dos Mestres! Vem assistir ao vivo e desafiar o vencedor 👉 `;
+  window.open('https://wa.me/?text='+encodeURIComponent(txt+url),'_blank');toast('📲 Abrindo o WhatsApp — a partida continua aqui');}
 function liveVid(st,mir){const v=camVid(st,mir);v.classList.add('lvid');return v;}
 function liveUI(){
   const panes=[$('#livePane'),$('#wLivePane')];const show=NET.on&&LIVE.on;
   const L=show?camLive():[];const host=liveHostId();const hv=L.find(x=>x.id===host);const gs=LIVE.guests.map(id=>L.find(x=>x.id===id)||{id,none:1});
   const opp=show?liveOpp():null;const ov=opp&&L.find(x=>x.id===opp);
   document.body.classList.toggle('lvduo',!!opp);
-  const key=[show,hv&&hv.id,opp,ov&&ov.id,gs.map(g=>g.id+(g.none?'-':'')).join(),LIVE.asked,NET.host,LIVE.guests.includes(S.uid)].join('|');
+  const quad=!!(show&&M&&M.duo&&M.d4);
+  const key=[show,hv&&hv.id,opp,ov&&ov.id,gs.map(g=>g.id+(g.none?'-':'')).join(),LIVE.asked,NET.host,LIVE.guests.includes(S.uid),quad,L.map(x=>x.id).join(),LVSM].join('|');
+  let p2=$('#livePane2');if(quad&&!p2){p2=h('div','livepane lp2');p2.id='livePane2';$('#stage').after(p2);}
+  if(p2){p2.style.display=quad?'':'none';if(quad&&p2.dataset.k!==key){p2.dataset.k=key;p2.innerHTML='';p2.append(liveQuadRow(L,1));}}
   panes.forEach(p=>{if(!p)return;p.style.display=show?'':'none';if(!show||p.dataset.k===key)return;p.dataset.k=key;p.innerHTML='';
     const main=h('div','lmain');
-    if(opp)main.append(liveDuo(L,host,opp));else if(hv){main.append(liveVid(hv.st,hv.me));}else main.append(h('div','lnov',`<b>🔴 ${esc(camName(host))}</b><small>${NET.spec?'Live com vídeo cheia — você está ouvindo':'câmera carregando…'}</small>`));
+    if(quad&&p.id==='livePane')main.append(liveQuadRow(L,0));
+    else if(opp)main.append(liveDuo(L,host,opp));else if(hv){main.append(liveVid(hv.st,hv.me));}else main.append(h('div','lnov',`<b>🔴 ${esc(camName(host))}</b><small>${NET.spec?'Live com vídeo cheia — você está ouvindo':'câmera carregando…'}</small>`));
     main.append(h('span','ltag','🔴 AO VIVO · '+esc(camName(host))));main.onclick=()=>liveFull(true);p.append(main);
     if(gs.length){const gw=h('div','lguests');gs.forEach(g=>{const b=h('div','lguest');if(!g.none)b.append(liveVid(g.st,g.me));else b.append(h('span','lnog','📷'));b.append(h('small',null,esc(camName(g.id))));
       if(NET.host&&!NET.spec){const x=h('button','lkick','✕');x.title='Tirar da live';x.onclick=e=>{e.stopPropagation();liveKick(g.id);};b.append(x);}gw.append(b);});p.append(gw);}
     const bar=h('div','lbar');
     if(!NET.host&&!LIVE.guests.includes(S.uid)){const a=h('button',null,LIVE.asked?'⏳ Pedido enviado':'🙋📷 Pedir pra abrir câmera');a.onclick=liveAsk;bar.append(a);}
     if(LIVE.guests.includes(S.uid)){const a=h('button',null,'🚪 Sair da live');a.onclick=()=>{camStop();roomPub({t:'liveleave'});LIVE.guests=LIVE.guests.filter(x=>x!==S.uid);liveUI();};bar.append(a);}
+    const sz=h('button',null,LVSM?'📺 Live grande':'🎲 Jogo grande');sz.onclick=e=>{e.stopPropagation();liveSize();};bar.append(sz);
     const f=h('button','pri','⛶ Tela cheia');f.onclick=()=>liveFull(true);bar.append(f);p.append(bar);});
   {const wv=$('#wView');if(wv&&NET.spec&&LIVE.on&&!WT.last&&!wv.querySelector('.wwlive'))wv.innerHTML='<div class="wwait wwlive">🔴 Live no ar — a partida ainda não começou.<br><small>Assista a live aqui em cima e peça pra entrar se quiser.</small></div>';}
   {const wa=$('#wLiveAsk');if(wa){const inL=LIVE.guests.includes(S.uid);wa.style.display=NET.spec&&!inL?'':'none';wa.textContent=LIVE.asked?'⏳ Pedido enviado — aguarde o dono permitir':'🙋📷 Pedir pra abrir minha câmera';}}
   const lb=$('#liveBtn');if(lb){lb.style.display=!NET.spec&&M&&M.net?'':'none';const inL=LIVE.guests.includes(S.uid);
     if(NET.host){lb.textContent=LIVE.on?'🔴 Ao vivo':'🔴 Abrir live';lb.classList.toggle('pri',LIVE.on);}
     else{lb.textContent=inL?'📷 Na live':LIVE.asked?'⏳ Pedido':'🙋📷 Pedir live';lb.classList.toggle('pri',inL);}}
+  {const sb=$('#shareBtn');if(sb)sb.style.display=NET.on&&NET.room&&M&&M.net?'':'none';}
   if(LIVE.full)liveFull(true,true);else{const fo=$('#liveFull');if(fo)fo.remove();}
 }
 function liveFull(on,refresh){
@@ -4644,8 +4678,8 @@ function Domino(el,end,ctx){
   function draw(){
     wrap.innerHTML='';
     const oh=h('div','oph');op.forEach(()=>oh.append(h('i')));wrap.append(oh);
-    const z=h('div','dz');chain.forEach(t=>z.insertAdjacentHTML('beforeend',t[0]===t[1]?tileSVG(t[0],t[1],true,20):tileSVG(t[0],t[1],false,20)));
-    if(!chain.length)z.innerHTML=`<span style="color:#cfe9d9;font-size:13px">Mesa vazia — ${side==='A'?'você começa':'o amigo começa'}</span>`;wrap.append(z);
+    const z=h('div','dz');
+    if(!chain.length)z.innerHTML=`<span style="color:#cfe9d9;font-size:13px">Mesa vazia — ${side==='A'?'você começa':'o amigo começa'}</span>`;wrap.append(z);dzFill(z,chain,22,260);
     wrap.append(h('div','info',`<span>Monte: ${pile.length}</span><span>${chain.length?'Pontas: '+L()+' e '+R():''}</span><span>${ON}: ${op.length} pedras</span>`));
     const mh=h('div','myh');me.forEach((t,i)=>{const ok=turn===side&&!done&&sides(t).length>0;const b=h('button',ok?'ok':'',tileSVG(t[0],t[1],true,28));
       b.onclick=()=>{if(done||turn!==side)return;const s=sides(t);if(!s.length){st('Essa pedra não encaixa');return;}if(s.length===2&&L()!==R()){pend=i;draw();return;}myPlay(i,s[0]);};mh.append(b);});
@@ -4678,6 +4712,7 @@ function Domino4(el,end,ctx){
   const me=net?seats.findIndex(s=>s.id===S.uid):0,team=s=>s%2,myT=team(me),mate=(me+2)%4;
   const nmOf=s=>s===me?'Você':seats[s].name;
   M.duoNames={mine:[seats[mate].name],opp:[seats[(me+1)%4].name,seats[(me+3)%4].name]};
+  M.d4={ids:seats.map(x=>x.id||null),names:seats.map(x=>x.name),me};try{liveUI();}catch(e){}
   M.opp={id:seats[(me+1)%4].id,name:seats[(me+1)%4].name,col:'#16a085'};drawBars();
   const chain=[];let turn=first,passes=0,done=false,pend=null,busy=false;
   const L=()=>chain[0][0],R=()=>chain[chain.length-1][1];
@@ -4722,9 +4757,9 @@ function Domino4(el,end,ctx){
     const top=(me+2)%4,lf=(me+1)%4,rt=(me+3)%4;
     wrap.insertAdjacentHTML('beforeend',badge(top,'tp'));
     const mid=h('div','d4mid');mid.insertAdjacentHTML('beforeend',badge(lf,'sd'));
-    const z=h('div','dz');chain.forEach(t=>z.insertAdjacentHTML('beforeend',tileSVG(t[0],t[1],t[0]===t[1],18)));
+    const z=h('div','dz');
     if(!chain.length)z.innerHTML=`<span style="color:#cfe9d9;font-size:13px;text-align:center">Mesa vazia — ${first===me?'você começa':nmOf(first)+' começa'}${force66?'<br>com a carroça de sena (6-6)':''}</span>`;
-    mid.append(z);mid.insertAdjacentHTML('beforeend',badge(rt,'sd'));wrap.append(mid);
+    mid.append(z);mid.insertAdjacentHTML('beforeend',badge(rt,'sd'));wrap.append(mid);dzFill(z,chain,18,240);
     wrap.append(h('div','info',`<span>${chain.length?'Pontas: '+L()+' e '+R():'Dupla 1 x Dupla 2'}</span><span>Parceiro de frente</span>`));
     const mh=h('div','myh');H[me].forEach((t,i)=>{const ok=turn===me&&!done&&!busy&&sides(t).length>0;const b=h('button',ok?'ok':'',tileSVG(t[0],t[1],true,28));
       b.onclick=()=>{if(done||busy||turn!==me)return;const s=sides(t);if(!s.length){st(force66&&!chain.length?'A primeira pedra tem que ser a carroça de sena (6-6)':'Essa pedra não encaixa');return;}if(s.length===2&&L()!==R()){pend=i;draw();return;}myPlay(i,s[0]);};mh.append(b);});
