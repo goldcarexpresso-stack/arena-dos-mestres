@@ -1115,7 +1115,7 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
 .ytth .ytlbl{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:16px 8px 8px;text-align:center;color:#fff;font-weight:700;background:linear-gradient(0deg,#000b,#0000)}
 
 /* tutorial */
-#tourFx{position:fixed;inset:0;z-index:140}
+#tourFx{position:fixed;inset:0;z-index:9500}
 .thole{position:fixed;border-radius:18px;box-shadow:0 0 0 9999px #05031acc,0 0 0 3px #ffc23d,0 0 24px #ffc23d;transition:.35s;pointer-events:none;animation:holeP 1.6s ease-in-out infinite}
 @keyframes holeP{50%{box-shadow:0 0 0 9999px #05031acc,0 0 0 5px #ffe27a,0 0 34px #ffc23d}}
 .tcard2{position:fixed;left:14px;right:14px;max-width:440px;margin:0 auto;padding:14px 16px;border-radius:20px;background:linear-gradient(160deg,#3a1670,#1b0f45);border:2px solid #ffc23d;box-shadow:0 12px 30px #000c;animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
@@ -2521,14 +2521,15 @@ function tourNext(){
   document.querySelectorAll('.tourhi').forEach(x=>x.classList.remove('tourhi'));
   do{tourI++;}while(tourI<TOUR.length&&(()=>{const e=$(TOUR[tourI].sel);return !e||!e.offsetParent;})());
   if(tourI>=TOUR.length){tourEnd();toast('🎉 Pronto! Agora é só jogar');return;}
-  const st=TOUR[tourI],el=$(st.sel);el.scrollIntoView({block:'center',behavior:'smooth'});
-  setTimeout(()=>{let fx=$('#tourFx');if(!fx){fx=document.createElement('div');fx.id='tourFx';document.body.append(fx);}
-    const r=el.getBoundingClientRect(),pad=6,below=r.top+r.height/2<innerHeight/2;
+  const st=TOUR[tourI],el=$(st.sel);const tall=el.offsetHeight>innerHeight*0.45;el.scrollIntoView({block:tall?'start':'center',behavior:'smooth'});
+  let lastT=null,n=0;const wait=()=>{const t=Math.round(el.getBoundingClientRect().top);if((t!==lastT||n<3)&&n<20){lastT=t;n++;setTimeout(wait,100);return;}show();};setTimeout(wait,120);
+  const show=()=>{let fx=$('#tourFx');if(!fx){fx=document.createElement('div');fx.id='tourFx';document.body.append(fx);}
+    const r0=el.getBoundingClientRect(),top=Math.max(8,r0.top),hh=Math.min(r0.bottom,innerHeight*(tall?0.42:0.9))-top,r={left:r0.left,width:r0.width,top,height:Math.max(40,hh),bottom:top+Math.max(40,hh)},pad=6,below=r.top+r.height/2<innerHeight/2;
     fx.innerHTML=`<div class="thole" style="left:${r.left-pad}px;top:${r.top-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px"></div>
       <div class="tcard2 ${below?'dn':'up'}" style="${below?`top:${Math.min(r.bottom+16,innerHeight-230)}px`:`bottom:${Math.min(innerHeight-r.top+16,innerHeight-230)}px`}">
       <div class="tc2h"><span class="tc2i">${st.ic}</span><b>${st.t}</b><em>${tourI+1}/${TOUR.length}</em></div><p>${st.d}</p>
       <div class="tc2b"><button class="tskip">Pular</button><button class="pri tnext">${tourI===TOUR.length-1?'Começar a jogar 🎮':'Próximo →'}</button></div></div>`;
-    fx.querySelector('.tnext').onclick=tourNext;fx.querySelector('.tskip').onclick=tourEnd;},380);
+    fx.querySelector('.tnext').onclick=tourNext;fx.querySelector('.tskip').onclick=tourEnd;};
 }
 function tipCard(k,tp){const fx=document.createElement('div');fx.className='tipfx';
   fx.innerHTML=`<div class="tipcard"><div class="tiph"><span>${tp.ic}</span><div><small>💡 DICA</small><b>${tp.t}</b></div></div><p>${tp.d}</p><button class="pri">Entendi 👍</button><label><input type="checkbox"> Não mostrar mais dicas</label></div>`;
