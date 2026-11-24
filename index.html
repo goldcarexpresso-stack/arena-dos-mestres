@@ -212,7 +212,7 @@ body.lvduo #camDockT,body.lvduo #camDockB,body.lvduo .camwin{display:none!import
 #balTeste{cursor:pointer}
 .adlinks{display:flex;gap:8px;margin-top:8px}.adlinks button{flex:1;padding:9px;font-size:13px;border-radius:12px;background:#ffc23d1a;border:1px solid #ffc23d66;color:#ffd77a;font-weight:800}
 .agora{margin:4px 0 14px}.agh{font-weight:900;font-size:16px;margin:0 2px 8px}
-.agsc{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px;scrollbar-width:none}
+.vmini{border-color:#2bd97a66!important;background:radial-gradient(circle at 20% 20%,#2bd97a33,#0a2a1e 70%)!important}.slotmini{border-color:#ffd84d66!important;background:radial-gradient(circle at 80% 20%,#ffd84d33,#2a0a2e 70%)!important}.vmini.pulse{animation:vpulse 1.6s infinite}@keyframes vpulse{50%{box-shadow:0 0 0 4px #2bd97a55,0 0 22px #2bd97a88}}.ckgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:6px 0 10px}.ckd{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:12px;background:#151a3a;border:1px solid #ffffff1a;color:#cfd6ff}.ckd small{font-size:11px;opacity:.8}.ckd b{font-size:22px}.ckd span{font-weight:900;color:#5dff9c}.ckd.ok{opacity:.55}.ckd.ok span{color:#9fe8b8}.ckd.now{border-color:#5dff9c;box-shadow:0 0 14px #2bd97a88;background:#123a2a}.ckd.big{grid-column:span 2;background:linear-gradient(135deg,#3a2a00,#151a3a);border-color:#ffd84d88}.cknote{font-size:14px;line-height:1.4}.cknote small{opacity:.75}.slotov{position:fixed;inset:0;z-index:9000;background:#05031acc;backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:14px}.slotov.on{display:flex}.slbox{position:relative;width:100%;max-width:380px;max-height:94vh;overflow:auto;padding:18px 16px;border-radius:24px;background:radial-gradient(circle at 50% 0,#4a1366,#170a33 70%);border:2px solid #ffd84d88;box-shadow:0 0 40px #ffd84d44;color:#fff;text-align:center}.slbox h3{margin:0 0 6px;font-size:22px;color:#ffd84d;text-shadow:0 0 12px #ffb300}.slx{position:absolute;right:10px;top:10px;background:#ffffff1a;border:none;color:#fff;border-radius:50%;width:34px;height:34px;font-size:16px}.slsaldo{font-size:15px;margin-bottom:10px}.slsaldo b{color:#5dff9c;font-size:20px}.slreels{display:flex;gap:8px;justify-content:center;padding:12px;border-radius:18px;background:#0b0620;border:2px solid #ffd84d55}.slr{flex:1;height:92px;display:flex;align-items:center;justify-content:center;font-size:52px;border-radius:12px;background:linear-gradient(#fff,#e8e4f5 50%,#fff);color:#222;box-shadow:inset 0 6px 10px #0003,inset 0 -6px 10px #0003}.slr.spin{filter:blur(1.5px)}.slr.hit{animation:slhit .5s 3;background:linear-gradient(#fff7c2,#ffd84d)}@keyframes slhit{50%{transform:scale(1.08)}}.s7{font-style:normal;font-weight:900;color:#e0002a;font-family:Georgia,serif;text-shadow:2px 2px 0 #ffb300}.slmsg{min-height:26px;margin:10px 0 6px;font-weight:900;font-size:17px}.slmsg.w{color:#ffd84d;text-shadow:0 0 10px #ffb300}.slap{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;font-size:14px}.slap button{min-width:46px;padding:8px 10px;border-radius:12px;border:1px solid #5dff9c66;background:#123a2a;color:#5dff9c;font-weight:900}.slap button.on{background:#5dff9c;color:#06301a}.slspin{width:100%;padding:16px;border:none;border-radius:16px;font-size:22px;font-weight:900;letter-spacing:2px;color:#3a1500;background:linear-gradient(#ffe680,#ffb300);box-shadow:0 6px 0 #a66a00,0 0 20px #ffb30088}.slspin:active{transform:translateY(4px);box-shadow:0 2px 0 #a66a00}.slspin:disabled{opacity:.6}.slinfo{font-size:12px;opacity:.8;margin-top:10px;line-height:1.5}.slpay{margin-top:8px;text-align:left;font-size:14px}.slpay summary{text-align:center;opacity:.9}.slpay div{display:flex;justify-content:space-between;padding:4px 8px;border-bottom:1px solid #ffffff14}.agsc{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px;scrollbar-width:none}
 .agsc{align-items:stretch}.agsc>*{flex:0 0 88%!important;max-width:360px;scroll-snap-align:start;margin:0!important}
 .tourmini{border-color:#ffc23d66!important;background-size:cover!important;background-position:right center!important}
 .livemini{display:flex;flex-direction:column;justify-content:center;gap:4px;text-align:left;padding:16px;border-radius:20px;border:1px solid #ff2d5566;background:radial-gradient(circle at 20% 20%,#ff2d5533,#1d0a3e 70%);color:#fff;min-height:150px}
@@ -5094,12 +5094,69 @@ let DIR={ped:[],dono:false,t:0};
 async function dirLoad(silent){if(!CL.ses)return null;let d=null;try{d=await clRpc('arena_meus_direitos');}catch(e){return null;}if(!d)return null;
   DIR={ped:d.pedidos||[],dono:!!d.dono,t:Date.now(),teste:!!d.teste_usado};
   const ate=d.premium_ate?Date.parse(d.premium_ate):0;const was=isPrem();if(ate!==(S.premAte||0)){S.premAte=ate;save();if(!was&&isPrem())toast('👑 Seu Premium está ativo!');}
-  S.gemJ=d.saldo_jogo|0;S.gemJMes=d.jogo_mes|0;const antes=S.gem|0;gemSet(d.saldo|0);if((d.saldo|0)>antes&&DIR.t0)toast('💎 +'+((d.saldo|0)-antes)+' diamantes na sua conta');DIR.t0=1;if(d.bonus)toast('💎 +'+d.bonus+' — bônus semanal do Premium');
+  S.gemJ=d.saldo_jogo|0;S.gemJMes=d.jogo_mes|0;try{agVerdeUI();if(!CK)ckLoad();}catch(e){}const antes=S.gem|0;gemSet(d.saldo|0);if((d.saldo|0)>antes&&DIR.t0)toast('💎 +'+((d.saldo|0)-antes)+' diamantes na sua conta');DIR.t0=1;if(d.bonus)toast('💎 +'+d.bonus+' — bônus semanal do Premium');
   (d.itens||[]).forEach(id=>{if(ITEMS[id]&&!own(id)){grant(id);if(!silent)toast('🎁 '+ITEMS[id].n+' chegou na sua mochila');}});
   if(!isPrem()&&S.invis&&!OKEY){S.invis=false;save();presence();}
   premUI();return d;}
 setInterval(()=>{if(CL.ses&&(DIR.ped.some(p=>p.status==='pago'||p.status==='aguardando')||Date.now()-DIR.t>6e5))dirLoad();},45e3);
 setTimeout(()=>dirLoad(true),3500);
+/* ===== 🟢 CHECK-IN DIÁRIO e 🎰 777 — só diamantes de jogo, sorteio no servidor ===== */
+let CK=null;
+function verdeLogin(){modal('☁️ Entre na sua conta','Pra guardar seus 🟢 diamantes de jogo, entre na sua conta (é grátis): <b style="color:var(--txt)">Perfil → ☁️ Conta na nuvem</b>.',[{t:'Agora não'},{t:'Ir pro Perfil',pri:1,f:openCloud}]);}
+async function ckLoad(){if(!CL.ses){agVerdeUI();return null;}try{const r=await clRpc('arena_checkin',{p_so_ver:true});if(r&&!r.erro)CK=r;}catch(e){}agVerdeUI();return CK;}
+function agVerdeUI(){const ag=$('#agoraSc');if(!ag)return;let c=$('#agCk');
+  if(!c){c=h('button','livemini vmini');c.id='agCk';c.onclick=ckOpen;const sl=h('button','livemini vmini slotmini');sl.id='agSlot';sl.onclick=slotOpen;const t=$('#agTour');if(t)t.after(c,sl);else ag.prepend(c,sl);}
+  const pode=!!(CL.ses&&CK&&!CK.feito);
+  c.innerHTML=`<span class="ldot" style="color:#5dff9c">📅 CHECK-IN DIÁRIO</span><b>${pode?'Seu prêmio de hoje está pronto!':CK&&CK.feito?'Pego hoje ✔ Volte amanhã 💚':'Ganhe 🟢 todo dia'}</b><small>${CK?`Dia ${CK.feito?CK.seq:CK.prox} de 7 · `:''}${pode?'toque pra pegar →':'7 dias seguidos = baú 🎁'}</small>`;
+  c.classList.toggle('pulse',pode);
+  $('#agSlot').innerHTML=`<span class="ldot" style="color:#ffd84d">🎰 CAÇA-NÍQUEL 777</span><b>Gire com 🟢 diamantes de jogo</b><small>Seu saldo: 🟢 ${S.gemJ|0} · toque pra jogar →</small>`;}
+async function ckOpen(){if(!CL.ses)return verdeLogin();await ckLoad();if(!CK)return toast('Não deu pra carregar agora, tente de novo');
+  const tab=CK.tab||[2,3,4,5,6,8,15],cur=CK.feito?CK.seq:CK.prox,g=h('div','ckgrid');
+  tab.forEach((q,i)=>{const d=i+1,ok=CK.feito?d<=CK.seq:d<CK.prox;g.append(h('div','ckd'+(ok?' ok':'')+(d===cur&&!CK.feito?' now':'')+(d===7?' big':''),`<small>Dia ${d}</small><b>${d===7?'🎁':'💚'}</b><span>${ok?'✔':'+'+q+(d===7?' + moldura':'')}</span>`));});
+  const w=h('div');w.append(g,h('p','cknote',(CK.feito?'✅ Você já pegou o de hoje. Volte amanhã pra não perder a sequência.':'Pegue todo dia. Se pular um dia, volta pro dia 1.')+'<br><small>🟢 Diamantes de jogo não se compram e não viram dinheiro: servem pra presentes e pro 🎰 777.</small>'));
+  modal('📅 Check-in diário',w,CK.feito?[{t:'Fechar',pri:1}]:[{t:'Depois'},{t:'🎁 Pegar o de hoje',pri:1,f:()=>{ckPegar();}}]);}
+async function ckPegar(){let r;try{r=await clRpc('arena_checkin',{p_so_ver:false});}catch(e){return toast('Sem conexão, tente de novo');}
+  if(!r||r.erro)return verdeLogin();CK=r;
+  if(r.novo){S.gemJ=r.saldo_jogo|0;save();sfx(r.seq===7?'win':'gem');toast('🟢 +'+r.ganhou+' diamantes de jogo'+(r.moldura?' e uma moldura surpresa! 🎁':''));if(r.moldura)dirLoad();}
+  agVerdeUI();try{giftCardUI();}catch(e){}}
+const SLS=['🍒','🍋','🔔','⭐','💎','7'],SL={ap:1,busy:false};
+const slSym=x=>x==='7'?'<i class="s7">7</i>':x;
+function slotOpen(){if(!CL.ses)return verdeLogin();let o=$('#slotOv');
+  if(!o){o=h('div','slotov');o.id='slotOv';
+    const pay=[['777',50],['💎💎💎',20],['⭐⭐⭐',10],['🔔🔔🔔',5],['🍋🍋🍋',3],['🍒🍒🍒',2],['🍒🍒 (dois)',1]].map(([a,m])=>`<div><span>${a.replace(/7/g,'<i class="s7">7</i>')}</span><b>× ${m}${m===1?' (devolve)':''}</b></div>`).join('');
+    o.innerHTML=`<div class="slbox"><button class="slx" id="slX">✕</button><h3>🎰 CAÇA-NÍQUEL 777</h3><div class="slsaldo">🟢 <b id="slSaldo">0</b> diamantes de jogo</div>
+    <div class="slreels"><div class="slr">${slSym('7')}</div><div class="slr">${slSym('7')}</div><div class="slr">${slSym('7')}</div></div>
+    <div class="slmsg" id="slMsg">Boa sorte! 🍀</div>
+    <div class="slap">Aposta: <button data-a="1">🟢 1</button><button data-a="2">🟢 2</button><button data-a="5">🟢 5</button></div>
+    <button class="slspin" id="slSpin">GIRAR</button>
+    <div class="slinfo" id="slInfo">Resultado sorteado no servidor, sem truque · devolve em média 90% do que é apostado · 30 giros por dia</div>
+    <details class="slpay"><summary>📋 Tabela de prêmios (vezes a aposta)</summary>${pay}</details>
+    <div class="slinfo">Só vale 🟢 diamantes de jogo: não se compram e não viram dinheiro, 💎 azul nem desconto. Ganhe 🟢 no check-in diário e jogando online.</div></div>`;
+    document.body.append(o);$('#slX').onclick=()=>{if(!SL.busy)o.classList.remove('on');};o.onclick=e=>{if(e.target===o&&!SL.busy)o.classList.remove('on');};
+    o.querySelectorAll('.slap button').forEach(b=>b.onclick=()=>{if(SL.busy)return;SL.ap=+b.dataset.a;sfx('tap');slAp();});$('#slSpin').onclick=slSpin;}
+  slAp();$('#slSaldo').textContent=S.gemJ|0;o.classList.add('on');}
+function slAp(){document.querySelectorAll('#slotOv .slap button').forEach(b=>b.classList.toggle('on',+b.dataset.a===SL.ap));}
+async function slSpin(){if(SL.busy)return;const msg=$('#slMsg'),bt=$('#slSpin'),rs=[...document.querySelectorAll('#slotOv .slr')];
+  if((S.gemJ|0)<SL.ap){msg.className='slmsg';msg.textContent='Sem 🟢 suficientes. Pegue no 📅 check-in ou jogue online!';return;}
+  SL.busy=true;bt.disabled=true;msg.className='slmsg';msg.textContent='Girando…';rs.forEach(r=>r.classList.remove('hit'));
+  S.gemJ=(S.gemJ|0)-SL.ap;$('#slSaldo').textContent=S.gemJ;sfx('cue');
+  const stop=[false,false,false];rs.forEach(r=>r.classList.add('spin'));
+  const iv=setInterval(()=>{rs.forEach((r,i)=>{if(!stop[i])r.innerHTML=slSym(SLS[Math.random()*6|0]);});sfx('tap');},90);
+  let r=null;const t0=Date.now();try{r=await clRpc('arena_slot',{p_aposta:SL.ap});}catch(e){}
+  await new Promise(z=>setTimeout(z,Math.max(0,900-(Date.now()-t0))));
+  if(!r||r.erro){clearInterval(iv);rs.forEach(x=>{x.classList.remove('spin');x.innerHTML=slSym('7');});SL.busy=false;bt.disabled=false;
+    S.gemJ=r&&r.saldo_jogo!=null?r.saldo_jogo|0:(S.gemJ|0)+SL.ap;$('#slSaldo').textContent=S.gemJ|0;
+    msg.textContent=!r?'Sem conexão. Nada foi descontado.':r.erro==='limite'?'Você usou os 30 giros de hoje. Volte amanhã! 🌙':r.erro==='saldo'?'Sem 🟢 suficientes. Pegue no 📅 check-in!':r.erro==='login'?'Entre na sua conta pra jogar.':'Não deu certo, tente de novo.';return;}
+  for(let i=0;i<3;i++){await new Promise(z=>setTimeout(z,i?380:0));stop[i]=true;rs[i].classList.remove('spin');rs[i].innerHTML=slSym(r.rolos[i]);sfx('tile');}
+  clearInterval(iv);S.gemJ=r.saldo_jogo|0;save();$('#slSaldo').textContent=S.gemJ;
+  if(r.premio>0){const big=r.mult>=10;sfx(big?'win':r.mult>1?'round':'gem');
+    rs.forEach((x,i)=>{if(r.mult>1||r.rolos[i]==='🍒')x.classList.add('hit');});
+    msg.className='slmsg w';msg.textContent=r.mult===1?'Dois 🍒 — aposta de volta!':(big?'🎉 GRANDE PRÊMIO! ':'Ganhou! ')+'+🟢 '+r.premio;}
+  else msg.textContent='Não foi dessa vez. Mais uma?';
+  $('#slInfo').textContent=`Giros hoje: ${r.giros} de ${r.limite} · devolve em média 90% · resultado sorteado no servidor`;
+  SL.busy=false;bt.disabled=false;agVerdeUI();try{giftCardUI();}catch(e){}}
+setTimeout(()=>{agVerdeUI();ckLoad();},4500);
+
 function openCloud(){go('profile');setTimeout(()=>{const g=$('#gConta');if(g)g.open=true;const c=$('#cloudCard');if(c){c.scrollIntoView({block:'center',behavior:'smooth'});const i=c.querySelector('input');if(i)setTimeout(()=>i.focus(),500);}},350);}
 function needLogin(){modal('☁️ Entre na sua conta',`Pra comprar, sua compra precisa ficar guardada na sua conta — assim você não perde nada se trocar de celular.<br><br>É grátis: vá em <b style="color:var(--txt)">Perfil → ☁️ Conta na nuvem</b> e crie com seu e-mail.`,[{t:'Agora não'},{t:'Ir pro Perfil',pri:1,f:openCloud}]);}
 function shopOpen(tab){tab=tab||'prem';const body=h('div');
