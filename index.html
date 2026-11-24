@@ -1050,6 +1050,7 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
 .nofr{background:#1d1640;border:1px solid #b026ff88;color:#fff}.nox{background:none;border:none;color:#a9a0cc;font-weight:700!important;padding:8px!important}
 
 .vvid .ytsnd{z-index:3}
+.vvid .ytout{position:absolute;z-index:3;left:8px;bottom:8px;background:#000a;color:#fff;border:1px solid #ffffff44;border-radius:99px;padding:5px 10px;font-size:11px;font-weight:800}
 .ytth{cursor:pointer;overflow:hidden;display:flex;align-items:center;justify-content:center}.ytth img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .ytth .ytplay{position:relative;z-index:2;width:68px;height:48px;border-radius:14px;background:#f00;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px #000a}
 .ytth .ytlbl{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:16px 8px 8px;text-align:center;color:#fff;font-weight:700;background:linear-gradient(0deg,#000b,#0000)}
@@ -2295,7 +2296,7 @@ function fixImgUrl(u){u=String(u||'');if(u.startsWith('data:'))return u;
   m=u.match(/^https?:\/\/(?:www\.)?imgur\.com\/(\w+)$/);if(m)return 'https://i.imgur.com/'+m[1]+'.jpg';
   m=u.match(/dropbox\.com\/.+/);if(m)return u.replace(/[?&]dl=0/,'').replace('www.dropbox.com','dl.dropboxusercontent.com');
   return u;}
-document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('.ytth[data-ytid]');if(!t)return;e.stopPropagation();goLink('https://youtu.be/'+t.dataset.ytid);},true);
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('.ytout[data-ytid]');if(!t)return;e.stopPropagation();goLink('https://youtu.be/'+t.dataset.ytid);},true);
 function ytId(u){const m=String(u||'').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/|live\/))([\w-]{6,})/);return m?m[1]:null;}
 function goLink(u){
   u=String(u||'').trim();if(!u)return;
@@ -2306,7 +2307,7 @@ function goLink(u){
 function vidSrc(u){u=String(u||'').trim();if(!u||ytId(u))return u;if(/^https?:\/\//i.test(u))return u;return u.replace(/^\/+/,'');}
 function mediaHTML(kind,img,video,label,fmt){
   if(kind==='video'&&video){const id=ytId(video);const vert=fmt==='v'||(fmt!=='h'&&/shorts\//i.test(video));
-    if(id)return `<div class="vvid ytth${vert?' vert':''}" data-ytid="${id}" role="button" aria-label="${esc(label||'Vídeo')}"><img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="ytplay">▶</span><small class="ytlbl">Toque pra ver o vídeo</small></div>`;
+    if(id)return `<div class="vvid${vert?' vert':''}"><iframe data-yt="${id}" src="${ytSrc(id,true)}" title="${esc(label||'Vídeo')}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe><button class="snd ytsnd" aria-label="Som">🔊</button><button class="ytout" data-ytid="${id}" aria-label="Abrir no YouTube">↗ YouTube</button></div>`;
     return `<div class="fit vfit"><video class="fv" src="${esc(vidSrc(video))}" muted playsinline preload="metadata"></video><button class="snd" aria-label="Som">🔇</button></div>`;}
   if(img){const u=esc(fixImgUrl(img));return `<div class="fit" style="--bg:url('${u}')"><img class="fi" src="${u}" alt="" onerror="this.closest('.fit').classList.add('bad')"></div>`;}
   return '';
@@ -2336,11 +2337,11 @@ const WAMSG='Olá! Vi o anúncio de vocês na Arena dos Mestres.';
 function bindAds(box,list){
   box.querySelectorAll('.adbtn').forEach(b=>b.onclick=()=>{const a=list[+b.dataset.i];const B=adBtns(a)[+b.dataset.k];if(B)openBtn(B,a);});
   box.querySelectorAll('.adc .fi').forEach(im=>im.onclick=()=>{const a=list[+im.closest('.adc').dataset.i];const B=adBtns(a)[0];if(B)openBtn(B,a);});
-  box.querySelectorAll('.snd').forEach(b=>b.onclick=e=>{e.stopPropagation();ADSND=!ADSND;try{localStorage.setItem('adm_adsnd',ADSND?'1':'0');}catch(x){}adAudio();});
+  box.querySelectorAll('.snd').forEach(b=>b.onclick=e=>{e.stopPropagation();ADSND=!ADSND;try{localStorage.setItem('adm_adsnd2',ADSND?'1':'0');}catch(x){}adAudio();});
 }
 /* carrossel automático: cada anúncio fica X segundos; vídeo toca até o fim (máx. 30s) */
 let rotT=null,rotI=0;
-let ADSND=(()=>{try{return localStorage.getItem('adm_adsnd')!=='0';}catch(e){return true;}})();
+let ADSND=(()=>{try{return localStorage.getItem('adm_adsnd2')==='1';}catch(e){return false;}})(); /* começa sem som; o som é escolha de quem assiste */
 const hasTap=()=>!!(navigator.userActivation&&navigator.userActivation.hasBeenActive)||hasTap.v;
 function ytCmd(f,fn){try{f.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:[]}),'*');}catch(e){}}
 function adAudio(){const on=ADSND&&hasTap();
@@ -2349,7 +2350,7 @@ function adAudio(){const on=ADSND&&hasTap();
     const f=x.querySelector('iframe[data-yt]');if(f&&act){ytCmd(f,on?'unMute':'mute');ytCmd(f,'playVideo');}});
   document.querySelectorAll('#vitBox .snd').forEach(b=>b.textContent=ADSND?'🔊':'🔇');}
 ['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,()=>{if(!hasTap.v){hasTap.v=1;setTimeout(adAudio,50);}},{capture:true,passive:true}));
-function ytSrc(id,play){const m=ADSND&&hasTap()?0:1;return `https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1&modestbranding=1&end=30&enablejsapi=1${play?`&autoplay=1&mute=${m}`:''}`;}
+function ytSrc(id,play){const m=ADSND&&hasTap()?0:1;return `https://www.youtube.com/embed/${id}?rel=0&playsinline=1&modestbranding=1&controls=0&loop=1&playlist=${id}&end=30&enablejsapi=1&origin=${encodeURIComponent(location.origin)}${play?`&autoplay=1&mute=${m}`:''}`;}
 /* ====================== TUTORIAL / DICAS ====================== */
 const TOUR=[
  {sel:'#lbal',ic:'💰',t:'Seu saldo de teste',d:'Você já começa com <b>R$ 1.000 de teste</b> pra jogar. Não é dinheiro de verdade. Quando acabar, adicione mais de graça na <b>Carteira</b>.'},
@@ -4913,11 +4914,18 @@ function premUI(){const pm=isPrem(),ate=pm?new Date(S.premAte).toLocaleDateStrin
   const oi=$('#oInv');if(oi)oi.checked=!!S.invis;}
 premUI();
 /* painel do dono: pedidos */
+function donoCodigo(){const body=h('div');const inp=h('input');inp.placeholder='DONO-XXXXXXXX';inp.autocapitalize='characters';inp.autocomplete='off';
+  inp.style.cssText='font:inherit;font-size:18px;letter-spacing:.06em;width:100%;padding:14px;border-radius:12px;border:1px solid #2c3463;background:#0f1328;color:#fff;text-transform:uppercase';
+  body.append('Digite o código do dono (começa com DONO-):',h('br'),h('br'),inp);
+  modal('🔑 Código do dono',body,[{t:'Cancelar'},{t:'Ativar',pri:1,f:()=>{const v=inp.value.trim().toUpperCase();if(!v){toast('Digite o código');return false;}
+    clRpc('arena_dono_ativar',{p_codigo:v}).then(ok=>{if(ok===true){DIR.dono=true;toast('✅ Pronto! Os pedidos agora aparecem aqui');vendasUI();}else{toast('Código errado — confira e tente de novo');}}).catch(e=>toast(e.message||'Não deu agora, tente de novo'));}}]);
+  setTimeout(()=>inp.focus(),150);}
 async function vendasUI(){const el=$('#oVendas');if(!el)return;
-  if(!CL.ses){el.innerHTML=`<small style="color:var(--mut)">Entre na sua conta (Perfil → ☁️ Conta na nuvem) pra ver os pedidos.</small>`;return;}
-  if(!DIR.dono){await dirLoad(true);}
-  if(!DIR.dono){el.innerHTML=`<small style="color:var(--mut)">Primeira vez: digite o código do dono pra liberar os pedidos nesta conta.</small><div class="row" style="margin-top:8px"><input id="oDonoC" placeholder="DONO-XXXXXXXX" autocapitalize="characters" style="flex:1;font:inherit;padding:10px;border-radius:12px;border:1px solid #2c3463;background:#0f1328;color:#fff"><button class="pri" id="oDonoB">Ativar</button></div>`;
-    $('#oDonoB').onclick=async()=>{let ok=false;try{ok=await clRpc('arena_dono_ativar',{p_codigo:$('#oDonoC').value});}catch(e){}if(ok){DIR.dono=true;toast('✅ Pedidos liberados nesta conta');vendasUI();}else toast('Código errado');};return;}
+  if(!CL.ses){el.innerHTML=`<div class="vdi"><b>1º passo: entrar na sua conta</b><small>Os pedidos ficam ligados à sua conta de e-mail. Entre (ou crie) e volte aqui.</small></div><div class="row" style="margin-top:8px"><button class="pri" id="oVLog">☁️ Entrar na minha conta</button></div>`;
+    $('#oVLog').onclick=()=>{go('profile');setTimeout(()=>{const c=$('#cloudCard');if(c){c.scrollIntoView({block:'center',behavior:'smooth'});const i=c.querySelector('input');if(i)setTimeout(()=>i.focus(),500);}},350);};return;}
+  if(!DIR.dono){el.innerHTML='<small style="color:var(--mut)">Conferindo sua conta…</small>';await dirLoad(true);}
+  if(!DIR.dono){el.innerHTML=`<div class="vdi"><b>2º passo: ativar o código do dono</b><small>Conta: ${esc(CL.ses.email||'')}<br>Só precisa fazer uma vez.</small></div><div class="row" style="margin-top:8px"><button class="pri" id="oDonoB">🔑 Digitar código do dono</button></div>`;
+    $('#oDonoB').onclick=donoCodigo;return;}
   el.innerHTML='<small style="color:var(--mut)">Carregando…</small>';let L=[];try{L=await clRpc('arena_dono_pedidos')||[];}catch(e){el.innerHTML='<small>Não deu pra carregar agora.</small>';return;}
   const pend=L.filter(p=>p.status==='pago'||p.status==='aguardando'),feito=L.filter(p=>p.status==='liberado');
   const soma=feito.filter(p=>Date.now()-Date.parse(p.criado)<30*864e5).reduce((a,p)=>a+Number(p.valor),0);
