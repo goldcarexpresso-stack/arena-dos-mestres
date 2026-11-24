@@ -1767,12 +1767,11 @@ const isEq=id=>{const it=ITEMS[id],e=S.eq||{};return it.c==='sk'?!!(e.sk&&e.sk[i
 function renderLobbyMine(){try{setAv($('#lav'),S.photo,S.name,null,S.uid);$('#lname').innerHTML=nmHTML(S.name,S.uid);}catch(e){}}
 /* molduras com arte (img/molduras): número = tamanho da arte em relação ao buraco da foto */
 const FRIMG={"f_rainha": 2.129, "fw_asas": 2.466, "fw_cerejeira": 1.937, "fw_borboleta": 2.19, "f_coracao": 2.255, "f_laco": 2.282, "fw_lua": 2.071, "fw_pavao": 2.073, "fw_perolas": 1.599, "f_rei": 2.297, "f_bone": 2.442, "fm_dragao": 2.305, "f_fogo": 2.291, "f_raio": 2.201, "fm_louros": 1.825, "fm_leao": 2.505, "fm_gelo": 2.222, "f_galaxia": 2.005};
-/* molduras com enfeite em cima: a foto continua enchendo o círculo, só aproxima e desce o rosto (sem faixa de cor) */
-const FRZOOM={f_laco:140,fm_leao:140,f_bone:135,f_coracao:130,f_rainha:130,f_rei:130,fw_perolas:125,fm_gelo:125};
 (function(){let css='';for(const id in FRIMG){const ins=((FRIMG[id]/1.05-1)/2*100).toFixed(1);
+  /* recorta o enfeite que cairia dentro da foto: nada cobre o rosto */
+  const rr=(0.5/(FRIMG[id]/1.05)*100*0.94).toFixed(2),mk=`radial-gradient(ellipse ${rr}% ${rr}% at 50% 50%,transparent 0 96%,#000 100%)`;
   css+=`[data-fr="${id}"]{border-color:transparent!important;box-shadow:none!important;animation:none!important}[data-fr="${id}"]::before{content:none!important}`+
-  `[data-fr="${id}"]::after{content:"";position:absolute;inset:-${ins}%;background:url(img/molduras/${id}.webp) center/contain no-repeat;pointer-events:none;z-index:2;-webkit-mask:none;mask:none;border-radius:0;animation:none}`;
-  const z=FRZOOM[id];if(z)css+=`[data-fr="${id}"]{background-size:${z}% ${z}%!important;background-position:50% 0%!important}`;}
+  `[data-fr="${id}"]::after{content:"";position:absolute;inset:-${ins}%;background:url(img/molduras/${id}.webp) center/contain no-repeat;pointer-events:none;z-index:2;-webkit-mask:${mk};mask:${mk};border-radius:0;animation:none}`;}
   const st=document.createElement('style');st.textContent=css;document.head.append(st);})();
 function styleCardUI(){const el=$('#styleCard');if(!el)return;const k=S.sexo||'';if(el.dataset.k===k)return;el.dataset.k=k;
   el.innerHTML=`<b class="ct">✨ Meu estilo de acessórios</b><div style="color:var(--mut);font-size:13px;margin:6px 0 10px">Os baús e prêmios vão trazer molduras do seu estilo.</div>
