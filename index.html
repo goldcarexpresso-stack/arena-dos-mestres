@@ -210,6 +210,10 @@ body.lvduo #camDockT,body.lvduo #camDockB,body.lvduo .camwin{display:none!import
 /* ===== COMUNIDADE ===== */
 .comcard{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:0 0 12px;padding:14px;border-radius:20px;border:1px solid #f472b666;background:linear-gradient(135deg,#4a0f3a,#5b21b6 60%,#1d0a3e);color:#fff;box-shadow:0 0 24px #f472b622}
 .comcard .pi{font-size:32px}.comcard div{flex:1}.comcard b{display:block;font-size:16px;color:#f9a8d4}.comcard small{opacity:.85;font-size:12px}.comcard .go{background:#f472b6;color:#2a0018;font-weight:900;border-radius:12px;padding:8px 10px;font-size:13px;white-space:nowrap}
+.chmsg{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:12px 14px;border-radius:18px;margin-bottom:12px;background:#ffffff0d;border:1px solid #ffffff1f;color:var(--txt)}
+.chmsg .mi{font-size:26px}.chmsg div{flex:1;min-width:0}.chmsg b{display:block;font-size:15px}.chmsg b em{font-style:normal;background:#ff2d55;color:#fff;border-radius:99px;padding:1px 7px;font-size:12px;margin-left:4px}.chmsg small{color:var(--mut);font-size:12px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chmsg .ma{display:flex}.chmsg .ma .av{width:28px;height:28px;margin-left:-8px;border:2px solid #0b0d1a;font-size:11px}.chmsg .mv{font-size:16px;color:var(--mut)}
+.cmemb.sm{gap:6px;margin:0 0 6px}.cmemb.sm button{width:44px}.cmemb.sm .av{width:34px;height:34px;font-size:12px}.cmemb.sm small{font-size:9px}
 .chcom{background:linear-gradient(135deg,#2a0f3a,#1d1650);border:1px solid #f472b644;border-radius:18px;padding:10px 10px 4px;margin-bottom:12px}.chch{display:flex;align-items:center;margin-bottom:6px}.chch b{flex:1;color:#f9a8d4}.chch button{font-size:12px;padding:7px 10px;border-radius:10px}
 .cvb{margin-left:auto;font-size:12px;padding:8px 10px;border-radius:12px}
 .stry{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:none}
@@ -1416,16 +1420,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
   <div class="card" id="onList"></div>
 </section>
 
-<!-- COMUNIDADE -->
-<section id="com" class="scr">
-  <div class="ph1"><span class="phi">🌐</span><h2>Comunidade</h2><button id="comVisB" class="cvb">👁️ Quem me vê</button></div>
-  <div id="comSoc"></div>
-  <div class="stry" id="comStories"></div>
-  <div class="card comnew" id="comNew"></div>
-  <div class="cmemb" id="comMemb"></div>
-  <div id="comFeed"></div>
-  <button id="comMore" class="cmore" style="display:none">Ver mais posts</button>
-</section>
+
 
 <!-- TORNEIOS -->
 <section id="torneio" class="scr">
@@ -1439,10 +1434,16 @@ body:has(#legalGate) #mod{z-index:100000!important}
 <!-- CONVERSAS -->
 <section id="chats" class="scr">
   <div class="ph1"><span class="phi">💬</span><h2>Conversas</h2><button id="chNew" class="pri" style="margin-left:auto">+ Nova</button></div>
-  <div class="chcom"><div class="chch"><b>🌐 Comunidade</b><button id="chComGo">Ver posts →</button></div><div class="stry" id="chStories"></div><div class="cmemb" id="chMemb"></div></div>
-  <div class="scrban" data-img="chat"></div>
-  <div class="banner" style="background:#10213a;color:#9cc4ff">🔓 As mensagens ainda passam por um servidor público. Não mande senha, documento nem dados pessoais.</div>
-  <div class="card" id="chList"></div>
+  <div class="chcom"><div class="chch"><b>🌐 Comunidade</b><button id="comVisB">👁️ Quem me vê</button></div><div class="stry" id="chStories"></div><div class="cmemb sm" id="chMemb"></div></div>
+  <button class="chmsg" id="chMsgCard"></button>
+  <div id="chListWrap" style="display:none">
+    <div class="banner" style="background:#10213a;color:#9cc4ff">🔓 As mensagens ainda passam por um servidor público. Não mande senha, documento nem dados pessoais.</div>
+    <div class="card" id="chList"></div>
+  </div>
+  <div class="card comnew" id="comNew"></div>
+  <div id="comFeed"></div>
+  <button id="comMore" class="cmore" style="display:none">Ver mais posts</button>
+  <div id="comSoc"></div>
 </section>
 <section id="chat" class="scr chatscr">
   <div class="chead"><button id="cBack">←</button><div id="cHead" class="chh"></div></div>
@@ -1912,13 +1913,13 @@ function fly(e,down){const s=h('div','fly'+(down?' dn':''),e);s.style[down?'top'
 function botEmoji(e){setTimeout(()=>fly(e||pick(['😂','😎','🔥','🤡','😡','🫵','👏','💤']),true),400);}
 
 /* ========== NAV ========== */
-function go(id){
+function go(id){if(id==='com')id='chats';if(id==='chats')setTimeout(renderCom,0);
   setTimeout(()=>tipScreen(id),450);
   if(id!=='lobby')adStop();
   document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id===id));
   document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.go===id));
   $('#nav').style.display=(id==='match'||id==='chat')?'none':'flex';
-  if(id==='lobby')renderLobby();if(id==='wallet')renderWallet();if(id==='profile')renderProfile();if(id==='online')renderOnline();if(id==='chats')renderChats();if(id==='torneio')renderTours();if(id==='bingo')bingoOpen();if(id==='bag')renderBag();if(id==='com')renderCom();if(id==='profile')frRefresh();
+  if(id==='lobby')renderLobby();if(id==='wallet')renderWallet();if(id==='profile')renderProfile();if(id==='online')renderOnline();if(id==='chats')renderChats();if(id==='torneio')renderTours();if(id==='bingo')bingoOpen();if(id==='bag')renderBag();if(id==='profile')frRefresh();
   window.scrollTo(0,0);
 }
 document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>go(b.dataset.go));
@@ -2261,8 +2262,16 @@ function tourCardFill(){const el=$('#tcCta');if(!el)return;const ts=O.tours||[];
   el.innerHTML=`<b class="tcbig">${inn?'✓ VOCÊ ESTÁ INSCRITO':full?'VAGAS ESGOTADAS':'📝 INSCREVA-SE AGORA'}</b>
     ${t.start?`<span>📅 Início ${fdate(t.start)}</span>`:''}${t.prize?`<span>🏆 ${esc(t.prize)}</span>`:''}
     <span>👥 ${r.size}${t.max?'/'+t.max:''} inscritos${ts.length>1?` · +${ts.length-1} torneio${ts.length>2?'s':''}`:''}</span>`;}
-function regs(tid){return TREG.get(tid)||new Map();}
-function renderTours(){
+function regs(tid){const m=TREG.get(tid)||new Map();if(S.tIn&&S.tIn[tid]&&!m.has(S.uid)){m.set(S.uid,{id:S.uid,name:S.name,thumb:thumb()});TREG.set(tid,m);}return m;}
+/* inscrições vêm do banco: atualizar o app não zera ninguém */
+let TLOAD=0;async function tourLoad(){const ids=(O.tours||[]).map(t=>String(t.id)).filter(Boolean);if(!ids.length||Date.now()-TLOAD<20000)return;TLOAD=Date.now();
+  const L=await rkAnon('arena_insc_list',{p_eventos:ids});if(!Array.isArray(L))return;let ch=false;
+  L.forEach(x=>{if(!TREG.has(x.e))TREG.set(x.e,new Map());const m=TREG.get(x.e);if(!m.has(x.id)){m.set(x.id,{id:x.id,name:x.name||'Jogador',thumb:x.thumb});ch=true;}});
+  /* quem já estava inscrito antes: grava no banco também */
+  if(S.tIn)Object.keys(S.tIn).forEach(tid=>{if(ids.includes(String(tid))&&!L.some(x=>x.e===String(tid)&&x.id===S.uid))rkAnon('arena_insc_put',{p_evento:String(tid),p_uid:S.uid,p_nome:S.name||'Jogador',p_thumb:thumb()||null});});
+  if(ch){try{renderTours();}catch(e){}try{tourCardFill();}catch(e){}}}
+setTimeout(tourLoad,3000);setInterval(()=>{TLOAD=0;tourLoad();},60000);
+function renderTours(){tourLoad();
   const box=$('#tList');box.innerHTML='';
   $('#tSpon').onclick=()=>openParc(PTYPES[1]);
   $('#tLive').onclick=openLive;
@@ -2285,9 +2294,9 @@ function renderTours(){
     const bt=c.querySelector('.tbtns');
     const b=h('button',inn?'':'pri',inn?'✓ Inscrito — sair':full?'Vagas esgotadas':'Quero participar');b.disabled=full;
     b.onclick=()=>{
-      if(inn){busPub(TOP.tour(t.id)+'/'+S.uid,{off:1},true);r.delete(S.uid);renderTours();toast('Inscrição cancelada');return;}
+      if(inn){busPub(TOP.tour(t.id)+'/'+S.uid,{off:1},true);r.delete(S.uid);if(S.tIn)delete S.tIn[t.id];save();rkAnon('arena_insc_del',{p_evento:String(t.id),p_uid:S.uid});renderTours();toast('Inscrição cancelada');return;}
       modal('Inscrição — '+(t.title||'Torneio'),`Seu nome no torneio: <b style="color:var(--txt)">${esc(S.name)}</b><br>Inscrição: <b style="color:var(--txt)">${esc(t.fee||'Grátis')}</b><br><br><small>Modo teste: nenhum pagamento é cobrado agora. As partidas do torneio são combinadas pela comunidade.</small>`,
-        [{t:'Cancelar'},{t:'Confirmar inscrição',pri:1,f:()=>{busPub(TOP.tour(t.id)+'/'+S.uid,{name:S.name,thumb:thumb()},true);if(!TREG.has(t.id))TREG.set(t.id,new Map());TREG.get(t.id).set(S.uid,{id:S.uid,name:S.name,thumb:S.thumb||S.photo});renderTours();toast('Você está inscrito! 🏆');}}]);};
+        [{t:'Cancelar'},{t:'Confirmar inscrição',pri:1,f:()=>{busPub(TOP.tour(t.id)+'/'+S.uid,{name:S.name,thumb:thumb()},true);S.tIn=S.tIn||{};S.tIn[t.id]=1;save();rkAnon('arena_insc_put',{p_evento:String(t.id),p_uid:S.uid,p_nome:S.name||'Jogador',p_thumb:thumb()||null});if(!TREG.has(t.id))TREG.set(t.id,new Map());TREG.get(t.id).set(S.uid,{id:S.uid,name:S.name,thumb:S.thumb||S.photo});renderTours();toast('Você está inscrito! 🏆');}}]);};
     bt.append(b);
     if(t.link){const a=h('a','wpp','🔗 Saiba mais');a.href=/^https?:/i.test(t.link)?t.link:'https://'+t.link;a.target='_blank';a.rel='noopener';bt.append(a);}
     if(r.size){const v=h('button',null,'Ver inscritos');v.onclick=()=>{const b2=h('div');[...r.values()].forEach(p=>b2.append(personRow({...p,st:(ONLINE.get(p.id)||{}).st||''},p.id===S.uid?null:'Ver',q=>showPlayer(q))));modal('Inscritos',b2,[{t:'Fechar'}]);};bt.append(v);}
@@ -3170,9 +3179,13 @@ function bTopic(r){return TOP.bingo+'/'+r;}
 function bResetRound(r){
   if(BG.round>=0)busUnsub(bTopic(BG.round));BG.round=r;BG.joins=new Map();BG.replied=new Set();BG.win={line:[],full:[]};BG.first={line:null,full:null};BG.manual=new Set();BG.lastSpoken=-1;BG.said={};
   BG.seenStart=bNow().el<BJOIN;
-  BG.ks=[];if(BG.pend){const m=Math.min(BG.pend,BCFG().max);BG.ks=[...Array(m)].map((_,i)=>i);BG.pend=0;}
+  BG.ks=[];const sv=S.bgk||{};if(sv.r===r&&Array.isArray(sv.ks))BG.ks=sv.ks.slice();
+  if(!BG.ks.length&&!BG.pend&&sv.pend&&sv.pr===r)BG.pend=sv.pend;
+  if(!BG.ks.length&&BG.pend){const m=Math.min(BG.pend,BCFG().max);BG.ks=[...Array(m)].map((_,i)=>i);BG.pend=0;}
+  bSave();
   busSub(bTopic(r));if(BG.ks.length)bJoinPub();bRender(true);
 }
+function bSave(){S.bgk={r:BG.round,ks:BG.ks.slice(),pend:BG.pend||0,pr:BG.pend?BG.round+1:null};save();}
 function bJoinPub(){BG.lastJ=Date.now();if(!BG.ks.length){if($('#bingo').classList.contains('on'))busPub(bTopic(BG.round),{t:'v',name:S.name,thumb:thumb()});return;}busPub(bTopic(BG.round),{t:'j',ks:BG.ks,name:S.name,thumb:thumb(),cos:myCos()});}
 function bReply(id){if(id===S.uid||BG.replied.has(id))return;BG.replied.add(id);if(!$('#bingo').classList.contains('on')&&!BG.ks.length)return;setTimeout(bJoinPub,300+Math.random()*1200);}
 function bPeople(){const el=$('#bgPeople');if(!el)return;const J=[...BG.joins.values()],W=[...BG.watch.values()].filter(w=>!BG.joins.has(w.id));
@@ -3226,9 +3239,9 @@ function bRender(full){
   const N2=N;
   if(!BG.ks.length){
     if(joinOpen){ctl.innerHTML=`<div class="bpick"><b>Quantas cartelas?</b><div>${[...Array(cfg.max)].map((_,i)=>`<button class="pri" data-n="${i+1}">${i+1}</button>`).join('')}</div><small>Grátis · trocar cartela até o sorteio começar</small></div>`;
-      ctl.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{if(!S.rulesOk){rulesGate(()=>b.click());return;}BG.ks=[...Array(+b.dataset.n)].map((_,i)=>i);bJoinPub();toast('🎱 Cartelas garantidas! Boa sorte');bRender(true);});}
+      ctl.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{if(!S.rulesOk){rulesGate(()=>b.click());return;}BG.ks=[...Array(+b.dataset.n)].map((_,i)=>i);bSave();bJoinPub();toast('🎱 Cartelas garantidas! Boa sorte');bRender(true);});}
     else ctl.innerHTML=`<div class="bpick"><b>${BG.pend?'✅ Você está na próxima rodada':'Rodada em andamento'}</b><small>${BG.pend?`Com ${BG.pend} cartela(s)`:'Assista e garanta lugar na próxima'}</small>${BG.pend?'':`<div>${[...Array(cfg.max)].map((_,i)=>`<button data-p="${i+1}">${i+1} cartela${i?'s':''}</button>`).join('')}</div>`}</div>`;
-    ctl.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{BG.pend=+b.dataset.p;toast('✅ Lugar garantido na próxima rodada');bRender(true);});
+    ctl.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{BG.pend=+b.dataset.p;bSave();toast('✅ Lugar garantido na próxima rodada');bRender(true);});
   }else ctl.innerHTML=`<label class="tgl bauto"><input type="checkbox" id="bgAuto" ${BG.auto?'checked':''}> <span><b>Marcar sozinho</b><small>Desligue pra marcar no dedo, como no bingo de verdade</small></span></label>`;
   const au=$('#bgAuto');if(au)au.onchange=()=>{BG.auto=au.checked;bRender(true);};
   // botão BINGO
@@ -3668,7 +3681,7 @@ function ajdOpen(){const bg=h('div','ajd-fundo');const sh=h('div','ajd-folha');b
   window.addEventListener('scroll',onScroll,{passive:true});document.addEventListener('scroll',onScroll,{passive:true,capture:true});
   setInterval(()=>{const s=document.querySelector('.scr.on');
     const busy=document.querySelector('#mod.on,.ajd-fundo,.gfx,#liveFull,.camwin[style=""]')||vis($('#chestFx'))||vis($('#entFx'))||vis($('#tourFx'))||[...document.querySelectorAll('[class*=tour]')].some(vis);
-    b.style.display=(s&&['match','watch','owner','chat','com'].includes(s.id))||busy||document.querySelector('#stv')?'none':'';},400);})();
+    b.style.display=(s&&['match','watch','owner','chat','chats'].includes(s.id))||busy||document.querySelector('#stv')?'none':'';},400);})();
 
 /* ========== PRESENTES AO VIVO (grátis agora; compra fica pronta pra ligar depois) ========== */
 // Diamantes 💎: saldo só no banco (compra liberada pelo dono + bônus do Premium).
@@ -3954,9 +3967,13 @@ addEventListener('pagehide',()=>{[...EPHSENT].forEach(ephClear);});
 document.addEventListener('visibilitychange',()=>{document.body.classList.toggle('nopeek',document.hidden);});
 addEventListener('blur',()=>document.body.classList.add('nopeek'));addEventListener('focus',()=>document.body.classList.remove('nopeek'));
 function openChat(id,name,th){if(!S.rulesOk){rulesGate(()=>openChat(id,name,th));return;}chatOf(id,name,th);CUR=id;CH[id].unread=0;saveCH();chatBadge();go('chat');renderChat();setTimeout(()=>$('#cIn').focus(),150);}
-function renderChats(){setTimeout(()=>{const g=$('#chComGo');if(g)g.onclick=()=>go('com');comStories();comMembros();},0);
+function renderChats(){
   const l=$('#chList');l.innerHTML='';
   const arr=Object.entries(CH).sort((a,b)=>(b[1].last||0)-(a[1].last||0));
+  {const mc=$('#chMsgCard'),wr=$('#chListWrap');const un=arr.reduce((n,[,c])=>n+(c.unread||0),0);
+    mc.innerHTML=`<span class="mi">💬</span><div><b>Mensagens${un?` <em>${un}</em>`:''}</b><small>${arr.length?arr.length+' conversa'+(arr.length>1?'s':'')+' · toque pra abrir, mandar mensagem ou ligar':'Toque em + Nova pra falar com quem está online'}</small></div><span class="ma"></span><span class="mv">${wr.style.display==='none'?'▾':'▴'}</span>`;
+    const ma=mc.querySelector('.ma');arr.slice(0,4).forEach(([id,c])=>{const a=h('i','av');setAv(a,c.thumb,c.name,'#7209b7',id);ma.append(a);});
+    mc.onclick=()=>{wr.style.display=wr.style.display==='none'?'':'none';renderChats();if(wr.style.display==='')setTimeout(()=>wr.scrollIntoView({behavior:'smooth',block:'start'}),50);};}
   if(!arr.length){l.innerHTML='<div class="empty2"><div class="eic">💬</div><b>Nenhuma conversa ainda</b><span>Toque em <b>+ Nova</b> pra falar com quem está online.</span></div>';return;}
   arr.forEach(([id,c])=>{const last=c.msgs[c.msgs.length-1];const on=ONLINE.get(id);
     const r=h('button','crow');const av=h('div','av');setAv(av,c.thumb||(on&&on.thumb),c.name,'#7209b7',id);
@@ -5079,7 +5096,7 @@ function comVisAsk(fromPhoto){const body=h('div');
   body.innerHTML=`<p style="margin-top:0">${fromPhoto?'Foto nova! ':''}Quem pode ver seu perfil e seus posts na <b style="color:var(--txt)">🌐 Comunidade</b>?</p>`;
   const opts=[['todos','🌍 Todo mundo','Seu perfil aparece pra galera e seus posts ficam abertos'],['amigos','👥 Só amigos','Só seus amigos e quem você segue veem seus posts'],['oculto','🙈 Não quero aparecer','Você não aparece na Comunidade (pode só olhar)']];
   opts.forEach(([v,t,d])=>{const b=h('button','shi'+(S.comVis===v?' shhot':''),`<div style="flex:1;text-align:left"><b>${t}</b><small>${d}</small></div>`);b.style.width='100%';b.style.marginBottom='8px';
-    b.onclick=()=>{S.comVis=v;save();$('#mod').classList.remove('on');comMembSave();toast(comVisLabel(v));if($('#com').classList.contains('on'))renderCom();};body.append(b);});
+    b.onclick=()=>{S.comVis=v;save();$('#mod').classList.remove('on');comMembSave();toast(comVisLabel(v));if($('#chats').classList.contains('on'))renderCom();};body.append(b);});
   modal('👁️ Quem me vê',body,[{t:'Depois'}]);}
 function comMembSave(){if(!CL.ses||!S.comVis)return;clRpc('arena_membro_salvar',{p_player_uid:S.uid,p_nome:S.name||'Jogador',p_thumb:thumb()||null,p_vis:S.comVis}).catch(()=>{});}
 function comAuth(){try{const tk=CL.ses&&CL.ses.at;return JSON.parse(atob(tk.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).sub;}catch(e){return null;}}
@@ -5169,8 +5186,9 @@ function comSocUI(){const el=$('#comSoc');if(!el)return;const SOCACT={instagram:
   const L=(O.soc||[]).filter(x=>NETS[x.k]&&x.k!=='instagram');
   const ig=`<a class="instagram igbig" href="https://instagram.com/${ARENA_IG}" target="_blank" rel="noopener"><i>${NETS.instagram?NETS.instagram.i:'📸'}</i><span>Instagram da Arena<small>@${ARENA_IG} · siga e fale com a gente →</small></span></a>`;
   el.innerHTML=`<div class="comh">📣 ENTRE NA NOSSA COMUNIDADE</div><div class="soc">${ig}${L.map(s=>`<a class="${s.k}" href="${esc(socUrl(s))}" target="_blank" rel="noopener"><i>${NETS[s.k].i}</i><span>${NETS[s.k].n}<small>${SOCACT[s.k]||'Abrir'} →</small></span></a>`).join('')}</div>`;}
-function renderCom(){comSocUI();$('#comVisB').textContent='👁️ '+(S.comVis?comVisLabel(S.comVis):'Quem me vê');$('#comVisB').onclick=()=>comVisAsk();$('#comMore').onclick=()=>comLoad(false);
-  comComposer();comLoad(true);if(CL.ses&&!S.comVis)setTimeout(()=>comVisAsk(),600);}
+function renderCom(){comSocUI();const vb=$('#comVisB');if(vb){vb.textContent='👁️ '+(S.comVis?comVisLabel(S.comVis):'Quem me vê');vb.onclick=()=>comVisAsk();}
+  const mo=$('#comMore');if(mo)mo.onclick=()=>comLoad(false);
+  comComposer();comLoad(true);if(CL.ses&&!S.comVis&&!S.comVisAsked){S.comVisAsked=1;save();setTimeout(()=>comVisAsk(),600);}}
 function comCardsUI(){[['#comLobby','Stories e posts da galera da Arena'],['#comProf','Poste, veja stories e escolha quem te vê']].forEach(([id,t])=>{const el=$(id);if(!el)return;el.innerHTML=`<span class="pi">🌐</span><div><b>Comunidade</b><small>${t}</small></div><span class="go">Abrir</span>`;el.onclick=()=>go('com');});}
 comCardsUI();
 /* ========== INSTALAR (PWA) ========== */
