@@ -1050,6 +1050,7 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
 .nofr{background:#1d1640;border:1px solid #b026ff88;color:#fff}.nox{background:none;border:none;color:#a9a0cc;font-weight:700!important;padding:8px!important}
 
 .vvid .ytsnd{z-index:3}
+.rpin{position:absolute;z-index:3;right:52px;bottom:8px;width:38px;height:38px;border-radius:50%;background:#000a;color:#fff;border:1px solid #ffffff44;font-size:16px;opacity:.75}.rpin.on{background:#ffc23d;color:#2a1a00;opacity:1;box-shadow:0 0 12px #ffc23d}
 .vvid .ytout{position:absolute;z-index:3;left:8px;bottom:8px;background:#000a;color:#fff;border:1px solid #ffffff44;border-radius:99px;padding:5px 10px;font-size:11px;font-weight:800}
 .ytth{cursor:pointer;overflow:hidden;display:flex;align-items:center;justify-content:center}.ytth img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .ytth .ytplay{position:relative;z-index:2;width:68px;height:48px;border-radius:14px;background:#f00;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px #000a}
@@ -2307,8 +2308,8 @@ function goLink(u){
 function vidSrc(u){u=String(u||'').trim();if(!u||ytId(u))return u;if(/^https?:\/\//i.test(u))return u;return u.replace(/^\/+/,'');}
 function mediaHTML(kind,img,video,label,fmt){
   if(kind==='video'&&video){const id=ytId(video);const vert=fmt==='v'||(fmt!=='h'&&/shorts\//i.test(video));
-    if(id)return `<div class="vvid${vert?' vert':''}"><iframe data-yt="${id}" src="${ytSrc(id,true)}" title="${esc(label||'Vídeo')}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe><button class="snd ytsnd" aria-label="Som">🔊</button><button class="ytout" data-ytid="${id}" aria-label="Abrir no YouTube">↗ YouTube</button></div>`;
-    return `<div class="fit vfit"><video class="fv" src="${esc(vidSrc(video))}" muted playsinline preload="metadata"></video><button class="snd" aria-label="Som">🔇</button></div>`;}
+    if(id)return `<div class="vvid${vert?' vert':''}"><iframe data-yt="${id}" src="${ytSrc(id,true)}" title="${esc(label||'Vídeo')}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe><button class="snd ytsnd" aria-label="Som">🔊</button><button class="ytout" data-ytid="${id}" aria-label="Abrir no YouTube">↗ YouTube</button><button class="rpin" aria-label="Repetir este vídeo">🔁</button></div>`;
+    return `<div class="fit vfit"><video class="fv" src="${esc(vidSrc(video))}" muted playsinline preload="metadata"></video><button class="snd" aria-label="Som">🔇</button><button class="rpin" aria-label="Repetir este vídeo">🔁</button></div>`;}
   if(img){const u=esc(fixImgUrl(img));return `<div class="fit" style="--bg:url('${u}')"><img class="fi" src="${u}" alt="" onerror="this.closest('.fit').classList.add('bad')"></div>`;}
   return '';
 }
@@ -2350,7 +2351,7 @@ function adAudio(){const on=ADSND&&hasTap();
     const f=x.querySelector('iframe[data-yt]');if(f&&act){ytCmd(f,on?'unMute':'mute');ytCmd(f,'playVideo');}});
   document.querySelectorAll('#vitBox .snd').forEach(b=>b.textContent=ADSND?'🔊':'🔇');}
 ['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,()=>{if(!hasTap.v){hasTap.v=1;setTimeout(adAudio,50);}},{capture:true,passive:true}));
-function ytSrc(id,play){const m=ADSND&&hasTap()?0:1;return `https://www.youtube.com/embed/${id}?rel=0&playsinline=1&modestbranding=1&controls=0&loop=1&playlist=${id}&end=30&enablejsapi=1&origin=${encodeURIComponent(location.origin)}${play?`&autoplay=1&mute=${m}`:''}`;}
+function ytSrc(id,play){const m=ADSND&&hasTap()?0:1;const one=document.querySelectorAll('#rotBox .rsl').length<2;return `https://www.youtube.com/embed/${id}?rel=0&playsinline=1&modestbranding=1&controls=0${one?`&loop=1&playlist=${id}`:''}&end=30&enablejsapi=1&origin=${encodeURIComponent(location.origin)}${play?`&autoplay=1&mute=${m}`:''}`;}
 /* ====================== TUTORIAL / DICAS ====================== */
 const TOUR=[
  {sel:'#lbal',ic:'💰',t:'Seu saldo de teste',d:'Você já começa com <b>R$ 1.000 de teste</b> pra jogar. Não é dinheiro de verdade. Quando acabar, adicione mais de graça na <b>Carteira</b>.'},
@@ -2398,16 +2399,28 @@ setTimeout(()=>{if($('#lobby').classList.contains('on'))(function w(n){if($('#ch
 function adStop(){try{clearTimeout(rotT);document.querySelectorAll('#vitBox video.fv').forEach(v=>{v.muted=true;v.pause();});
   document.querySelectorAll('#vitBox iframe[data-yt]').forEach(f=>{ytCmd(f,'mute');ytCmd(f,'pauseVideo');});}catch(e){}}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)adStop();else if($('#lobby').classList.contains('on')){const rb=$('#rotBox');if(rb)rotShow(rb,rotI);}});
+let ROTPIN=false;
+function rotNext(){const rb=$('#rotBox');if(!rb)return;if(ROTPIN){const cur=rb.querySelectorAll('.rsl')[rotI];const v=cur&&cur.querySelector('video.fv');const f=cur&&cur.querySelector('iframe[data-yt]');
+    if(v){try{v.currentTime=0;}catch(e){}v.play().catch(()=>{});}if(f){try{f.contentWindow.postMessage(JSON.stringify({event:'command',func:'seekTo',args:[0,true]}),'*');}catch(e){}ytCmd(f,'playVideo');}return;}
+  rotShow(rb,rotI+1);}
+function ytListen(f){try{f.contentWindow.postMessage(JSON.stringify({event:'listening',id:f.dataset.yt,channel:'widget'}),'*');}catch(e){}}
+window.addEventListener('message',e=>{if(!/youtube\.com$/.test(String(e.origin).replace(/^https?:\/\//,'').split(':')[0]))return;let d;try{d=typeof e.data==='string'?JSON.parse(e.data):e.data;}catch(x){return;}if(!d)return;
+  const rb=$('#rotBox');if(!rb)return;const cur=rb.querySelectorAll('.rsl')[rotI];const f=cur&&cur.querySelector('iframe[data-yt]');if(!f||e.source!==f.contentWindow)return;
+  const ended=(d.event==='onStateChange'&&d.info===0)||(d.event==='infoDelivery'&&d.info&&(d.info.playerState===0||(d.info.currentTime||0)>=30));
+  if(ended&&!f._endAt||ended&&Date.now()-f._endAt>4000){f._endAt=Date.now();clearTimeout(rotT);if(rb.querySelectorAll('.rsl').length>1||ROTPIN)rotNext();}});
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.rpin');if(!b)return;e.stopPropagation();ROTPIN=!ROTPIN;
+  document.querySelectorAll('.rpin').forEach(x=>x.classList.toggle('on',ROTPIN));
+  if(ROTPIN){clearTimeout(rotT);toast('🔁 Este vídeo vai repetir. Toque de novo pra seguir os anúncios.');}else{toast('▶ Os anúncios voltam a passar');rotNext();}},true);
 function rotShow(box,i){
   const sl=[...box.querySelectorAll('.rsl')];if(!sl.length)return;clearTimeout(rotT);rotI=(i+sl.length)%sl.length;
   sl.forEach((x,k)=>{x.classList.toggle('on',k===rotI);
     const v=x.querySelector('video.fv');if(v){if(k===rotI){try{v.currentTime=0;}catch(e){}v.muted=!(ADSND&&hasTap());v.play().catch(()=>{v.muted=true;v.play().catch(()=>{});});}else v.pause();}
-    const f=x.querySelector('iframe[data-yt]');if(f){const id=f.dataset.yt;const want=ytSrc(id,k===rotI);if(f.src!==want){f.src=want;if(k===rotI)f.onload=()=>setTimeout(adAudio,600);}}});
+    const f=x.querySelector('iframe[data-yt]');if(f){const id=f.dataset.yt;const want=ytSrc(id,k===rotI);if(f.src!==want){f.src=want;f._endAt=0;if(k===rotI)f.onload=()=>{ytListen(f);setTimeout(adAudio,600);};}else if(k===rotI){f._endAt=0;ytListen(f);ytCmd(f,'playVideo');}}});
   box.querySelectorAll('.rdots i').forEach((d,k)=>d.classList.toggle('on',k===rotI));
   if(sl.length<2){const v=sl[0].querySelector('video.fv');if(v){v.loop=false;v.ontimeupdate=()=>{if(v.currentTime>=30){v.currentTime=0;}};v.onended=()=>{v.currentTime=0;v.play().catch(()=>{});};v.play().catch(()=>{});}return;}
   const cur=sl[rotI],v=cur.querySelector('video.fv'),yt=cur.querySelector('iframe[data-yt]');const sec=Math.max(3,+O.rot||8);
-  if(v){const nx=()=>{v.ontimeupdate=v.onended=null;rotShow(box,rotI+1);};v.onended=nx;v.ontimeupdate=()=>{if(v.currentTime>=30)nx();};rotT=setTimeout(nx,31000);v.onerror=()=>{clearTimeout(rotT);rotT=setTimeout(nx,sec*1000);};}
-  else rotT=setTimeout(()=>rotShow(box,rotI+1),(yt?30:sec)*1000);
+  if(v){const nx=()=>{if(ROTPIN){try{v.currentTime=0;}catch(e){}v.play().catch(()=>{});return;}v.ontimeupdate=v.onended=null;rotShow(box,rotI+1);};v.onended=nx;v.ontimeupdate=()=>{if(v.currentTime>=30)nx();};rotT=setTimeout(()=>{if(!ROTPIN)nx();},31000);v.onerror=()=>{clearTimeout(rotT);rotT=setTimeout(nx,sec*1000);};}
+  else rotT=setTimeout(()=>{if(!ROTPIN)rotShow(box,rotI+1);},(yt?31:sec)*1000);
 }
 function renderOwnerAds(){
   const box=$('#oAds');if(!box)return;box.innerHTML='';
@@ -2485,6 +2498,7 @@ function renderVit(){
   else html+=`<button class="adhere" id="adHere"><span>📣</span><div><b>ANUNCIE AQUI</b><small>${priceLine()||'Sua loja ou serviço pra toda a comunidade da Arena'}</small></div><em>→</em></button>`;
   if(slides.length)html+=`<button class="adhere sm" id="adHere"><span>📣</span><div><b>ANUNCIE AQUI TAMBÉM</b><small>${priceLine()||'Veja os planos'}</small></div><em>→</em></button>`;
   html+=`<button class="parc" id="parcBtn">🤝 QUER FAZER PARCERIA?</button>`;
+  if(box.dataset.k===html&&box.querySelector('#rotBox,#adHere'))return;box.dataset.k=html;
   box.innerHTML=html;
   const cta=box.querySelector('#vCta');if(cta)cta.onclick=()=>goLink(v.url);
   const im=box.querySelector('.vit .fi');if(im&&v.url)im.onclick=()=>goLink(v.url);
