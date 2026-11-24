@@ -1237,7 +1237,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
     <div class="row" id="deps"></div>
     <button id="saque" style="width:100%;margin-top:10px">Sacar (mínimo R$ 10,00)</button>
   </div>
-  <div class="card"><b class="ct">🧾 Histórico</b><div class="hist" id="hist"></div></div>
+  <div class="card"><div style="display:flex;align-items:center"><b class="ct" style="flex:1">🧾 Histórico</b><button id="histClr" style="font-size:12px;padding:7px 10px">🧹 Limpar</button></div><div id="histOld"></div><div class="hist" id="hist"></div></div>
 </section>
 
 <!-- PROFILE -->
@@ -1756,7 +1756,11 @@ const _q=new URLSearchParams(location.search),SK=(_q.get('local')==='1'&&_q.get(
 let S={name:'Jogador',photo:null,bal:0,hist:[],w:0,l:0};
 try{const s=JSON.parse(localStorage.getItem('arena_v1'+SK));if(s)S=Object.assign(S,s);}catch(e){}
 function save(){try{localStorage.setItem('arena_v1'+SK,JSON.stringify(S));}catch(e){}if(window.cloudQ)window.cloudQ();}
-function addHist(t,v){S.hist.unshift({t,v,d:new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})});S.hist=S.hist.slice(0,50);save();}
+function addHist(t,v){S.hist.unshift({t,v,ts:Date.now(),d:new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})});S.hist=S.hist.slice(0,40);save();}
+/* histórico é só representação: guarda no máximo 40 linhas e oferece limpar quando vira o mês */
+const MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+function histMes(x){if(x.ts){const d=new Date(x.ts);return d.getFullYear()*12+d.getMonth();}const m=/(\d{2})\/(\d{2})/.exec(x.d||'');if(!m)return null;const now=new Date();let y=now.getFullYear();const mo=+m[2]-1;if(mo>now.getMonth())y--;return y*12+mo;}
+function histVelho(){const now=new Date(),cur=now.getFullYear()*12+now.getMonth();return S.hist.filter(x=>{const k=histMes(x);return k!=null&&k<cur;});}
 if(!S.g1000){S.g1000=1;if(S.bal<100000){const add=100000-S.bal;S.bal=100000;addHist('🎁 Bônus de boas-vindas (teste)',add);}save();}
 
 /* ====================== ACESSÓRIOS ====================== */
@@ -2037,6 +2041,11 @@ function renderWallet(){
   $('#wbal').textContent=fmt(S.bal);
   const d=$('#deps');d.innerHTML='';
   [200,500,1000,2000].forEach(v=>{const b=h('button',null,'+ '+fmt(v));b.onclick=()=>{S.bal+=v;addHist('Depósito (simulado)',v);renderWallet();toast('Saldo de teste adicionado');};d.append(b);});
+  const old=histVelho(),ob=$('#histOld');
+  if(old.length){const k=histMes(old[0]);ob.innerHTML=`<div class="vdi" style="margin:8px 0;border-color:#ffc23d;background:#ffc23d14"><b>🗓️ Virou o mês!</b><small>Você tem ${old.length} registro${old.length>1?'s':''} de ${MESES[k%12]} pra trás. Quer limpar pra deixar o app leve?</small><div class="row" style="margin-top:8px"><button class="pri" id="histOldB">🧹 Limpar meses passados</button></div></div>`;
+    $('#histOldB').onclick=()=>{const keep=new Set(histVelho());S.hist=S.hist.filter(x=>!keep.has(x));save();renderWallet();toast('🧹 Histórico antigo limpo');};}else ob.innerHTML='';
+  $('#histClr').style.display=S.hist.length?'':'none';
+  $('#histClr').onclick=()=>modal('Limpar histórico?','Apaga a lista de movimentações deste celular. O saldo de teste continua o mesmo.',[{t:'Cancelar'},{t:'🧹 Limpar',pri:1,f:()=>{S.hist=[];save();renderWallet();toast('🧹 Histórico limpo');}}]);
   const hl=$('#hist');hl.innerHTML=S.hist.length?'':'<div class="empty1">Nada por aqui ainda. Seus depósitos, entradas e prêmios aparecem aqui.</div>';
   S.hist.forEach(x=>hl.append(h('div',null,`<i class="hic ${x.v>=0?'in':'out'}">${x.v>=0?'↓':'↑'}</i><span>${x.t}<small>${x.d}</small></span><b class="${x.v>=0?'pos':'neg'}">${x.v>=0?'+':'−'} ${fmt(Math.abs(x.v))}</b>`)));
 }
