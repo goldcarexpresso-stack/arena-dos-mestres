@@ -210,6 +210,7 @@ body.lvduo #camDockT,body.lvduo #camDockB,body.lvduo .camwin{display:none!import
 /* ===== COMUNIDADE ===== */
 .comcard{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:0 0 12px;padding:14px;border-radius:20px;border:1px solid #f472b666;background:linear-gradient(135deg,#4a0f3a,#5b21b6 60%,#1d0a3e);color:#fff;box-shadow:0 0 24px #f472b622}
 .comcard .pi{font-size:32px}.comcard div{flex:1}.comcard b{display:block;font-size:16px;color:#f9a8d4}.comcard small{opacity:.85;font-size:12px}.comcard .go{background:#f472b6;color:#2a0018;font-weight:900;border-radius:12px;padding:8px 10px;font-size:13px;white-space:nowrap}
+.chcom{background:linear-gradient(135deg,#2a0f3a,#1d1650);border:1px solid #f472b644;border-radius:18px;padding:10px 10px 4px;margin-bottom:12px}.chch{display:flex;align-items:center;margin-bottom:6px}.chch b{flex:1;color:#f9a8d4}.chch button{font-size:12px;padding:7px 10px;border-radius:10px}
 .cvb{margin-left:auto;font-size:12px;padding:8px 10px;border-radius:12px}
 .stry{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:none}
 .sty{flex:0 0 auto;width:70px;text-align:center;background:none;border:0;color:var(--txt);padding:0}
@@ -1219,7 +1220,6 @@ body:has(#legalGate) #mod{z-index:100000!important}
   <div class="card livecard" id="liveCard"></div>
   <button class="premcard" id="premLobby"></button>
   <button class="servcard" id="servLobby"></button>
-  <button class="comcard" id="comLobby"></button>
   <div class="lfoot">© 2026 Arena dos Mestres · Todos os direitos reservados<br><a id="lfT">Termos de Uso</a> · <a id="lfP">Privacidade</a> · Proibido para menores de 18 anos</div>
 </section>
 
@@ -1439,6 +1439,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
 <!-- CONVERSAS -->
 <section id="chats" class="scr">
   <div class="ph1"><span class="phi">💬</span><h2>Conversas</h2><button id="chNew" class="pri" style="margin-left:auto">+ Nova</button></div>
+  <div class="chcom"><div class="chch"><b>🌐 Comunidade</b><button id="chComGo">Ver posts →</button></div><div class="stry" id="chStories"></div><div class="cmemb" id="chMemb"></div></div>
   <div class="scrban" data-img="chat"></div>
   <div class="banner" style="background:#10213a;color:#9cc4ff">🔓 As mensagens ainda passam por um servidor público. Não mande senha, documento nem dados pessoais.</div>
   <div class="card" id="chList"></div>
@@ -3953,7 +3954,7 @@ addEventListener('pagehide',()=>{[...EPHSENT].forEach(ephClear);});
 document.addEventListener('visibilitychange',()=>{document.body.classList.toggle('nopeek',document.hidden);});
 addEventListener('blur',()=>document.body.classList.add('nopeek'));addEventListener('focus',()=>document.body.classList.remove('nopeek'));
 function openChat(id,name,th){if(!S.rulesOk){rulesGate(()=>openChat(id,name,th));return;}chatOf(id,name,th);CUR=id;CH[id].unread=0;saveCH();chatBadge();go('chat');renderChat();setTimeout(()=>$('#cIn').focus(),150);}
-function renderChats(){
+function renderChats(){setTimeout(()=>{const g=$('#chComGo');if(g)g.onclick=()=>go('com');comStories();comMembros();},0);
   const l=$('#chList');l.innerHTML='';
   const arr=Object.entries(CH).sort((a,b)=>(b[1].last||0)-(a[1].last||0));
   if(!arr.length){l.innerHTML='<div class="empty2"><div class="eic">💬</div><b>Nenhuma conversa ainda</b><span>Toque em <b>+ Nova</b> pra falar com quem está online.</span></div>';return;}
@@ -5142,10 +5143,11 @@ async function comLoad(reset){if(reset){COM.feed=[];COM.antes=null;}
   if(reset){comStories();comMembros();}}
 async function comStories(){let L=[];try{L=await rpcAnon('arena_feed',{p_viewer:S.uid,p_tipo:'story',p_antes:null})||[];}catch(e){}
   const g=new Map();L.slice().reverse().forEach(p=>{const k=p.player_uid||p.nome;if(!g.has(k))g.set(k,[]);g.get(k).push(p);});COM.sto=[...g.values()].reverse();
-  const el=$('#comStories');if(!el)return;el.innerHTML='';
-  if(CL.ses&&S.comVis!=='oculto'){const a=h('button','sty add','<div class="sr">＋</div><small>Seu story</small>');a.onclick=()=>{const t=$('#comTxt');if(t){t.focus();toast('Escreva ou escolha foto e toque em ⭕ Story');}};el.append(a);}
+  ['#comStories','#chStories'].forEach(sel=>{const el=$(sel);if(!el)return;el.innerHTML='';
+  if(CL.ses&&S.comVis!=='oculto'){const a=h('button','sty add','<div class="sr">＋</div><small>Seu story</small>');a.onclick=()=>{if(sel==='#chStories'){go('com');setTimeout(()=>{const t=$('#comTxt');if(t){t.focus();toast('Escreva ou escolha foto e toque em ⭕ Story');}},500);return;}const t=$('#comTxt');if(t){t.focus();toast('Escreva ou escolha foto e toque em ⭕ Story');}};el.append(a);}
+  else if(sel==='#chStories'&&!CL.ses){const a=h('button','sty add','<div class="sr">☁️</div><small>Entrar</small>');a.onclick=needLogin;el.append(a);}
   COM.sto.forEach((arr,i)=>{const p=arr[0];const seen=(S.stSeen||{})[arr[arr.length-1].id];const b=h('button','sty');const r=h('div','sr'+(seen?' vis':''));r.append(comAv(p.thumb,p.nome));b.append(r,h('small',null,esc(p.meu?'Você':p.nome||'Jogador')));b.onclick=()=>comStoryView(i,0);el.append(b);});
-  if(!el.children.length)el.style.display='none';else el.style.display='';}
+  el.style.display=el.children.length?'':'none';});}
 function comStoryView(gi,si){const arr=COM.sto[gi];if(!arr){const o=$('#stv');if(o)o.remove();comStories();return;}const p=arr[si];if(!p){comStoryView(gi+1,0);return;}
   S.stSeen=S.stSeen||{};S.stSeen[p.id]=1;const ks=Object.keys(S.stSeen);if(ks.length>300)ks.slice(0,ks.length-300).forEach(k=>delete S.stSeen[k]);save();
   let o=$('#stv');if(!o){o=h('div');o.id='stv';document.body.append(o);}clearTimeout(o._t);
@@ -5157,9 +5159,10 @@ function comStoryView(gi,si){const arr=COM.sto[gi];if(!arr){const o=$('#stv');if
   const bar=o.querySelectorAll('.sb i b')[si];requestAnimationFrame(()=>{bar.style.transition='width 5s linear';bar.style.width='100%';});
   const next=()=>comStoryView(gi,si+1),prev=()=>si>0?comStoryView(gi,si-1):gi>0?comStoryView(gi-1,0):comStoryView(gi,0);
   o.querySelector('.tz.r').onclick=next;o.querySelector('.tz.l').onclick=prev;o._t=setTimeout(next,5000);}
-async function comMembros(){let L=[];try{L=await rpcAnon('arena_membros',{p_viewer:S.uid})||[];}catch(e){}const el=$('#comMemb');if(!el)return;el.innerHTML='';
+async function comMembros(){let L=[];try{L=await rpcAnon('arena_membros',{p_viewer:S.uid})||[];}catch(e){}
+  ['#comMemb','#chMemb'].forEach(sel=>{const el=$(sel);if(!el)return;el.innerHTML='';
   L.filter(x=>x.player_uid!==S.uid).slice(0,30).forEach(x=>{const b=h('button');b.append(comAv(x.thumb,x.nome),h('small',null,esc(x.nome||'Jogador')));b.onclick=()=>comAuthorSheet({player_uid:x.player_uid,nome:x.nome,thumb:x.thumb});el.append(b);});
-  el.style.display=el.children.length?'':'none';}
+  el.style.display=el.children.length?'':'none';});}
 /* redes da Arena ficam dentro da Comunidade, com o @ do Instagram sempre à mostra */
 const ARENA_IG='arenadosmesstres';
 function comSocUI(){const el=$('#comSoc');if(!el)return;const SOCACT={instagram:'Seguir',whatsapp:'Chamar',wgrupo:'Entrar no grupo',tiktok:'Seguir',youtube:'Inscrever-se',facebook:'Curtir',telegram:'Entrar',discord:'Entrar',site:'Visitar'};
