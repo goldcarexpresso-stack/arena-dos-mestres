@@ -4961,7 +4961,7 @@ async function vendasUI(){const el=$('#oVendas');if(!el)return;
   $('#oVRef').onclick=vendasUI;}
 
 /* ========== SERVIÇOS NEXA (Pix ou desconto com diamantes) ========== */
-const SERV_ZAP='5581996724634';
+const SERV_IG='arenadosmesstres'; /* atendimento dos serviços: Direct do Instagram da Arena */
 const SERV_EX={nome:'Almoço Caseiro com Vista para o Mar',pag:'https://nexa-os-wine.vercel.app/v/almoco-caseiro-com-vista-para.html',maps:'https://maps.app.goo.gl/Qr2ojm1npVrd8i659',foto:'https://nexa-os-wine.vercel.app/v/fotos/almoco-caseiro-com-vista-para.jpg'};
 const SERV=[
  {id:'serv_anuncio',ic:'📣',n:'Anúncio na Arena · 1 semana',v:39.90,d:'Sua loja ou serviço no carrossel de anúncios da Arena, com botão pro seu WhatsApp. Pode pagar 100% com diamantes (8.000 💎).',full:8000},
@@ -4974,7 +4974,8 @@ const SERV=[
 const GEM_POR_REAL=200; /* 1.000 💎 = R$ 5 de desconto */
 function servMaxGem(x){return x.full?x.full:Math.floor(x.v*0.30*GEM_POR_REAL);}
 function servUse(x){const g=Math.min(S.gem||0,servMaxGem(x));return Math.floor(g/GEM_POR_REAL)*GEM_POR_REAL;}
-function servZap(x,extra){goLink('https://wa.me/'+SERV_ZAP+'?text='+encodeURIComponent(`Olá! Vim pela Arena dos Mestres e quero: ${x.n} (${brl(x.v)}${x.m?' + '+brl(x.m)+'/mês':''}).${extra?' '+extra:''}`));}
+function servZap(x,extra){const msg=`Olá! Vim pela Arena dos Mestres e quero: ${x.n} (${brl(x.v)}${x.m?' + '+brl(x.m)+'/mês':''}).${extra?' '+extra:''}`;
+  copyTxt(msg,'📋 Mensagem copiada — é só colar no Direct');setTimeout(()=>goLink('https://ig.me/m/'+SERV_IG),700);}
 function servOpen(){const body=h('div');
   body.innerHTML=`<div class="svx"><img src="${SERV_EX.foto}" alt="" onerror="this.remove()"><div><b>⭐ Veja um trabalho nosso</b><small style="display:block;color:var(--mut)">${esc(SERV_EX.nome)} — página + Google Maps</small><div class="row"><button data-ex="pag">🌐 Ver a página</button><button data-ex="maps">📍 Ver no Google</button></div></div></div>
    <small style="color:var(--mut)">Você tem <b style="color:var(--txt)">💎 ${S.gem||0}</b>. Diamantes dão até <b style="color:var(--txt)">30% de desconto</b> (1.000 💎 = R$ 5). Uma troca por mês.</small>`;
@@ -4987,18 +4988,18 @@ function servOpen(){const body=h('div');
 function servItem(x){const use=servUse(x),desc=x.full&&use>=x.full?x.v:use/GEM_POR_REAL,fica=Math.max(0,x.v-desc);
   const body=h('div');body.innerHTML=`<div style="font-size:42px;text-align:center">${x.ic}</div><p>${esc(x.d)}</p>
    <div class="vdi"><b>Preço: ${brl(x.v)}${x.m?' + '+brl(x.m)+' por mês':''}</b>${use>=GEM_POR_REAL?`<small>Com 💎 ${use}: desconto de ${brl(desc)} → você paga <b style="color:#5ef08f">${fica?brl(fica):'nada'}</b>${x.m?' + a mensalidade':''}</small>`:`<small>Junte diamantes jogando pra ganhar até ${x.full?'100%':'30%'} de desconto.</small>`}</div>`;
-  const B=[{t:'💬 Falar no WhatsApp',f:()=>servZap(x)}];
+  const B=[{t:'📩 Falar no Instagram',f:()=>servZap(x)}];
   if(use>=GEM_POR_REAL)B.push({t:'💎 Usar meus diamantes',pri:1,f:()=>{servTroca(x,use,fica);}});
   B.push({t:'Fechar'});modal(x.ic+' '+x.n,body,B);}
 async function servTroca(x,use,fica){if(!CL.ses){needLogin();return;}if((S.gem||0)<use){toast('Diamantes insuficientes');return;}
   let r;try{r=await clRpc('arena_pedir_servico',{p_item:x.id,p_gem:use,p_player_uid:S.uid,p_nome:S.name||'Jogador'});}catch(e){toast(/mes/.test(e.message)?'Você já usou diamantes num serviço este mês':'Não deu agora, tente de novo');return;}
-  if(!r||!r.codigo){toast(r&&r.erro==='mes'?'Você já usou diamantes num serviço este mês — fale no WhatsApp pra pagar no Pix':'Não deu agora, tente de novo');return;}
+  if(!r||!r.codigo){toast(r&&r.erro==='mes'?'Você já usou diamantes num serviço este mês — fale com a gente no Instagram pra pagar no Pix':'Não deu agora, tente de novo');return;}
   S.gem=(S.gem||0)-(r.gem|0);save();giftCardUI&&giftCardUI();
   const msg=`Código do pedido ${r.codigo}: usei ${r.gem} 💎 de desconto.${r.valor>0?' Falta pagar '+brl(r.valor)+'.':''}`;
   if(r.valor>0){const code=pixCode(r.valor,'ARENA'+r.codigo);const body=h('div');
-    body.innerHTML=`<div class="pixv">${brl(r.valor)}</div><div class="pixc">Pedido <b>${esc(r.codigo)}</b> · 💎 ${r.gem} usados</div><p>Pague o restante no Pix e depois toque em <b>✅ Já paguei</b>. Em seguida fale com a gente no WhatsApp pra começar o serviço.</p><div class="pixb">${esc(code)}</div>`;
+    body.innerHTML=`<div class="pixv">${brl(r.valor)}</div><div class="pixc">Pedido <b>${esc(r.codigo)}</b> · 💎 ${r.gem} usados</div><p>Pague o restante no Pix e depois toque em <b>✅ Já paguei</b>. Em seguida fale com a gente no Direct do Instagram <b>@arenadosmesstres</b> pra começar o serviço.</p><div class="pixb">${esc(code)}</div>`;
     modal('💠 Falta pouco · '+x.n,body,[{t:'📋 Copiar Pix',f:()=>{copyTxt(code,'📋 Pix copiado — cole no app do banco');return false;}},{t:'✅ Já paguei',pri:1,f:async()=>{try{await clRpc('arena_paguei',{p_codigo:r.codigo});}catch(e){}servZap(x,msg+' Já paguei o Pix.');}}]);}
-  else modal('🎉 Pedido feito!',`Você usou <b style="color:var(--txt)">${r.gem} 💎</b> e não precisa pagar nada.<br>Código: <b style="color:var(--txt)">${esc(r.codigo)}</b><br><br>Agora fale com a gente no WhatsApp pra mandar as informações.`,[{t:'💬 Abrir WhatsApp',pri:1,f:()=>servZap(x,msg)}]);}
+  else modal('🎉 Pedido feito!',`Você usou <b style="color:var(--txt)">${r.gem} 💎</b> e não precisa pagar nada.<br>Código: <b style="color:var(--txt)">${esc(r.codigo)}</b><br><br>Agora fale com a gente no Direct do Instagram <b>@arenadosmesstres</b> pra mandar as informações.`,[{t:'📩 Abrir Instagram',pri:1,f:()=>servZap(x,msg)}]);}
 function servUI(){const l=$('#servLobby');if(!l)return;l.innerHTML=`<span class="pi">🛠️</span><div><b>Serviços NEXA</b><small>Página, Google Maps e IA no WhatsApp pro seu negócio — use seus 💎 de desconto</small></div><span class="go">Ver</span>`;l.onclick=servOpen;}
 servUI();
 /* ========== INSTALAR (PWA) ========== */
