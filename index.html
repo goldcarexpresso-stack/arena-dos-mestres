@@ -212,6 +212,10 @@ body.lvduo #camDockT,body.lvduo #camDockB,body.lvduo .camwin{display:none!import
 .premcard{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:12px 0;padding:14px;border-radius:20px;border:1px solid #ffc23d66;background:linear-gradient(135deg,#3a2400,#5c1a6e 55%,#1d0a3e);color:#fff;box-shadow:0 0 24px #ffc23d22}
 .premcard .pi{font-size:34px;filter:drop-shadow(0 0 8px #ffc23d)}.premcard div{flex:1}.premcard b{display:block;font-size:16px;color:#ffd77a}.premcard small{opacity:.85;font-size:12px}
 .premcard .go{background:#ffc23d;color:#2a1a00;font-weight:900;border-radius:12px;padding:8px 10px;font-size:13px;white-space:nowrap}
+.servcard{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:0 0 12px;padding:14px;border-radius:20px;border:1px solid #22d3ee66;background:linear-gradient(135deg,#003a4a,#123a8a 55%,#1d0a3e);color:#fff;box-shadow:0 0 24px #22d3ee22}
+.servcard .pi{font-size:34px}.servcard div{flex:1}.servcard b{display:block;font-size:16px;color:#7dd3fc}.servcard small{opacity:.85;font-size:12px}.servcard .go{background:#22d3ee;color:#00222a;font-weight:900;border-radius:12px;padding:8px 10px;font-size:13px;white-space:nowrap}
+.svx{border-radius:16px;overflow:hidden;border:1px solid #ffffff22;margin-bottom:10px;background:#0006}.svx img{width:100%;display:block;max-height:150px;object-fit:cover}.svx div{padding:10px}.svx .row{margin-top:8px}
+.svd{color:#5ef08f;font-weight:800;font-size:12px}
 .premprof .ph{display:flex;align-items:center;gap:10px}.premprof .ph span{font-size:30px}
 .tgl{display:flex;align-items:center;gap:10px;margin-top:10px;font-weight:700}.tgl input{width:22px;height:22px;accent-color:#ffc23d}
 .shtabs{display:flex;gap:6px;margin-bottom:10px}.shtabs button{flex:1;padding:10px 4px;border-radius:12px;font-size:13px;font-weight:800}.shtabs button.on{background:#ffc23d;color:#2a1a00;border-color:#ffc23d}
@@ -1184,6 +1188,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
   <div class="grid" id="games"></div>
   <div class="card livecard" id="liveCard"></div>
   <button class="premcard" id="premLobby"></button>
+  <button class="servcard" id="servLobby"></button>
   <div class="lfoot">© 2026 Arena dos Mestres · Todos os direitos reservados<br><a id="lfT">Termos de Uso</a> · <a id="lfP">Privacidade</a> · Proibido para menores de 18 anos</div>
 </section>
 
@@ -4870,7 +4875,7 @@ const LOJA={
   gem:[{id:'gem100',n:'100 diamantes',d:'Pra presentes e lojinha',v:2.90,ic:'💎'},{id:'gem350',n:'350 diamantes',d:'+20% de bônus',v:9.90,ic:'💎'},{id:'gem800',n:'800 diamantes',d:'+38% de bônus',v:19.90,ic:'💎',hot:'POPULAR'},{id:'gem2000',n:'2.000 diamantes',d:'+45% de bônus',v:44.90,ic:'💰'}],
   pac:[{id:'pac_rei',n:'Pacote Rei',it:['f_rei','e_rei','fm_leao'],v:9.90,ic:'🤴'},{id:'pac_rainha',n:'Pacote Rainha',it:['f_rainha','e_rainha','fw_perolas'],v:9.90,ic:'👸'}]};
 const PREM_VANT=['👻 Modo invisível — ninguém vê que você está online','👑 Selo Premium no seu nome','🚫 Sem anúncios no app','💎 +50 diamantes toda semana','🎬 Guarda 40 replays (grátis: 15)'];
-const lojaItem=id=>[...LOJA.prem,...LOJA.gem,...LOJA.pac].find(x=>x.id===id);
+const lojaItem=id=>[...LOJA.prem,...LOJA.gem,...LOJA.pac].find(x=>x.id===id)||(typeof SERV!=='undefined'&&SERV.find(x=>x.id===id));
 const brl=v=>'R$ '+Number(v).toFixed(2).replace('.',',');
 function isPrem(){return (S.premAte||0)>Date.now();}
 function invOn(){return !!S.invis&&(!!OKEY||isPrem());}
@@ -4945,12 +4950,54 @@ async function vendasUI(){const el=$('#oVendas');if(!el)return;
   const soma=feito.filter(p=>Date.now()-Date.parse(p.criado)<30*864e5).reduce((a,p)=>a+Number(p.valor),0);
   el.innerHTML=`<div class="vdi"><b>💵 Vendido nos últimos 30 dias: ${brl(soma)}</b><small>${feito.length} liberados · ${pend.length} esperando</small></div><div class="vd" style="margin-top:8px"></div><div class="row" style="margin-top:8px"><button id="oVRef">🔄 Atualizar</button></div>`;
   const box=el.querySelector('.vd');if(!pend.length)box.innerHTML='<small style="color:var(--mut)">Nenhum pedido esperando.</small>';
-  pend.forEach(p=>{const it=lojaItem(p.item);const d=h('div','vdi'+(p.status==='pago'?' pago':''),`<b>${p.status==='pago'?'🟢 Disse que pagou · ':'⏳ '}${esc(it?it.n:p.item)} · ${brl(p.valor)}</b><small>${esc(p.nome||'')} · ${esc(p.email||'')}<br>Código <b style="color:var(--txt)">${esc(p.codigo)}</b> · ${new Date(p.criado).toLocaleString('pt-BR')}</small>`);
+  pend.forEach(p=>{const it=lojaItem(p.item);const d=h('div','vdi'+(p.status==='pago'?' pago':''),`<b>${p.status==='pago'?(Number(p.valor)?'🟢 Disse que pagou · ':'💎 Pago com diamantes · '):'⏳ '}${esc(it?it.n:p.item)} · ${brl(p.valor)}${p.gem?' + 💎 '+p.gem:''}</b><small>${esc(p.nome||'')} · ${esc(p.email||'')}<br>Código <b style="color:var(--txt)">${esc(p.codigo)}</b> · ${new Date(p.criado).toLocaleString('pt-BR')}</small>`);
     const row=h('div','row');const ok=h('button','pri','✅ Liberar'),no=h('button',null,'Recusar');
     ok.onclick=()=>modal('Liberar este pedido?',`Confirme no app do seu banco que caiu <b style="color:var(--txt)">${brl(p.valor)}</b> com o código <b style="color:var(--txt)">${esc(p.codigo)}</b>.`,[{t:'Voltar'},{t:'✅ Caiu, liberar',pri:1,f:async()=>{try{await clRpc('arena_dono_liberar',{p_id:p.id,p_ok:true});toast('✅ Liberado — chega na conta da pessoa');}catch(e){toast('Falhou, tente de novo');}vendasUI();}}]);
     no.onclick=()=>modal('Recusar este pedido?','Use quando o Pix não caiu.',[{t:'Voltar'},{t:'Recusar',f:async()=>{try{await clRpc('arena_dono_liberar',{p_id:p.id,p_ok:false});}catch(e){}vendasUI();}}]);
     row.append(no,ok);d.append(row);box.append(d);});
   $('#oVRef').onclick=vendasUI;}
+
+/* ========== SERVIÇOS NEXA (Pix ou desconto com diamantes) ========== */
+const SERV_ZAP='5581996724634';
+const SERV_EX={nome:'Almoço Caseiro com Vista para o Mar',pag:'https://nexa-os-wine.vercel.app/v/almoco-caseiro-com-vista-para.html',maps:'https://maps.app.goo.gl/Qr2ojm1npVrd8i659',foto:'https://nexa-os-wine.vercel.app/v/fotos/almoco-caseiro-com-vista-para.jpg'};
+const SERV=[
+ {id:'serv_anuncio',ic:'📣',n:'Anúncio na Arena · 1 semana',v:39.90,d:'Sua loja ou serviço no carrossel de anúncios da Arena, com botão pro seu WhatsApp. Pode pagar 100% com diamantes (8.000 💎).',full:8000},
+ {id:'serv_pagina',ic:'🌐',n:'Página profissional',v:97,d:'Transforme seu banner em site: página moderna pra celular, botão direto pro WhatsApp, link próprio pro Instagram e Google e QR code pra loja. Entrega em 24h.'},
+ {id:'serv_maps',ic:'📍',n:'Ser achado no Google Maps',v:67,d:'Criamos ou arrumamos o perfil da sua empresa no Google: endereço, fotos, horário e link — pra quem procura te achar.'},
+ {id:'serv_vendemais',ic:'🚀',n:'Pacote Vende Mais',v:147,d:'Página profissional + Google Maps. Economize R$ 17.',hot:'PACOTE'},
+ {id:'serv_ia',ic:'🤖',n:'IA atendendo no WhatsApp',v:97,m:49,d:'Instalação da inteligência artificial que responde seus clientes no WhatsApp. Acompanhamento mensal: você manda os prints das conversas e a gente treina a IA até ela atender bem.'},
+ {id:'serv_treino',ic:'🎓',n:'Treino de Vendas da IA',v:97,d:'Ensinamos a sua IA a vender: apresentar o produto, responder "tá caro", oferecer algo a mais e fechar o pedido.'},
+ {id:'serv_completo',ic:'👑',n:'Pacote Completo',v:297,m:49,d:'Página + Google Maps + IA no WhatsApp + Treino de Vendas. Economize R$ 61.',hot:'COMPLETO'}];
+const GEM_POR_REAL=200; /* 1.000 💎 = R$ 5 de desconto */
+function servMaxGem(x){return x.full?x.full:Math.floor(x.v*0.30*GEM_POR_REAL);}
+function servUse(x){const g=Math.min(S.gem||0,servMaxGem(x));return Math.floor(g/GEM_POR_REAL)*GEM_POR_REAL;}
+function servZap(x,extra){goLink('https://wa.me/'+SERV_ZAP+'?text='+encodeURIComponent(`Olá! Vim pela Arena dos Mestres e quero: ${x.n} (${brl(x.v)}${x.m?' + '+brl(x.m)+'/mês':''}).${extra?' '+extra:''}`));}
+function servOpen(){const body=h('div');
+  body.innerHTML=`<div class="svx"><img src="${SERV_EX.foto}" alt="" onerror="this.remove()"><div><b>⭐ Veja um trabalho nosso</b><small style="display:block;color:var(--mut)">${esc(SERV_EX.nome)} — página + Google Maps</small><div class="row"><button data-ex="pag">🌐 Ver a página</button><button data-ex="maps">📍 Ver no Google</button></div></div></div>
+   <small style="color:var(--mut)">Você tem <b style="color:var(--txt)">💎 ${S.gem||0}</b>. Diamantes dão até <b style="color:var(--txt)">30% de desconto</b> (1.000 💎 = R$ 5). Uma troca por mês.</small>`;
+  body.querySelector('[data-ex=pag]').onclick=()=>goLink(SERV_EX.pag);body.querySelector('[data-ex=maps]').onclick=()=>goLink(SERV_EX.maps);
+  const list=h('div','shl');list.style.marginTop='10px';body.append(list);
+  SERV.forEach(x=>{const use=servUse(x),desc=x.full&&use>=x.full?x.v:use/GEM_POR_REAL;
+    const r=h('div','shi'+(x.hot?' shhot':''),`<span class="ic">${x.ic}</span><div><b>${esc(x.n)}${x.hot?`<span class="tag">${x.hot}</span>`:''}</b><small>${brl(x.v)}${x.m?' + '+brl(x.m)+'/mês':''}</small>${use>=GEM_POR_REAL?`<div class="svd">💎 ${use} = ${desc>=x.v?'GRÁTIS':'−'+brl(desc)}</div>`:''}</div>`);
+    const b=h('button','pri','Ver');b.onclick=()=>servItem(x);r.append(b);list.append(r);});
+  modal('🛠️ Serviços NEXA',body,[{t:'Fechar'}]);}
+function servItem(x){const use=servUse(x),desc=x.full&&use>=x.full?x.v:use/GEM_POR_REAL,fica=Math.max(0,x.v-desc);
+  const body=h('div');body.innerHTML=`<div style="font-size:42px;text-align:center">${x.ic}</div><p>${esc(x.d)}</p>
+   <div class="vdi"><b>Preço: ${brl(x.v)}${x.m?' + '+brl(x.m)+' por mês':''}</b>${use>=GEM_POR_REAL?`<small>Com 💎 ${use}: desconto de ${brl(desc)} → você paga <b style="color:#5ef08f">${fica?brl(fica):'nada'}</b>${x.m?' + a mensalidade':''}</small>`:`<small>Junte diamantes jogando pra ganhar até ${x.full?'100%':'30%'} de desconto.</small>`}</div>`;
+  const B=[{t:'💬 Falar no WhatsApp',f:()=>servZap(x)}];
+  if(use>=GEM_POR_REAL)B.push({t:'💎 Usar meus diamantes',pri:1,f:()=>{servTroca(x,use,fica);}});
+  B.push({t:'Fechar'});modal(x.ic+' '+x.n,body,B);}
+async function servTroca(x,use,fica){if(!CL.ses){needLogin();return;}if((S.gem||0)<use){toast('Diamantes insuficientes');return;}
+  let r;try{r=await clRpc('arena_pedir_servico',{p_item:x.id,p_gem:use,p_player_uid:S.uid,p_nome:S.name||'Jogador'});}catch(e){toast(/mes/.test(e.message)?'Você já usou diamantes num serviço este mês':'Não deu agora, tente de novo');return;}
+  if(!r||!r.codigo){toast(r&&r.erro==='mes'?'Você já usou diamantes num serviço este mês — fale no WhatsApp pra pagar no Pix':'Não deu agora, tente de novo');return;}
+  S.gem=(S.gem||0)-(r.gem|0);save();giftCardUI&&giftCardUI();
+  const msg=`Código do pedido ${r.codigo}: usei ${r.gem} 💎 de desconto.${r.valor>0?' Falta pagar '+brl(r.valor)+'.':''}`;
+  if(r.valor>0){const code=pixCode(r.valor,'ARENA'+r.codigo);const body=h('div');
+    body.innerHTML=`<div class="pixv">${brl(r.valor)}</div><div class="pixc">Pedido <b>${esc(r.codigo)}</b> · 💎 ${r.gem} usados</div><p>Pague o restante no Pix e depois toque em <b>✅ Já paguei</b>. Em seguida fale com a gente no WhatsApp pra começar o serviço.</p><div class="pixb">${esc(code)}</div>`;
+    modal('💠 Falta pouco · '+x.n,body,[{t:'📋 Copiar Pix',f:()=>{copyTxt(code,'📋 Pix copiado — cole no app do banco');return false;}},{t:'✅ Já paguei',pri:1,f:async()=>{try{await clRpc('arena_paguei',{p_codigo:r.codigo});}catch(e){}servZap(x,msg+' Já paguei o Pix.');}}]);}
+  else modal('🎉 Pedido feito!',`Você usou <b style="color:var(--txt)">${r.gem} 💎</b> e não precisa pagar nada.<br>Código: <b style="color:var(--txt)">${esc(r.codigo)}</b><br><br>Agora fale com a gente no WhatsApp pra mandar as informações.`,[{t:'💬 Abrir WhatsApp',pri:1,f:()=>servZap(x,msg)}]);}
+function servUI(){const l=$('#servLobby');if(!l)return;l.innerHTML=`<span class="pi">🛠️</span><div><b>Serviços NEXA</b><small>Página, Google Maps e IA no WhatsApp pro seu negócio — use seus 💎 de desconto</small></div><span class="go">Ver</span>`;l.onclick=servOpen;}
+servUI();
 /* ========== INSTALAR (PWA) ========== */
 let instEv=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();instEv=e;$('#instBtn').style.display='block';});
