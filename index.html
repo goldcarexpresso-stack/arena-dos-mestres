@@ -3627,7 +3627,7 @@ function ajdOpen(){const bg=h('div','ajd-fundo');const sh=h('div','ajd-folha');b
     b.style.display=(s&&['match','watch','owner','chat'].includes(s.id))||busy?'none':'';},400);})();
 
 /* ========== PRESENTES AO VIVO (grátis agora; compra fica pronta pra ligar depois) ========== */
-// Diamantes 💎 = moeda só de presente. Hoje se ganha jogando. PAGO_LIGADO fica false até ter CNPJ + Mercado Pago.
+// Diamantes 💎: saldo só no banco (compra liberada pelo dono + bônus do Premium).
 const GIFT_PAGO_LIGADO=true;
 const GIFTS=[
  {id:'rosa',n:'Rosa',e:'🌹',c:1},{id:'coracao',n:'Coração',e:'💖',c:5},{id:'cafe',n:'Cafezinho',e:'☕',c:10},
@@ -3637,10 +3637,11 @@ const GIFTS=[
 // Quando as artes chegarem, cada presente ganha a imagem: GIFT_IMG.rosa='img/presentes/rosa.png'
 const GIFT_IMG={};GIFTS.forEach(g=>GIFT_IMG[g.id]='img/presentes/'+g.id+'.webp');
 (function(){GIFTS.forEach(g=>{const i=new Image();i.src=GIFT_IMG[g.id];});})();
-const GEM_GANHO={dia:30,partida:5,vitoria:10,inicio:100};
-if(S.gem==null){S.gem=GEM_GANHO.inicio;S.charm=0;S.giftIn=0;S.giftOut=0;}
-function gemAdd(n,why){S.gem=(S.gem||0)+n;save();if(why)toast(`💎 +${n} diamantes — ${why}`);}
-(function(){const d=new Date().toISOString().slice(0,10);if(S.gemDay!==d){const first=!S.gemDay;S.gemDay=d;if(!first)setTimeout(()=>gemAdd(GEM_GANHO.dia,'presente do dia'),4000);else save();}})();
+/* DIAMANTES BLINDADOS: o saldo mora no banco (só compra liberada e bônus do Premium somam).
+   O app só mostra o que o banco devolve — mexer no celular não muda nada. */
+if(S.charm==null){S.charm=0;S.giftIn=0;S.giftOut=0;}
+S.gem=0;
+function gemSet(n){S.gem=Math.max(0,n|0);save();try{giftCardUI();}catch(e){}};
 const giftArt=(g,cls)=>GIFT_IMG[g.id]?`<img class="${cls||''}" src="${GIFT_IMG[g.id]}" alt="${esc(g.n)}">`:`<span class="${cls||''}">${g.e}</span>`;
 function giftTargets(){return NET.players.filter(p=>p.id!==S.uid);}
 function giftOpen(){
@@ -3650,13 +3651,17 @@ function giftOpen(){
   const render=()=>{body.innerHTML=`<div class="gf-top"><span>Seus <b>💎 ${S.gem||0}</b> diamantes</span><button class="gf-mais">➕ Mais</button></div>
     ${tg.length>1?`<div class="lbl">Pra quem?</div><div class="chips">${tg.map(p=>`<button class="chip ${p.id===to?'on':''}" data-to="${esc(p.id)}">${esc(p.name)}</button>`).join('')}</div>`:`<div class="gf-pra">Pra <b>${esc(tg[0].name)}</b></div>`}
     <div class="gf-grade">${GIFTS.map(g=>`<button class="gf-it ${(S.gem||0)<g.c?'off':''}" data-g="${g.id}">${giftArt(g,'gf-art')}<b>${esc(g.n)}</b><small>💎 ${g.c}</small></button>`).join('')}</div>
-    <small class="gf-pe">Ganhe diamantes jogando: +${GEM_GANHO.partida} por partida online, +${GEM_GANHO.vitoria} por vitória e +${GEM_GANHO.dia} todo dia.</small>`;
+    <small class="gf-pe">Diamantes vêm da Loja (➕ Mais) e do bônus semanal do Premium. Os emojis da partida continuam grátis.</small>`;
     body.querySelectorAll('[data-to]').forEach(b=>b.onclick=()=>{to=b.dataset.to;render();});
     body.querySelector('.gf-mais').onclick=gemShop;
     body.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{const g=GIFTS.find(x=>x.id===b.dataset.g);
-      if((S.gem||0)<g.c){toast(`Faltam 💎 ${g.c-(S.gem||0)} — jogue mais pra ganhar`);return;}
-      S.gem-=g.c;S.giftOut=(S.giftOut||0)+1;save();const p=tg.find(x=>x.id===to);
-      roomPub({t:'gift',g:g.id,to,name:S.name,toName:p&&p.name});giftFx(g,S.name||'Você',p?p.name:'');$('#mod').classList.remove('on');});};
+      if(!CL.ses){$('#mod').classList.remove('on');needLogin();return;}
+      if((S.gem||0)<g.c){toast(`Faltam 💎 ${g.c-(S.gem||0)} — toque em ➕ Mais`);return;}
+      if(b.dataset.busy)return;b.dataset.busy=1;
+      clRpc('arena_presente',{p_gift:g.id,p_para:to||''}).then(r=>{delete b.dataset.busy;
+        if(!r||!r.ok){toast(r&&r.erro==='saldo'?'Diamantes insuficientes':r&&r.erro==='rapido'?'Calma! Muitos presentes seguidos':'Não deu agora, tente de novo');if(r&&r.erro==='saldo')dirLoad(true);return;}
+        gemSet(r.saldo);S.giftOut=(S.giftOut||0)+1;save();const p=tg.find(x=>x.id===to);
+        roomPub({t:'gift',g:g.id,to,name:S.name,toName:p&&p.name});giftFx(g,S.name||'Você',p?p.name:'');$('#mod').classList.remove('on');}).catch(()=>{delete b.dataset.busy;toast('Não deu agora, tente de novo');});});};
   render();modal('🎁 Mandar presente',body,[{t:'Fechar'}]);
 }
 function gemShop(){shopOpen('gem');}
@@ -3666,12 +3671,14 @@ function giftNext(){const x=GQ.shift();if(!x){GBUSY=false;return;}GBUSY=true;con
   const fx=h('div','gfx'+(big?' big':''),`<div class="gfx-art">${giftArt(x.g,'gfx-img')}</div><div class="gfx-txt"><b>${esc(x.from)}</b> mandou <b>${esc(x.g.n)}</b>${x.toName?' pra <b>'+esc(x.toName)+'</b>':''} ${x.g.e}</div>`);
   if(big)for(let i=0;i<18;i++){const s=h('span','gfx-p',x.g.e);s.style.left=Math.random()*100+'%';s.style.animationDelay=(Math.random()*1.2)+'s';fx.append(s);}
   document.body.append(fx);setTimeout(()=>{fx.remove();giftNext();},big?3600:2300);}
+const GIFTRL=new Map();
 function onGiftMsg(o){if(o.t!=='gift')return false;const g=GIFTS.find(x=>x.id===o.g);if(!g||isBlk(o.from))return true;
+  {const now=Date.now(),l=(GIFTRL.get(o.from)||[]).filter(t=>now-t<60000);if(l.length>=20)return true;l.push(now);GIFTRL.set(o.from,l);}
   if(o.to===S.uid){S.charm=(S.charm||0)+g.c;S.giftIn=(S.giftIn||0)+1;save();}
   giftFx(g,o.name||'Alguém',o.to===S.uid?'você':(o.toName||''));return true;}
 function giftCardUI(){const el=$('#giftCard');if(!el)return;const k=[S.gem,S.charm,S.giftIn,S.giftOut].join();if(el.dataset.k===k)return;el.dataset.k=k;
   el.innerHTML=`<b class="ct">🎁 Presentes</b><div class="gf-stats"><div><b>💎 ${S.gem||0}</b><small>diamantes</small></div><div><b>💝 ${S.charm||0}</b><small>pontos recebidos</small></div><div><b>${S.giftIn||0}</b><small>recebidos</small></div><div><b>${S.giftOut||0}</b><small>enviados</small></div></div>
-  <small style="color:var(--mut)">Mande presentes nas partidas com amigos e na plateia (botão 🎁). Diamantes se ganham jogando.</small>`;}
+  <small style="color:var(--mut)">Mande presentes nas partidas com amigos e na plateia (botão 🎁). Diamantes vêm da Loja e do bônus do Premium.</small>`;}
 setInterval(()=>{if($('#profile').classList.contains('on'))giftCardUI();},1500);
 
 /* ========== MODERAÇÃO: TERMOS RESTRITOS ========== */
@@ -4199,7 +4206,7 @@ function roundEnd(res,label){
   }
   modal(t,`Placar: <b style="color:var(--txt)">${M.me} x ${M.op}</b>`,[{t:'Próxima rodada',pri:1,f:startRound}]);
 }
-function finishMatch(win,label){if(M&&!M.gemDone){M.gemDone=1;gemAdd(win?GEM_GANHO.vitoria:GEM_GANHO.partida,win?'vitória':'partida jogada');}
+function finishMatch(win,label){
   M.over=true;const g=M.g,stake=M.stake;
   if(M.net){statGame(g&&g.id);
     if(win)S.w++;else S.l++;save();
@@ -4896,9 +4903,8 @@ let DIR={ped:[],dono:false,t:0};
 async function dirLoad(silent){if(!CL.ses)return null;let d=null;try{d=await clRpc('arena_meus_direitos');}catch(e){return null;}if(!d)return null;
   DIR={ped:d.pedidos||[],dono:!!d.dono,t:Date.now(),teste:!!d.teste_usado};
   const ate=d.premium_ate?Date.parse(d.premium_ate):0;const was=isPrem();if(ate!==(S.premAte||0)){S.premAte=ate;save();if(!was&&isPrem())toast('👑 Seu Premium está ativo!');}
-  if(d.gem>0){gemAdd(d.gem,'compra liberada');}
+  const antes=S.gem|0;gemSet(d.saldo|0);if((d.saldo|0)>antes&&DIR.t0)toast('💎 +'+((d.saldo|0)-antes)+' diamantes na sua conta');DIR.t0=1;if(d.bonus)toast('💎 +'+d.bonus+' — bônus semanal do Premium');
   (d.itens||[]).forEach(id=>{if(ITEMS[id]&&!own(id)){grant(id);if(!silent)toast('🎁 '+ITEMS[id].n+' chegou na sua mochila');}});
-  if(isPrem()&&S.pwk!==weekId()){S.pwk=weekId();save();gemAdd(50,'bônus semanal do Premium');}
   if(!isPrem()&&S.invis&&!OKEY){S.invis=false;save();presence();}
   premUI();return d;}
 setInterval(()=>{if(CL.ses&&(DIR.ped.some(p=>p.status==='pago'||p.status==='aguardando')||Date.now()-DIR.t>6e5))dirLoad();},45e3);
@@ -4986,14 +4992,15 @@ function servOpen(){const body=h('div');
   modal('🛠️ Serviços NEXA',body,[{t:'Fechar'}]);}
 function servItem(x){const use=servUse(x),desc=x.full&&use>=x.full?x.v:use/GEM_POR_REAL,fica=Math.max(0,x.v-desc);
   const body=h('div');body.innerHTML=`<div style="font-size:42px;text-align:center">${x.ic}</div><p>${esc(x.d)}</p>
-   <div class="vdi"><b>Preço: ${brl(x.v)}${x.m?' + '+brl(x.m)+' por mês':''}</b>${use>=GEM_POR_REAL?`<small>Com 💎 ${use}: desconto de ${brl(desc)} → você paga <b style="color:#5ef08f">${fica?brl(fica):'nada'}</b>${x.m?' + a mensalidade':''}</small>`:`<small>Junte diamantes jogando pra ganhar até ${x.full?'100%':'30%'} de desconto.</small>`}</div>`;
+   <div class="vdi"><b>Preço: ${brl(x.v)}${x.m?' + '+brl(x.m)+' por mês':''}</b>${use>=GEM_POR_REAL?`<small>Com 💎 ${use}: desconto de ${brl(desc)} → você paga <b style="color:#5ef08f">${fica?brl(fica):'nada'}</b>${x.m?' + a mensalidade':''}</small>`:`<small>Com diamantes da Loja você ganha até ${x.full?'100%':'30%'} de desconto.</small>`}</div>`;
   const B=[{t:'📩 Falar no Instagram',f:()=>servZap(x)}];
   if(use>=GEM_POR_REAL)B.push({t:'💎 Usar meus diamantes',pri:1,f:()=>{servTroca(x,use,fica);}});
   B.push({t:'Fechar'});modal(x.ic+' '+x.n,body,B);}
-async function servTroca(x,use,fica){if(!CL.ses){needLogin();return;}if((S.gem||0)<use){toast('Diamantes insuficientes');return;}
+async function servTroca(x,use,fica){if(!CL.ses){needLogin();return;}await dirLoad(true);if((S.gem||0)<use){toast('Diamantes insuficientes');return;}
   let r;try{r=await clRpc('arena_pedir_servico',{p_item:x.id,p_gem:use,p_player_uid:S.uid,p_nome:S.name||'Jogador'});}catch(e){toast(/mes/.test(e.message)?'Você já usou diamantes num serviço este mês':'Não deu agora, tente de novo');return;}
+  if(r&&r.erro==='saldo'){toast('Diamantes insuficientes');dirLoad(true);return;}
   if(!r||!r.codigo){toast(r&&r.erro==='mes'?'Você já usou diamantes num serviço este mês — fale com a gente no Instagram pra pagar no Pix':'Não deu agora, tente de novo');return;}
-  S.gem=(S.gem||0)-(r.gem|0);save();giftCardUI&&giftCardUI();
+  if(r.saldo!=null)gemSet(r.saldo);
   const msg=`Código do pedido ${r.codigo}: usei ${r.gem} 💎 de desconto.${r.valor>0?' Falta pagar '+brl(r.valor)+'.':''}`;
   if(r.valor>0){const code=pixCode(r.valor,'ARENA'+r.codigo);const body=h('div');
     body.innerHTML=`<div class="pixv">${brl(r.valor)}</div><div class="pixc">Pedido <b>${esc(r.codigo)}</b> · 💎 ${r.gem} usados</div><p>Pague o restante no Pix e depois toque em <b>✅ Já paguei</b>. Em seguida fale com a gente no Direct do Instagram <b>@arenadosmesstres</b> pra começar o serviço.</p><div class="pixb">${esc(code)}</div>`;
