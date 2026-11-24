@@ -3079,7 +3079,7 @@ function onBye(id){
   }
   if(M&&M.net&&!M.over&&NET.players.length>=2){toast(p.name+' saiu da partida');if(M.onLeave)M.onLeave(id);drawBars();return;}
   if(M&&M.net&&!M.over&&NET.players.length===1&&SUBOK.includes(M.g.id)&&!M.duo){
-    M.woOK=woValid();M.subOn={id,name:p.name,photo:p.photo};if(M.sub)M.sub(true);NET.host=true;pubRoster();presence();drawBars();
+    M.woOK=woValid();M.subEver=1;M.subOn={id,name:p.name,photo:p.photo};if(M.sub)M.sub(true);NET.host=true;pubRoster();presence();drawBars();
     toast('📴 '+p.name+' saiu — 🤖 um robô assumiu o lugar dele. Se ele voltar, ele continua.');return;}
   const wasPlaying=M&&M.net&&!M.over;
   if(M&&M.net){if(M.cleanup)M.cleanup();M.over=true;}
@@ -3769,6 +3769,13 @@ const GIFT_IMG={};GIFTS.forEach(g=>GIFT_IMG[g.id]='img/presentes/'+g.id+'.webp')
    O app só mostra o que o banco devolve — mexer no celular não muda nada. */
 if(S.charm==null){S.charm=0;S.giftIn=0;S.giftOut=0;}
 S.gem=0;
+/* 💎 de jogo: só melhor de 3 online contra outra conta, os dois confirmam, com limites — servem só pra presentes */
+function jogoConf(win){try{if(!M||!M.net||M.duo||NET.players.length!==2||M.subEver||M.bo<3||!CL.ses)return;
+  const op=NET.players.find(p=>p.id!==S.uid);if(!op)return;const mid=M.mid;
+  clRpc('arena_partida_conf',{p_match:mid,p_player_uid:S.uid,p_opp_uid:op.id,p_vencedor:win?S.uid:op.id}).then(r=>{
+    if(r&&r.ganhou>0){S.gemJ=(S.gemJ|0)+r.ganhou;save();toast('💎 +'+r.ganhou+' diamantes de jogo!');try{giftCardUI();gemLojaUI();}catch(e){}}
+    else if(r&&r.espera){const antes=S.gemJ|0;setTimeout(async()=>{await dirLoad(true);const d=(S.gemJ|0)-antes;if(d>0)toast('💎 +'+d+' diamantes de jogo!');},9000);}
+  }).catch(()=>{});}catch(e){}}
 function gemSet(n){S.gem=Math.max(0,n|0);save();try{giftCardUI();}catch(e){}};
 const giftArt=(g,cls)=>GIFT_IMG[g.id]?`<img class="${cls||''}" src="${GIFT_IMG[g.id]}" alt="${esc(g.n)}">`:`<span class="${cls||''}">${g.e}</span>`;
 function giftTargets(){return NET.players.filter(p=>p.id!==S.uid);}
@@ -3776,19 +3783,19 @@ function giftOpen(){
   if(!NET.on){toast('Presentes funcionam nas partidas com amigos e na plateia');return;}
   const tg=giftTargets();if(!tg.length){toast('Ainda não tem ninguém pra receber presente');return;}
   let to=tg[0].id;const body=h('div');
-  const render=()=>{body.innerHTML=`<div class="gf-top"><span>Seus <b>💎 ${S.gem||0}</b> diamantes</span><button class="gf-mais">➕ Mais</button></div>
+  const render=()=>{body.innerHTML=`<div class="gf-top"><span>Seus <b>💎 ${S.gem||0}</b>${S.gemJ?` + <b style="color:#5ef08f">🟢 ${S.gemJ}</b> de jogo`:''}</span><button class="gf-mais">➕ Mais</button></div>
     ${tg.length>1?`<div class="lbl">Pra quem?</div><div class="chips">${tg.map(p=>`<button class="chip ${p.id===to?'on':''}" data-to="${esc(p.id)}">${esc(p.name)}</button>`).join('')}</div>`:`<div class="gf-pra">Pra <b>${esc(tg[0].name)}</b></div>`}
-    <div class="gf-grade">${GIFTS.map(g=>`<button class="gf-it ${(S.gem||0)<g.c?'off':''}" data-g="${g.id}">${giftArt(g,'gf-art')}<b>${esc(g.n)}</b><small>💎 ${g.c}</small></button>`).join('')}</div>
-    <small class="gf-pe">Diamantes vêm da Loja (➕ Mais) e do bônus semanal do Premium. Os emojis da partida continuam grátis.</small>`;
+    <div class="gf-grade">${GIFTS.map(g=>`<button class="gf-it ${(S.gem||0)+(S.gemJ||0)<g.c?'off':''}" data-g="${g.id}">${giftArt(g,'gf-art')}<b>${esc(g.n)}</b><small>💎 ${g.c}</small></button>`).join('')}</div>
+    <small class="gf-pe">Diamantes vêm da Loja (➕ Mais), do bônus do Premium e de 🟢 jogo: vença uma melhor de 3 online contra outra conta (+5, derrota +2, até 10 por dia). Os emojis da partida continuam grátis.</small>`;
     body.querySelectorAll('[data-to]').forEach(b=>b.onclick=()=>{to=b.dataset.to;render();});
     body.querySelector('.gf-mais').onclick=gemShop;
     body.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{const g=GIFTS.find(x=>x.id===b.dataset.g);
       if(!CL.ses){$('#mod').classList.remove('on');needLogin();return;}
-      if((S.gem||0)<g.c){toast(`Faltam 💎 ${g.c-(S.gem||0)} — toque em ➕ Mais`);return;}
+      const tot=(S.gem||0)+(S.gemJ||0);if(tot<g.c){toast(`Faltam 💎 ${g.c-tot} — toque em ➕ Mais`);return;}
       if(b.dataset.busy)return;b.dataset.busy=1;
       clRpc('arena_presente',{p_gift:g.id,p_para:to||''}).then(r=>{delete b.dataset.busy;
         if(!r||!r.ok){toast(r&&r.erro==='saldo'?'Diamantes insuficientes':r&&r.erro==='rapido'?'Calma! Muitos presentes seguidos':'Não deu agora, tente de novo');if(r&&r.erro==='saldo')dirLoad(true);return;}
-        gemSet(r.saldo);S.giftOut=(S.giftOut||0)+1;save();const p=tg.find(x=>x.id===to);
+        S.gemJ=r.saldo_jogo|0;gemSet(r.saldo);S.giftOut=(S.giftOut||0)+1;save();const p=tg.find(x=>x.id===to);
         roomPub({t:'gift',g:g.id,to,name:S.name,toName:p&&p.name});giftFx(g,S.name||'Você',p?p.name:'');$('#mod').classList.remove('on');}).catch(()=>{delete b.dataset.busy;toast('Não deu agora, tente de novo');});});};
   render();modal('🎁 Mandar presente',body,[{t:'Fechar'}]);
 }
@@ -3804,8 +3811,8 @@ function onGiftMsg(o){if(o.t!=='gift')return false;const g=GIFTS.find(x=>x.id===
   {const now=Date.now(),l=(GIFTRL.get(o.from)||[]).filter(t=>now-t<60000);if(l.length>=20)return true;l.push(now);GIFTRL.set(o.from,l);}
   if(o.to===S.uid){S.charm=(S.charm||0)+g.c;S.giftIn=(S.giftIn||0)+1;save();}
   giftFx(g,o.name||'Alguém',o.to===S.uid?'você':(o.toName||''));return true;}
-function giftCardUI(){const el=$('#giftCard');if(!el)return;const k=[S.gem,S.charm,S.giftIn,S.giftOut].join();if(el.dataset.k===k)return;el.dataset.k=k;
-  el.innerHTML=`<b class="ct">🎁 Presentes</b><div class="gf-stats"><div><b>💎 ${S.gem||0}</b><small>diamantes</small></div><div><b>💝 ${S.charm||0}</b><small>pontos recebidos</small></div><div><b>${S.giftIn||0}</b><small>recebidos</small></div><div><b>${S.giftOut||0}</b><small>enviados</small></div></div>
+function giftCardUI(){const el=$('#giftCard');if(!el)return;const k=[S.gem,S.gemJ,S.charm,S.giftIn,S.giftOut].join();if(el.dataset.k===k)return;el.dataset.k=k;
+  el.innerHTML=`<b class="ct">🎁 Presentes</b><div class="gf-stats"><div><b>💎 ${S.gem||0}</b><small>diamantes${S.gemJ?` · 🟢 ${S.gemJ} de jogo`:''}</small></div><div><b>💝 ${S.charm||0}</b><small>pontos recebidos</small></div><div><b>${S.giftIn||0}</b><small>recebidos</small></div><div><b>${S.giftOut||0}</b><small>enviados</small></div></div>
   <small style="color:var(--mut)">Mande presentes nas partidas com amigos e na plateia (botão 🎁). Diamantes vêm da Loja e do bônus do Premium.</small>`;}
 setInterval(()=>{if($('#profile').classList.contains('on'))giftCardUI();},1500);
 
@@ -4291,7 +4298,8 @@ function startNetMatch(g){
   if(M&&M.cleanup)M.cleanup();
   const others=NET.players.filter(p=>p.id!==S.uid),o=others[0]||{name:'Amigo'};
   const need=(g.id==='ludo'&&NET.players.length>2)?1:2;
-  M={g,stake:0,bo:need===1?1:3,need,me:0,op:0,opp:{id:o.id,name:o.name||'Amigo',photo:o.photo||null,col:'#16a085'},cleanup:null,over:false,net:true,round:0,recv:null,onLeave:null,duo:!!g.duo};
+  NET.mseq=(NET.mseq||0)+1;
+  M={g,stake:0,bo:need===1?1:3,need,me:0,op:0,opp:{id:o.id,name:o.name||'Amigo',photo:o.photo||null,col:'#16a085'},cleanup:null,over:false,net:true,round:0,recv:null,onLeave:null,duo:!!g.duo,mid:String(NET.room||'x')+'|'+NET.mseq};
   setupMatchUI();
 }
 function drawBars(){
@@ -4341,7 +4349,7 @@ function roundEnd(res,label){
 function finishMatch(win,label){
   M.over=true;const g=M.g,stake=M.stake;
   if(M.net){statGame(g&&g.id);
-    if(win)S.w++;else S.l++;save();
+    if(win)S.w++;else S.l++;save();jogoConf(win);
     const multi=NET.players.length>2&&!M.duo;
     modal(win?(multi?'🏆 Você venceu!':M.duo?'🏆 Sua dupla venceu a série!':'🏆 Você venceu a série!'):(label?esc(label)+' venceu!':M.duo?'A dupla adversária venceu a série':'Seu amigo venceu a série'),multi?'Partida encerrada.':`Placar final: <b style="color:var(--txt)">${M.me} x ${M.op}</b>`,
       [{t:'Sair',f:()=>{netLeave(true);go('lobby');}},...(REPS[0]&&Date.now()-REPS[0].at<6e4?[{t:'🎬 Replay',f:()=>rpOpen(REPS[0].id)}]:[]),{t:'🔁 Revanche',pri:1,f:()=>{NET.rm.add(S.uid);roomPub({t:'rematch'});toast('Revanche pedida! Aguardando os outros…');checkRematch();}}]);
@@ -5048,7 +5056,7 @@ let DIR={ped:[],dono:false,t:0};
 async function dirLoad(silent){if(!CL.ses)return null;let d=null;try{d=await clRpc('arena_meus_direitos');}catch(e){return null;}if(!d)return null;
   DIR={ped:d.pedidos||[],dono:!!d.dono,t:Date.now(),teste:!!d.teste_usado};
   const ate=d.premium_ate?Date.parse(d.premium_ate):0;const was=isPrem();if(ate!==(S.premAte||0)){S.premAte=ate;save();if(!was&&isPrem())toast('👑 Seu Premium está ativo!');}
-  const antes=S.gem|0;gemSet(d.saldo|0);if((d.saldo|0)>antes&&DIR.t0)toast('💎 +'+((d.saldo|0)-antes)+' diamantes na sua conta');DIR.t0=1;if(d.bonus)toast('💎 +'+d.bonus+' — bônus semanal do Premium');
+  S.gemJ=d.saldo_jogo|0;S.gemJMes=d.jogo_mes|0;const antes=S.gem|0;gemSet(d.saldo|0);if((d.saldo|0)>antes&&DIR.t0)toast('💎 +'+((d.saldo|0)-antes)+' diamantes na sua conta');DIR.t0=1;if(d.bonus)toast('💎 +'+d.bonus+' — bônus semanal do Premium');
   (d.itens||[]).forEach(id=>{if(ITEMS[id]&&!own(id)){grant(id);if(!silent)toast('🎁 '+ITEMS[id].n+' chegou na sua mochila');}});
   if(!isPrem()&&S.invis&&!OKEY){S.invis=false;save();presence();}
   premUI();return d;}
@@ -5079,8 +5087,8 @@ async function buy(x){if(!CL.ses){needLogin();return;}
    <div class="pixb">${esc(code)}</div><small style="color:var(--mut)">Ou use a chave Pix: ${PIX_CHAVE} — e escreva o código <b>${esc(r.codigo)}</b> na mensagem. Assim que o dono confirmar, libera sozinho na sua conta.</small>`;
   modal('💠 Pagar com Pix · '+x.n,body,[{t:'📋 Copiar Pix',f:()=>{copyTxt(code,'📋 Pix copiado — cole no app do banco');return false;}},{t:'✅ Já paguei',pri:1,f:async()=>{try{await clRpc('arena_paguei',{p_codigo:r.codigo});}catch(e){}toast('🙌 Avisado! Assim que o dono conferir, libera sozinho.');dirLoad(true);}}]);}
 function gemLojaUI(){const el=$('#gemLoja');if(!el)return;
-  el.innerHTML=`<div style="display:flex;align-items:center;gap:12px"><span style="font-size:36px">💎</span><div style="flex:1"><small style="color:var(--mut)">SEUS DIAMANTES</small><b style="display:block;font-size:26px">${S.gem||0}</b></div></div>
-   <small style="color:var(--mut)">Pra mandar presentes e ganhar desconto nos Serviços NEXA. ${CL.ses?'':'<b style="color:var(--txt)">Entre na conta pra usar.</b>'}</small>
+  el.innerHTML=`<div style="display:flex;align-items:center;gap:12px"><span style="font-size:36px">💎</span><div style="flex:1"><small style="color:var(--mut)">SEUS DIAMANTES</small><b style="display:block;font-size:26px">${S.gem||0}</b></div>${S.gemJ?`<div style="text-align:right"><small style="color:var(--mut)">DE JOGO</small><b style="display:block;font-size:20px;color:#5ef08f">🟢 ${S.gemJ}</b></div>`:''}</div>
+   <small style="color:var(--mut)">💎 comprados: presentes e desconto nos Serviços NEXA. 🟢 de jogo: só presentes (vença melhor de 3 online — até 10 por dia, 150 por mês). ${CL.ses?'':'<b style="color:var(--txt)">Entre na conta pra usar.</b>'}</small>
    <div class="row" style="margin-top:10px"><button class="pri" id="glGem">💎 Comprar diamantes</button><button id="glPac">🎁 Pacotes</button></div>`;
   $('#glGem').onclick=()=>shopOpen('gem');$('#glPac').onclick=()=>shopOpen('pac');}
 function premUI(){try{gemLojaUI();}catch(e){}const pm=isPrem(),ate=pm?new Date(S.premAte).toLocaleDateString('pt-BR'):'';
