@@ -2438,7 +2438,8 @@ function mediaHTML(kind,img,video,label,fmt){
 }
 function vitMediaHTML(v){return mediaHTML(v.mode==='video'?'video':'banner',v.mode==='banner'?v.img:null,v.video,v.title,v.vfmt);}
 function waLink(num,msg){let n=String(num||'').replace(/\D/g,'');if(!n)return '';if(n.length<=11)n='55'+n;return 'https://wa.me/'+n+(msg?'?text='+encodeURIComponent(msg):'');}
-function activeAds(){if(isPrem()&&!OKEY)return [];return (O.ads||[]).filter(a=>(a.img||a.video)&&(!a.until||a.until>=today()));}
+function verAds(){return OKEY?S.verAds!==false:(!isPrem()||!!S.verAds);}
+function activeAds(){if(!verAds())return [];return (O.ads||[]).filter(a=>(a.img||a.video)&&(!a.until||a.until>=today()));}
 const BTYPES={wa:{n:'WhatsApp',ic:'💬',ph:'Ex.: 81 99999-9999',def:'Chamar no WhatsApp',c:'linear-gradient(90deg,#1fbf5b,#25d366)',tc:'#04210f'},
   ig:{n:'Instagram',ic:'📸',ph:'Ex.: @sualoja',def:'Ver no Instagram',c:'linear-gradient(90deg,#feda75,#d62976,#962fbf)',tc:'#fff'},
   site:{n:'Site / Link',ic:'🌐',ph:'Ex.: sualoja.com.br',def:'Visitar o site',c:'linear-gradient(90deg,#00b4ff,#0066ff)',tc:'#fff'},
@@ -5085,9 +5086,10 @@ function gemLojaUI(){const el=$('#gemLoja');if(!el)return;
 function premUI(){try{gemLojaUI();}catch(e){}const pm=isPrem(),ate=pm?new Date(S.premAte).toLocaleDateString('pt-BR'):'';
   const l=$('#premLobby');if(l){l.innerHTML=pm?`<span class="pi">👑</span><div><b>Você é Premium</b><small>Até ${ate} · modo invisível, selo e sem anúncios</small></div><span class="go">Loja</span>`:`<span class="pi">👑</span><div><b>Arena Premium</b><small>Fique invisível, ganhe selo 👑, sem anúncios e diamantes toda semana</small></div><span class="go">A partir de R$ 4,90</span>`;l.onclick=()=>shopOpen(pm?'gem':'prem');}
   const c=$('#premCard');if(c){c.innerHTML=`<div class="ph"><span>👑</span><div style="flex:1"><b>${pm?'Premium ativo até '+ate:'Arena Premium'}</b><br><small style="color:var(--mut)">${pm?'Obrigado por apoiar a Arena!':'Modo invisível, selo 👑, sem anúncios e mais'}</small></div></div>
-    ${pm||OKEY?`<label class="tgl"><input type="checkbox" id="pInv" ${S.invis?'checked':''}> <span>👻 Modo invisível ${S.invis?'(ninguém te vê online)':''}</span></label>`:''}
+    ${pm||OKEY?`<label class="tgl"><input type="checkbox" id="pInv" ${S.invis?'checked':''}> <span>👻 Modo invisível ${S.invis?'(ninguém te vê online)':''}</span></label><label class="tgl"><input type="checkbox" id="pAds" ${verAds()?'checked':''}> <span>📣 Ver anúncios ${OKEY?'(pra acompanhar os anunciantes)':''}</span></label>`:''}
     <div class="row" style="margin-top:10px"><button class="pri" id="pShop">${pm?'💎 Loja':'👑 Ver planos'}</button><button id="pShop2">🎁 Pacotes</button></div>`;
-    const pi=$('#pInv');if(pi)pi.onchange=()=>invSet(pi.checked);$('#pShop').onclick=()=>shopOpen(pm?'gem':'prem');$('#pShop2').onclick=()=>shopOpen('pac');}
+    const pi=$('#pInv');if(pi)pi.onchange=()=>invSet(pi.checked);
+    const pa=$('#pAds');if(pa)pa.onchange=()=>{S.verAds=pa.checked;save();const vb=$('#vitBox');if(vb)vb.dataset.k='';renderVit();toast(pa.checked?'📣 Anúncios ligados':'🚫 Anúncios escondidos');};$('#pShop').onclick=()=>shopOpen(pm?'gem':'prem');$('#pShop2').onclick=()=>shopOpen('pac');}
   const oi=$('#oInv');if(oi)oi.checked=!!S.invis;}
 premUI();
 /* painel do dono: pedidos */
