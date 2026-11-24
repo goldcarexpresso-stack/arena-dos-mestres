@@ -2433,7 +2433,7 @@ function mediaHTML(kind,img,video,label,fmt){
 }
 function vitMediaHTML(v){return mediaHTML(v.mode==='video'?'video':'banner',v.mode==='banner'?v.img:null,v.video,v.title,v.vfmt);}
 function waLink(num,msg){let n=String(num||'').replace(/\D/g,'');if(!n)return '';if(n.length<=11)n='55'+n;return 'https://wa.me/'+n+(msg?'?text='+encodeURIComponent(msg):'');}
-function activeAds(){if(isPrem())return [];return (O.ads||[]).filter(a=>(a.img||a.video)&&(!a.until||a.until>=today()));}
+function activeAds(){if(isPrem()&&!OKEY)return [];return (O.ads||[]).filter(a=>(a.img||a.video)&&(!a.until||a.until>=today()));}
 const BTYPES={wa:{n:'WhatsApp',ic:'💬',ph:'Ex.: 81 99999-9999',def:'Chamar no WhatsApp',c:'linear-gradient(90deg,#1fbf5b,#25d366)',tc:'#04210f'},
   ig:{n:'Instagram',ic:'📸',ph:'Ex.: @sualoja',def:'Ver no Instagram',c:'linear-gradient(90deg,#feda75,#d62976,#962fbf)',tc:'#fff'},
   site:{n:'Site / Link',ic:'🌐',ph:'Ex.: sualoja.com.br',def:'Visitar o site',c:'linear-gradient(90deg,#00b4ff,#0066ff)',tc:'#fff'},
