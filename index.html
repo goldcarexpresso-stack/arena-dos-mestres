@@ -210,6 +210,7 @@ body.lvduo #camDockT,body.lvduo #camDockB,body.lvduo .camwin{display:none!import
 /* ===== COMUNIDADE ===== */
 .comcard{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:0 0 12px;padding:14px;border-radius:20px;border:1px solid #f472b666;background:linear-gradient(135deg,#4a0f3a,#5b21b6 60%,#1d0a3e);color:#fff;box-shadow:0 0 24px #f472b622}
 .comcard .pi{font-size:32px}.comcard div{flex:1}.comcard b{display:block;font-size:16px;color:#f9a8d4}.comcard small{opacity:.85;font-size:12px}.comcard .go{background:#f472b6;color:#2a0018;font-weight:900;border-radius:12px;padding:8px 10px;font-size:13px;white-space:nowrap}
+.hmes{display:flex;align-items:center;gap:6px;padding:10px;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff14;margin-bottom:6px}.hmes span{flex:1}.hmes b{display:block;text-transform:capitalize}.hmes small{color:var(--mut);font-size:12px}.hmes button{padding:7px 10px;font-size:15px}
 .chmsg{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:12px 14px;border-radius:18px;margin-bottom:12px;background:#ffffff0d;border:1px solid #ffffff1f;color:var(--txt)}
 .chmsg .mi{font-size:26px}.chmsg div{flex:1;min-width:0}.chmsg b{display:block;font-size:15px}.chmsg b em{font-style:normal;background:#ff2d55;color:#fff;border-radius:99px;padding:1px 7px;font-size:12px;margin-left:4px}.chmsg small{color:var(--mut);font-size:12px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .chmsg .ma{display:flex}.chmsg .ma .av{width:28px;height:28px;margin-left:-8px;border:2px solid #0b0d1a;font-size:11px}.chmsg .mv{font-size:16px;color:var(--mut)}
@@ -1756,10 +1757,25 @@ const _q=new URLSearchParams(location.search),SK=(_q.get('local')==='1'&&_q.get(
 let S={name:'Jogador',photo:null,bal:0,hist:[],w:0,l:0};
 try{const s=JSON.parse(localStorage.getItem('arena_v1'+SK));if(s)S=Object.assign(S,s);}catch(e){}
 function save(){try{localStorage.setItem('arena_v1'+SK,JSON.stringify(S));}catch(e){}if(window.cloudQ)window.cloudQ();}
-function addHist(t,v){S.hist.unshift({t,v,ts:Date.now(),d:new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})});S.hist=S.hist.slice(0,40);save();}
+function addHist(t,v){S.hist.unshift({t,v,ts:Date.now(),d:new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})});S.hist=S.hist.slice(0,60);save();}
 /* histórico é só representação: guarda no máximo 40 linhas e oferece limpar quando vira o mês */
 const MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 function histMes(x){if(x.ts){const d=new Date(x.ts);return d.getFullYear()*12+d.getMonth();}const m=/(\d{2})\/(\d{2})/.exec(x.d||'');if(!m)return null;const now=new Date();let y=now.getFullYear();const mo=+m[2]-1;if(mo>now.getMonth())y--;return y*12+mo;}
+/* virou o mês: o mês passado vai pro "stand-by" (fechado, leve) — dá pra baixar PDF ou limpar quando quiser */
+function histArquiva(){const now=new Date(),cur=now.getFullYear()*12+now.getMonth();S.histArq=S.histArq||{};let mv=0;
+  S.hist=S.hist.filter(x=>{const k=histMes(x);if(k!=null&&k<cur){(S.histArq[k]=S.histArq[k]||[]).push(x);mv++;return false;}return true;});
+  const ks=Object.keys(S.histArq).map(Number).sort((a,b)=>b-a);ks.slice(12).forEach(k=>delete S.histArq[k]);ks.forEach(k=>S.histArq[k]=S.histArq[k].slice(0,80));
+  if(mv){S.histNovo=1;save();}}
+function histNomeMes(k){return MESES[k%12]+'/'+Math.floor(k/12);}
+function histPDF(k){const L=k==null?S.hist:(S.histArq||{})[k]||[];const tit=k==null?'Mês atual':histNomeMes(k);
+  const ent=L.filter(x=>x.v>=0).reduce((a,x)=>a+x.v,0),sai=L.filter(x=>x.v<0).reduce((a,x)=>a+x.v,0);
+  const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Extrato ${tit} - Arena dos Mestres</title>
+  <style>body{font-family:system-ui,sans-serif;margin:24px;color:#111}h1{font-size:20px;margin:0}small{color:#666}table{width:100%;border-collapse:collapse;margin-top:16px;font-size:14px}td,th{border-bottom:1px solid #ddd;padding:8px;text-align:left}td.v{text-align:right;font-weight:700}.p{color:#0a7a35}.n{color:#b3261e}.tot{margin-top:12px;font-weight:700}button{margin-top:18px;padding:12px 16px;font-size:16px;border-radius:10px;border:0;background:#7a1cff;color:#fff}@media print{button{display:none}}</style></head>
+  <body><h1>🏆 Arena dos Mestres — Extrato ${esc(tit)}</h1><small>${esc(S.name||'Jogador')} · saldo de TESTE (fictício, sem valor real) · gerado em ${new Date().toLocaleString('pt-BR')}</small>
+  <table><tr><th>Data</th><th>Movimentação</th><th style="text-align:right">Valor</th></tr>${L.map(x=>`<tr><td>${esc(x.d||'')}</td><td>${esc(x.t||'')}</td><td class="v ${x.v>=0?'p':'n'}">${x.v>=0?'+':'−'} ${fmt(Math.abs(x.v))}</td></tr>`).join('')||'<tr><td colspan="3">Sem movimentações</td></tr>'}</table>
+  <div class="tot">Entradas: ${fmt(ent)} · Saídas: ${fmt(Math.abs(sai))}</div><button onclick="print()">📄 Salvar em PDF / Imprimir</button></body></html>`;
+  const u=URL.createObjectURL(new Blob([html],{type:'text/html'}));const w=window.open(u,'_blank');if(!w){const a=document.createElement('a');a.href=u;a.download='extrato-arena-'+(k==null?'atual':histNomeMes(k).replace('/','-'))+'.html';a.click();}
+  toast('📄 Toque em "Salvar em PDF" na página que abriu');}
 function histVelho(){const now=new Date(),cur=now.getFullYear()*12+now.getMonth();return S.hist.filter(x=>{const k=histMes(x);return k!=null&&k<cur;});}
 if(!S.g1000){S.g1000=1;if(S.bal<100000){const add=100000-S.bal;S.bal=100000;addHist('🎁 Bônus de boas-vindas (teste)',add);}save();}
 
@@ -2041,11 +2057,16 @@ function renderWallet(){
   $('#wbal').textContent=fmt(S.bal);
   const d=$('#deps');d.innerHTML='';
   [200,500,1000,2000].forEach(v=>{const b=h('button',null,'+ '+fmt(v));b.onclick=()=>{S.bal+=v;addHist('Depósito (simulado)',v);renderWallet();toast('Saldo de teste adicionado');};d.append(b);});
-  const old=histVelho(),ob=$('#histOld');
-  if(old.length){const k=histMes(old[0]);ob.innerHTML=`<div class="vdi" style="margin:8px 0;border-color:#ffc23d;background:#ffc23d14"><b>🗓️ Virou o mês!</b><small>Você tem ${old.length} registro${old.length>1?'s':''} de ${MESES[k%12]} pra trás. Quer limpar pra deixar o app leve?</small><div class="row" style="margin-top:8px"><button class="pri" id="histOldB">🧹 Limpar meses passados</button></div></div>`;
-    $('#histOldB').onclick=()=>{const keep=new Set(histVelho());S.hist=S.hist.filter(x=>!keep.has(x));save();renderWallet();toast('🧹 Histórico antigo limpo');};}else ob.innerHTML='';
-  $('#histClr').style.display=S.hist.length?'':'none';
-  $('#histClr').onclick=()=>modal('Limpar histórico?','Apaga a lista de movimentações deste celular. O saldo de teste continua o mesmo.',[{t:'Cancelar'},{t:'🧹 Limpar',pri:1,f:()=>{S.hist=[];save();renderWallet();toast('🧹 Histórico limpo');}}]);
+  histArquiva();const ob=$('#histOld');const ks=Object.keys(S.histArq||{}).map(Number).sort((a,b)=>b-a);ob.innerHTML='';
+  if(S.histNovo&&ks.length){const k=ks[0];const d=h('div','vdi');d.style.cssText='margin:8px 0;border-color:#ffc23d;background:#ffc23d14';
+    d.innerHTML=`<b>🗓️ Virou o mês!</b><small>O histórico de ${histNomeMes(k)} foi guardado em stand-by (fechado, ocupa pouco). Baixe em PDF se precisar ou limpe quando quiser.</small><div class="row" style="margin-top:8px"><button class="pri" data-pdf>📄 Baixar PDF</button><button data-ok>Ok, deixar guardado</button></div>`;
+    d.querySelector('[data-pdf]').onclick=()=>histPDF(k);d.querySelector('[data-ok]').onclick=()=>{S.histNovo=0;save();renderWallet();};ob.append(d);}
+  ks.forEach(k=>{const L=S.histArq[k];const tot=L.reduce((a,x)=>a+x.v,0);const r=h('div','hmes');
+    r.innerHTML=`<span>📦 <b>${histNomeMes(k)}</b><small>${L.length} movimentaç${L.length>1?'ões':'ão'} · ${tot>=0?'+':'−'} ${fmt(Math.abs(tot))} · em stand-by</small></span><button data-p>📄</button><button data-c>🧹</button>`;
+    r.querySelector('[data-p]').onclick=()=>histPDF(k);
+    r.querySelector('[data-c]').onclick=()=>modal('Limpar '+histNomeMes(k)+'?','Apaga esse mês guardado deste celular. Baixe o PDF antes se quiser guardar.',[{t:'Cancelar'},{t:'📄 PDF',f:()=>{histPDF(k);return false;}},{t:'🧹 Limpar',pri:1,f:()=>{delete S.histArq[k];save();renderWallet();}}]);ob.append(r);});
+  $('#histClr').style.display=S.hist.length?'':'none';$('#histClr').textContent='📄 PDF do mês';
+  $('#histClr').onclick=()=>histPDF(null);
   const hl=$('#hist');hl.innerHTML=S.hist.length?'':'<div class="empty1">Nada por aqui ainda. Seus depósitos, entradas e prêmios aparecem aqui.</div>';
   S.hist.forEach(x=>hl.append(h('div',null,`<i class="hic ${x.v>=0?'in':'out'}">${x.v>=0?'↓':'↑'}</i><span>${x.t}<small>${x.d}</small></span><b class="${x.v>=0?'pos':'neg'}">${x.v>=0?'+':'−'} ${fmt(Math.abs(x.v))}</b>`)));
 }
