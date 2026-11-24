@@ -4857,17 +4857,28 @@ const CLK='arena_auth'+SK;
 let CL={ses:null,t:null,busy:false,last:null,err:null};
 try{CL.ses=JSON.parse(localStorage.getItem(CLK)||'null');}catch(e){}
 function clSave(){try{if(CL.ses)localStorage.setItem(CLK,JSON.stringify(CL.ses));else localStorage.removeItem(CLK);}catch(e){}}
-function clSet(d){CL.ses={at:d.access_token,rt:d.refresh_token,exp:Date.now()+((d.expires_in||3600)-60)*1000,email:(d.user&&d.user.email)||(CL.ses&&CL.ses.email)||''};clSave();}
+function clSet(d){CL.ses={at:d.access_token,rt:d.refresh_token,exp:Date.now()+((d.expires_in||3600)-300)*1000,email:(d.user&&d.user.email)||(CL.ses&&CL.ses.email)||''};clSave();}
 async function clAuth(path,body){
   const r=await fetch(SB.url+'/auth/v1/'+path,{method:'POST',headers:{apikey:SB.key,'Content-Type':'application/json'},body:JSON.stringify(body)});
   const d=await r.json().catch(()=>({}));
   if(!r.ok){const m=(d.msg||d.error_description||d.message||d.error||'').toLowerCase();
+    if(path.startsWith('token?grant_type=refresh_token')){const e=new Error('refresh');e.invalido=r.status===400||r.status===401||/invalid|not found|revoked|expired/.test(m);throw e;}
     throw new Error(/invalid login|invalid_grant|credentials/.test(m)?'E-mail ou senha errados':/already|registered/.test(m)?'Esse e-mail já tem conta — toque em Entrar':/password/.test(m)?'A senha precisa ter pelo menos 6 caracteres':/email/.test(m)?'Confira o e-mail digitado':'Não deu certo agora. Tente de novo.');}
   return d;}
+/* login fica guardado no celular: renova sozinho, uma vez só por vez, e NÃO sai da conta por falha de internet */
+let CLREF=null;
 async function clToken(){if(!CL.ses)return null;
   if(Date.now()<CL.ses.exp)return CL.ses.at;
-  try{const d=await clAuth('token?grant_type=refresh_token',{refresh_token:CL.ses.rt});clSet(d);return CL.ses.at;}
-  catch(e){CL.ses=null;clSave();cloudUI();toast('Sua sessão expirou — entre de novo na conta');return null;}}
+  if(!CLREF)CLREF=(async()=>{const rt=CL.ses.rt;
+    for(let k=0;k<3;k++){try{const d=await clAuth('token?grant_type=refresh_token',{refresh_token:rt});clSet(d);return CL.ses.at;}
+      catch(e){if(e.invalido){/* outra aba/celular pode ter renovado agora: confere de novo antes de desistir */
+          try{const fresh=JSON.parse(localStorage.getItem(CLK)||'null');if(fresh&&fresh.rt!==rt&&Date.now()<fresh.exp){CL.ses=fresh;return fresh.at;}}catch(x){}
+          CL.ses=null;clSave();cloudUI();toast('Sua sessão terminou — entre de novo na conta');return null;}
+        await new Promise(r=>setTimeout(r,1500*(k+1)));}}
+    return null; /* sem internet agora: mantém a conta salva e tenta depois */})().finally(()=>{CLREF=null;});
+  return CLREF;}
+setTimeout(()=>{if(CL.ses)clToken();},1500);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&CL.ses&&Date.now()>CL.ses.exp-5*60e3)clToken();});
 async function clRpc(fn,args){const tk=await clToken();if(!tk)throw new Error('Entre na conta primeiro');
   const r=await fetch(SB.url+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:SB.key,Authorization:'Bearer '+tk,'Content-Type':'application/json'},body:JSON.stringify(args||{})});
   if(!r.ok)throw new Error('Falha ao falar com a nuvem');return r.json();}
