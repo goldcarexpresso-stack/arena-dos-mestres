@@ -1848,7 +1848,8 @@ const POOL={cacapalavras:['ew_unicornio','fw_borboleta','fm_louros','f_neon','f_
  bingo:['ew_unicornio','fw_pavao','fm_leao','fw_asas','f_ouro','f_diamante','f_galaxia','e_tapete','e_dragao','n_ouro','n_arco','s_rei_bingo','p_festa','p_risada','b_ouro']};
 const GNAME={cacapalavras:'Caça-Palavras',forca:'Forca',kaboom:'KABOOM Arena',go:'Go',buraco:'Buraco',cacheta:'Cacheta',stop:'Stop',gamao:'Gamão',truco:'Truco',naval:'Batalha Naval',mancala:'Mancala',cartas:'Carta Maluca',dama:'Dama',xadrez:'Xadrez',domino:'Dominó',sinuca:'Sinuca',ludo:'Ludo',lig4:'Lig 4',bingo:'Bingo'};
 const COS=new Map();const cosSet=(id,c)=>{if(id&&c&&typeof c==='object')COS.set(id,{f:c.f,n:c.n,s:c.s,e:c.e,b:c.b});};
-const own=id=>!!(S.inv&&S.inv[id]);
+const isDonoAll=()=>{try{return !!(OKEY||(DIR&&DIR.dono));}catch(e){return false;}};
+const own=id=>!!(S.inv&&S.inv[id])||isDonoAll();
 function myCos(){const e=S.eq||{};return{f:e.fr||null,n:e.nm||null,s:e.sl||null,e:e.en||null,b:e.bu||null,p:isPrem()?1:0};}
 function nmHTML(name,id,short){const c=id?(id===S.uid?myCos():COS.get(id)):null;const n=esc(name||'');const sl=c&&c.s&&ITEMS[c.s];
   return `<span class="nm ${c&&c.n&&ITEMS[c.n]?'nm-'+c.n:''}">${n}</span>${c&&c.p?'<span class="pmb" title="Premium">👑</span>':''}${sl&&!short?` <span class="slo" style="--c:${sl.col||RAR[sl.r].col}" title="${esc(sl.n)}">${sl.i}</span>`:''}`;}
@@ -1924,7 +1925,7 @@ function hintUI(){const b=$('#hintBtn');if(!b)return;const ok=M&&!M.net&&M.g&&['
 $('#hintBtn').onclick=()=>{if(!(S.hints>0)){toast('Sem dicas — ganhe nos baús de Dama e Dominó');return;}if(M&&M.hint&&M.hint()){S.hints--;save();hintUI();}else toast('Espere sua vez pra usar a dica');};
 /* tela de acessórios */
 let bagCat='fr';
-function bagCardUI(){const b=$('#bagCard');if(!b)return;const tot=Object.keys(ITEMS).filter(k=>ITEMS[k].c!=='ut').length,mine=Object.keys(S.inv||{}).filter(k=>ITEMS[k]&&ITEMS[k].c!=='ut').length,nw=Object.keys(S.newI||{}).length;
+function bagCardUI(){const b=$('#bagCard');if(!b)return;const tot=Object.keys(ITEMS).filter(k=>ITEMS[k].c!=='ut').length,mine=(isDonoAll()?Object.keys(ITEMS).filter(k=>ITEMS[k].c!=='ut').length:Object.keys(S.inv||{}).filter(k=>ITEMS[k]&&ITEMS[k].c!=='ut').length),nw=Object.keys(S.newI||{}).length;
   b.innerHTML=`<span class="bagic">🎒</span><div><b>Meus acessórios</b><small>${mine}/${tot} coletados · ✨ ${S.bri||0} brilhos${S.chestRdy?' · 🎁 baú pronto!':''}</small></div>${nw?`<span class="badge" style="display:inline-block">${nw} novo${nw>1?'s':''}</span>`:''}<em>›</em>`;}
 function renderBag(){const me=$('#bagMe');me.innerHTML=`<i class="av big"></i><div><b>${nmHTML(S.name,S.uid)}</b><small>✨ ${S.bri||0} brilhos · 💡 ${S.hints||0} dicas</small><button id="bagEnt" class="pri" ${S.eq&&S.eq.en?'':'disabled'}>▶ Ver minha entrada</button></div>`;
   setAv(me.querySelector('.av'),S.photo,S.name,null,S.uid);$('#bagEnt').onclick=()=>showEntrance({id:S.uid,name:S.name,photo:S.photo,cos:myCos()},'entrou na sala');
@@ -2156,7 +2157,7 @@ $('#saque').onclick=()=>{
 function renderProfile(){setAv($('#pav'),S.photo,S.name,null,S.uid);$('#pname').value=S.name;
   $('#pNm').innerHTML=nmHTML(S.name,S.uid);const t0=S.w+S.l;
   $('#pChips').innerHTML=`<span class="fol" id="pFol">👣 ${FOLW.size} ${FOLW.size===1?'seguidor':'seguidores'} · ${Object.keys(S.fol||{}).length} seguindo</span><span>✨ ${S.bri||0} brilhos</span><span>👥 ${Object.keys(S.fr||{}).length} amigos</span>${S.chestRdy?'<span class="hot2">🎁 baú pronto</span>':''}`;
-  const tot=Object.keys(ITEMS).filter(k=>ITEMS[k].c!=='ut').length,mine=Object.keys(S.inv||{}).filter(k=>ITEMS[k]&&ITEMS[k].c!=='ut').length,nw=Object.keys(S.newI||{}).length;
+  const tot=Object.keys(ITEMS).filter(k=>ITEMS[k].c!=='ut').length,mine=(isDonoAll()?Object.keys(ITEMS).filter(k=>ITEMS[k].c!=='ut').length:Object.keys(S.inv||{}).filter(k=>ITEMS[k]&&ITEMS[k].c!=='ut').length),nw=Object.keys(S.newI||{}).length;
   $('#pFol').onclick=openFollowers;$('#pBagS').textContent=`${mine}/${tot} coletados${nw?' · '+nw+(nw>1?' novos':' novo'):''}`;$('#pFrS').textContent=`${Object.keys(S.fr||{}).length} amigos`;$('#pBlkS').textContent=`${Object.keys(S.blk||{}).length} pessoas`;frBadge();$('#sw').textContent=S.w;$('#sl').textContent=S.l;const t=S.w+S.l;$('#sr').textContent=t?Math.round(S.w*100/t)+'%':'—';}
 $('#pickf').onclick=()=>$('#file').click();$('#pickf2').onclick=()=>$('#file').click();
 $('#rmf').onclick=()=>{S.photo=null;save();renderProfile();};
