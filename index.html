@@ -5540,7 +5540,7 @@ function BlocosCabo(el,end,ctx){
     const fr=Math.min(1,P.phL/GOAL),cover=Math.round(H*(1-fr));
     for(let y=0;y<cover;y++)for(let x=0;x<W;x++){cx.fillStyle=(x+y)%2?'#1b1236':'#20163f';cx.fillRect(x*s,y*s,s,s);}
     if(cover>0&&cover<H){cx.fillStyle='rgba(255,216,77,.55)';cx.fillRect(0,cover*s-2,w,3);}
-    if(cover>=H*.5){cx.fillStyle='rgba(255,255,255,.12)';cx.font=`900 ${s*1.1}px Arial`;cx.textAlign='center';cx.fillText('🏖️ ?',w/2,cover*s/2+s/2);}
+    {const nm='🏖️ '+BC_PH[ph].n;cx.font=`900 ${Math.max(12,s*.62)}px Arial`;cx.textAlign='center';const tw=cx.measureText(nm).width+20;cx.fillStyle='rgba(0,0,0,.55)';cx.fillRect((w-tw)/2,6,tw,s*1.05);cx.fillStyle='#ffd84d';cx.fillText(nm,w/2,6+s*.75);}
     for(let i=0;i<W*H;i++){const v=P.g[i];if(v)block(cx,(i%W)*s,(i/W|0)*s,s,v,.94);}
     if(hintP&&P.p){let q={k:P.p.k,r:hintP.r,x:hintP.x,y:P.p.y};if(fits(P,q)){while(fits(P,{...q,y:q.y+1}))q.y++;cx.fillStyle='rgba(255,216,77,.45)';for(const[x,y]of cellsOf(q))if(y>=0)cx.fillRect(x*s+1,y*s+1,s-2,s-2);}}
     if(P.p){let gq={...P.p};while(fits(P,{...gq,y:gq.y+1}))gq.y++;cx.strokeStyle='rgba(255,255,255,.55)';cx.lineWidth=1.5;for(const[x,y]of cellsOf(gq))if(y>=0)cx.strokeRect(x*s+2,y*s+2,s-4,s-4);
@@ -5571,7 +5571,7 @@ function BlocosCabo(el,end,ctx){
     if(!oPlan2){oPlan2=plan(O);if(Math.random()<.15&&oPlan2)oPlan2.x+=Math.random()<.5?-1:1;}if(!oPlan2){hard(O,false);return;}
     if(O.p.r!==oPlan2.r){move(O,0,0,1,false);return;}if(O.p.x<oPlan2.x){if(!move(O,1,0,0,false))oPlan2.x=O.p.x;return;}if(O.p.x>oPlan2.x){if(!move(O,-1,0,0,false))oPlan2.x=O.p.x;return;}
     hard(O,false);oPlan2=null;oT2=speed*2.5;}
-  st('🧱 Encaixe os blocos e complete linhas pra revelar a '+BC_PH[ph].n+'!');bigMsg='🏖️ '+BC_PH[ph].n.toUpperCase();bigT=1.8;
+  st('🧱 Encaixe os blocos e complete linhas pra revelar a '+BC_PH[ph].n+'!');
   raf=requestAnimationFrame(loop);
   return()=>{done=true;cancelAnimationFrame(raf);document.removeEventListener('keydown',kd);};
 }
