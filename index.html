@@ -5566,14 +5566,14 @@ function BlocosCabo(el,end,ctx){
   let lt=performance.now(),acc=0,lastSend=0;
   function loop(now){raf=requestAnimationFrame(loop);const dt=Math.min(.1,(now-lt)/1000);lt=now;const tl=TL-(Date.now()-t0)/1000;
     if(!done&&!myFin){const sp=Math.max(.09,.75-ph*.1-P.ln*.008);acc+=dt;if(!P.over){if(autoMe)botStep(P,dt,true,.12);else while(acc>=sp){acc-=sp;move(P,0,1,0,true);}}
-      if(!net||SUB){const sv=O===O&&Math.max(.18,.42-ph*.03);if(!O.over)botStepO(dt,sv);}
+      if(!net||SUB){const sv=.55+Math.random()*.25;if(!O.over)botStepO(dt,sv);}
       if(P.over&&(net&&!SUB?oSeen.over:O.over))finish();if(tl<=0)finish();
       if(net&&now-lastSend>700){lastSend=now;ctx.send({st:{sc:P.sc,ov:P.over,g:enc(P.g)}});}}
     if(bigT>0)bigT-=dt;if(flashT>0)flashT-=dt;render(now/1000);hud();}
   let oT2=0,oPlan2=null;function botStepO(dt,speed){if(O.over||!O.p)return;oT2-=dt;if(oT2>0)return;oT2=speed;
-    if(!oPlan2){oPlan2=plan(O);if(Math.random()<.15&&oPlan2)oPlan2.x+=Math.random()<.5?-1:1;}if(!oPlan2){hard(O,false);return;}
+    if(!oPlan2){oPlan2=plan(O);if(Math.random()<.28&&oPlan2)oPlan2.x+=Math.random()<.5?-1:1;if(Math.random()<.12&&oPlan2)oPlan2.r=(oPlan2.r+1)%4;}if(!oPlan2){hard(O,false);return;}
     if(O.p.r!==oPlan2.r){move(O,0,0,1,false);return;}if(O.p.x<oPlan2.x){if(!move(O,1,0,0,false))oPlan2.x=O.p.x;return;}if(O.p.x>oPlan2.x){if(!move(O,-1,0,0,false))oPlan2.x=O.p.x;return;}
-    hard(O,false);oPlan2=null;oT2=speed*2.5;}
+    hard(O,false);oPlan2=null;oT2=1.6+Math.random()*1.8;}
   st('🧱 Encaixe os blocos e complete linhas pra revelar a '+BC_PH[ph].n+'!');
   raf=requestAnimationFrame(loop);
   return()=>{done=true;cancelAnimationFrame(raf);document.removeEventListener('keydown',kd);};
