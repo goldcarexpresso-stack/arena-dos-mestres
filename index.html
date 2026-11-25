@@ -5362,13 +5362,13 @@ function Forca(el,end,ctx){
   function guess(w,g,remote){if(done||turn!==w)return;if(net&&!remote)ctx.send({g,w});if(fN(g).replace(/\s+/g,'')===W.replace(/\s+/g,'')){const miss=[...W].filter(c=>/[A-Z]/.test(c)&&!used.includes(c)).length;pts[w]+=30+miss*10;used=[...new Set([...used,...W])];return fin(w,'acertou a palavra (+'+(30+miss*10)+')');}
     toast('❌ '+nm(w)+' chutou "'+g+'" e errou');wrong=Math.min(MAXW,wrong+2);sfx('lose');if(wrong>=MAXW)return fin(null,'a forca fechou');turn=oth(w);draw();next();}
   function fin(w,why){done=true;used=[...new Set([...used,...W])];draw();const a=pts[me],o=pts[op];st((w?nm(w)+' '+why:'💀 '+why)+` · ${a} x ${o}`);sfx(a>=o?'win':'lose');setTimeout(()=>end(a>o?'me':a<o?'op':'draw'),2800);}
-  function next(keep){if(done)return;if(turn===op){if(!keep)st(SUB?'🤖 Robô pensando…':net?'Vez do amigo…':'Vez do adversário...');if(!net||SUB)setTimeout(bot,BD(1100));}else if(!keep)st('Sua vez — escolha uma letra');}
+  function next(keep){if(done)return;if(turn===op){if(!keep)st(SUB?'🤖 Robô pensando…':net?'Vez do amigo…':'Vez do adversário...');if(!net||SUB)setTimeout(bot,(M&&M.watch?BD(1100):3200+rnd(2800)));}else if(!keep)st('Sua vez — escolha uma letra');}
   function botPick(){const pat=[...W].map(c=>/[A-Z]/.test(c)&&!used.includes(c)?'.':c).join('');const cand=FORCA_W[cat].map(fN).filter(x=>x.length===W.length&&new RegExp('^'+pat.replace(/\./g,'[^'+(used.join('')||'#')+']')+'$').test(x));
     const freq={};(cand.length?cand:[W.replace(/[A-Z]/g,'')]).forEach(x=>[...new Set(x)].forEach(c=>{if(/[A-Z]/.test(c)&&!used.includes(c))freq[c]=(freq[c]||0)+1;}));
     const order='AEOSRINDMUTCLPVGHQBFZJXKWY';const ks=Object.keys(freq).sort((a,b)=>freq[b]-freq[a]);
-    const hid=[...W].filter(c=>/[A-Z]/.test(c)&&!used.includes(c)).length,tot=[...W].filter(c=>/[A-Z]/.test(c)).length;if(cand.length===1&&hid>=2&&hid/tot<=.5&&Math.random()<.5)return {g:cand[0]};
+    const hid=[...W].filter(c=>/[A-Z]/.test(c)&&!used.includes(c)).length,tot=[...W].filter(c=>/[A-Z]/.test(c)).length;if(cand.length===1&&hid>=2&&hid/tot<=.35&&Math.random()<.35)return {g:cand[0]};
     if(ks.length&&Math.random()<.8)return {l:ks[0]};return {l:[...order].find(c=>!used.includes(c))};}
-  function bot(){if(done||(net&&!SUB)||turn!==op)return;const p=botPick();if(p.g)guess(op,p.g,false);else letter(op,p.l,false);}
+  function bot(){if(done||(net&&!SUB)||turn!==op)return;const p=botPick();if(p.g){st('🤔 '+nm(op)+' vai chutar a palavra…');setTimeout(()=>{if(!done&&turn===op)guess(op,p.g,false);},2200);}else letter(op,p.l,false);}
   if(net)ctx.onMsg(d=>{if(!d)return;if(d.l)letter(d.w,d.l,true);else if(d.g)guess(d.w,d.g,true);});
   if(M){M.snap=()=>({cat,word,used:used.slice(),wrong,pts:{...pts},turn,side:ctx.side});M.sub=on=>{SUB=on;if(on&&turn===op)setTimeout(bot,BD(800));else next();};if(SUB&&turn===op)setTimeout(bot,BD(900));}
   if(!net&&M)M.auto=()=>{if(done||turn!==me)return false;const p=botPick();if(p.g)guess(me,p.g,false);else letter(me,p.l,false);return true;};
