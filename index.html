@@ -2162,8 +2162,8 @@ $('#pickf').onclick=()=>$('#file').click();$('#pickf2').onclick=()=>$('#file').c
 $('#rmf').onclick=()=>{S.photo=null;save();renderProfile();};
 $('#file').onchange=e=>{
   const f=e.target.files[0];if(!f)return;const r=new FileReader();
-  r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=160;const s=Math.min(im.width,im.height);
-    c.getContext('2d').drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,160,160);S.photo=c.toDataURL('image/jpeg',0.82);save();renderProfile();toast('Foto atualizada');setTimeout(()=>comVisAsk(true),700);};im.src=r.result;};
+  r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');const s=Math.min(im.width,im.height),Z=Math.min(480,s);c.width=c.height=Z;const x=c.getContext('2d');x.imageSmoothingEnabled=true;x.imageSmoothingQuality='high';
+    x.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,Z,Z);S.photo=c.toDataURL('image/jpeg',0.86);S.thumb=null;S.thumbSrc=null;save();renderProfile();toast('Foto atualizada');setTimeout(()=>comVisAsk(true),700);};im.src=r.result;};
   r.readAsDataURL(f);e.target.value='';
 };
 $('#psave').onclick=()=>{const n=$('#pname').value.trim();if(n&&modCheck(n)){modal('Nome não permitido','Esse nome tem termos restritos. Escolha outro nome pro seu perfil.',[{t:'OK',pri:1}]);return;}if(n)S.name=n;save();renderProfile();toast('Perfil salvo');if(typeof presence==='function')presence();};
@@ -2836,9 +2836,9 @@ function busRecv(t,s){
 /* --- presença (quem está online) --- */
 const ONLINE=new Map();
 function thumb(){
-  if(!S.photo)return null;if(S.thumbSrc===S.photo&&S.thumb)return S.thumb;
+  if(!S.photo)return null;if(S.thumbSrc===S.photo&&S.thumb&&S.thumbV===2)return S.thumb;
   const src=S.photo,im=new Image();
-  im.onload=()=>{try{const c=document.createElement('canvas');c.width=c.height=48;c.getContext('2d').drawImage(im,0,0,48,48);S.thumb=c.toDataURL('image/jpeg',0.6);S.thumbSrc=src;save();presence();}catch(e){}};
+  im.onload=()=>{try{const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');x.imageSmoothingEnabled=true;x.imageSmoothingQuality='high';x.drawImage(im,0,0,128,128);S.thumb=c.toDataURL('image/jpeg',0.78);S.thumbSrc=src;S.thumbV=2;save();presence();try{pubRank();}catch(e){}}catch(e){}};
   im.src=src;return null;
 }
 function myStatus(){return NET.on?(NET.spec?'assistindo':NET.started?'jogando':'sala'):(typeof M!=='undefined'&&M&&!M.over&&!M.watch&&!M.net?'jogando':'livre');}
