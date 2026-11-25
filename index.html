@@ -5450,16 +5450,19 @@ function CacaPalavras(el,end,ctx){
 
 /* ========== BLOCOS DO CABO (encaixe blocos e revele as praias do Cabo de Santo Agostinho) ========== */
 const BC_PH=[
- {n:'Praia de Gaibu',sky:['#ff8a5c','#ffd38a'],sun:[.72,.18,'#fff2b0'],sea:['#2a9fd8','#1667a8'],sand:['#f3d59c','#d9b376'],deco:'palm',wood:['#c8743c','#8a4519']},
- {n:'Praia do Xaréu',sky:['#46a8ff','#c4ecff'],sun:[.2,.14,'#fffbe0'],sea:['#1cc2c9','#0b7e9a'],sand:['#efdcae','#cfb27c'],deco:'rocks',wood:['#d9a04a','#9a6a1e']},
- {n:'Praia de Itapuama',sky:['#5d9dff','#d6edff'],sun:[.82,.12,'#fffbe0'],sea:['#1b86d6','#0d4f99'],sand:['#f5e0ae','#d8bd84'],deco:'palms',wood:['#b9603a','#7a3314']},
- {n:'Praia de Calhetas',sky:['#7fd2ff','#e9f9ff'],sun:[.5,.1,'#ffffff'],sea:['#19c2ad','#0b7a75'],sand:['#ead09b','#c9a86e'],deco:'cliffs',wood:['#8fae5a','#4e6e22']},
- {n:'Enseada dos Corais',sky:['#ff7eb3','#ffd6a3'],sun:[.3,.3,'#ffe08a'],sea:['#2f73d6','#173f8f'],sand:['#f2cfa0','#d4a974'],deco:'coral',wood:['#e0705a','#9a2f22']},
- {n:'Praia do Paiva',sky:['#25307a','#ff9e6a'],sun:[.66,.36,'#ffcf7a'],sea:['#2c4f9e','#16285e'],sand:['#d9b98a','#a88658'],deco:'lights',wood:['#6f7ccf','#353f8a']}];
+ {n:'Praia de Suape',f:'suape',sky:['#46a8ff','#c4ecff'],sun:[.2,.14,'#fffbe0'],sea:['#1cc2c9','#0b7e9a'],sand:['#efdcae','#cfb27c'],deco:'rocks',wood:['#c8743c','#8a4519']},
+ {n:'Praia de Calhetas',f:'calhetas',sky:['#7fd2ff','#e9f9ff'],sun:[.5,.1,'#ffffff'],sea:['#19c2ad','#0b7a75'],sand:['#ead09b','#c9a86e'],deco:'cliffs',wood:['#d9a04a','#9a6a1e']},
+ {n:'Praia de Gaibu',f:'gaibu',sky:['#ff8a5c','#ffd38a'],sun:[.72,.18,'#fff2b0'],sea:['#2a9fd8','#1667a8'],sand:['#f3d59c','#d9b376'],deco:'palm',wood:['#b9603a','#7a3314']},
+ {n:'Enseada dos Corais',f:'enseada',sky:['#ff7eb3','#ffd6a3'],sun:[.3,.3,'#ffe08a'],sea:['#2f73d6','#173f8f'],sand:['#f2cfa0','#d4a974'],deco:'coral',wood:['#8fae5a','#4e6e22']},
+ {n:'Praia do Xaréu',f:'xareu',sky:['#46a8ff','#c4ecff'],sun:[.2,.14,'#fffbe0'],sea:['#1cc2c9','#0b7e9a'],sand:['#efdcae','#cfb27c'],deco:'rocks',wood:['#e0705a','#9a2f22']},
+ {n:'Praia de Itapuama',f:'itapuama',sky:['#5d9dff','#d6edff'],sun:[.82,.12,'#fffbe0'],sea:['#1b86d6','#0d4f99'],sand:['#f5e0ae','#d8bd84'],deco:'palms',wood:['#5aa9c8','#2a6a8a']},
+ {n:'Praia do Paiva',f:'paiva',sky:['#25307a','#ff9e6a'],sun:[.66,.36,'#ffcf7a'],sea:['#2c4f9e','#16285e'],sand:['#d9b98a','#a88658'],deco:'lights',wood:['#6f7ccf','#353f8a']}];
+const BC_IMG={};BC_PH.forEach(p=>{const im=new Image();im.src='img/praias/'+p.f+'.jpg';BC_IMG[p.f]=im;});
 const BC_SH={I:[[0,1],[1,1],[2,1],[3,1]],O:[[1,0],[2,0],[1,1],[2,1]],T:[[1,0],[0,1],[1,1],[2,1]],L:[[2,0],[0,1],[1,1],[2,1]],J:[[0,0],[0,1],[1,1],[2,1]],S:[[1,0],[2,0],[0,1],[1,1]],Z:[[0,0],[1,0],[1,1],[2,1]]};
 const BC_K=Object.keys(BC_SH);
 function bcRot(cs,k){let r=cs.map(c=>c.slice());for(let i=0;i<k;i++)r=r.map(([x,y])=>[-y,x]);const mx=Math.min(...r.map(c=>c[0])),my=Math.min(...r.map(c=>c[1]));return r.map(([x,y])=>[x-mx,y-my]);}
-function bcArt(c,w,h,P,t){const g=c.createLinearGradient(0,0,0,h*.55);g.addColorStop(0,P.sky[0]);g.addColorStop(1,P.sky[1]);c.fillStyle=g;c.fillRect(0,0,w,h);
+function bcArt(c,w,h,P,t){const im=P.f&&BC_IMG[P.f];if(im&&im.complete&&im.naturalWidth){const r=Math.max(w/im.naturalWidth,h/im.naturalHeight),iw=im.naturalWidth*r,ih=im.naturalHeight*r,z=1+Math.sin(t*.25)*.015;
+    c.drawImage(im,(w-iw*z)/2,(h-ih*z)/2,iw*z,ih*z);return;}const g=c.createLinearGradient(0,0,0,h*.55);g.addColorStop(0,P.sky[0]);g.addColorStop(1,P.sky[1]);c.fillStyle=g;c.fillRect(0,0,w,h);
   const[sx,sy,sc]=P.sun;c.fillStyle=sc;c.globalAlpha=.9;c.beginPath();c.arc(w*sx,h*sy,w*.09,0,7);c.fill();c.globalAlpha=.25;c.beginPath();c.arc(w*sx,h*sy,w*.16,0,7);c.fill();c.globalAlpha=1;
   c.fillStyle='#ffffffaa';[[.15,.08],[.45,.2],[.8,.27]].forEach(([a,b],i)=>{const x=(w*a+t*8*(i+1))%(w+60)-30;c.beginPath();c.ellipse(x,h*b,w*.1,h*.018,0,0,7);c.ellipse(x+w*.06,h*b-h*.012,w*.07,h*.016,0,0,7);c.fill();});
   if(P.deco==='cliffs'){c.fillStyle='#5a7a3a';c.beginPath();c.moveTo(0,h*.38);c.quadraticCurveTo(w*.22,h*.26,w*.36,h*.5);c.lineTo(0,h*.55);c.fill();c.beginPath();c.moveTo(w,h*.34);c.quadraticCurveTo(w*.75,h*.28,w*.66,h*.5);c.lineTo(w,h*.55);c.fill();}
