@@ -2522,15 +2522,15 @@ function adAudio(){const on=ADSND&&hasTap();
 function ytSrc(id,play){const m=ADSND&&hasTap()?0:1;const one=document.querySelectorAll('#rotBox .rsl').length<2;return `https://www.youtube.com/embed/${id}?rel=0&playsinline=1&modestbranding=1&controls=0${one?`&loop=1&playlist=${id}`:''}&end=30&enablejsapi=1&origin=${encodeURIComponent(location.origin)}${play?`&autoplay=1&mute=${m}`:''}`;}
 /* ====================== TUTORIAL / DICAS ====================== */
 const TOUR=[
- {sel:'#lbal',ic:'💰',t:'Seu saldo de teste',d:'Você já começa com <b>R$ 1.000 de teste</b> pra jogar. Não é dinheiro de verdade. Quando acabar, adicione mais de graça na <b>Carteira</b>.'},
- {sel:'#games',ic:'🎮',t:'Escolha um jogo',d:'Toque em <b>Dama, Xadrez, Dominó, Sinuca, Ludo ou Lig 4</b>. Escolha o valor da entrada e toque em <b>Entrar</b> pra jogar contra o robô — ou <b>Com amigo</b> pra jogar online.'},
+ {sel:'#balTeste',ic:'💰',t:'Seu saldo de teste',d:'Você já começa com <b>R$ 1.000 de teste</b> pra jogar. Não é dinheiro de verdade. Quando acabar, toque aqui no saldo pra adicionar mais de graça.'},
+ {sel:'#agora',ic:'🎉',t:'Acontecendo agora',d:'<b>Bingo ao vivo</b>, <b>check-in diário</b> com 🟢 diamantes grátis, <b>Mesas da Casa</b> pra assistir e torneios. <b>Arraste pro lado</b> pra ver tudo.'},
+ {sel:'#games .gc',ic:'🎮',t:'Escolha um jogo',d:'São <b>18 jogos</b>: Dama, Xadrez, Dominó, Sinuca, Truco, KABOOM e muito mais — role a tela pra ver todos. Toque num jogo e em <b>Entrar</b> pra jogar contra o robô, ou <b>Com amigo</b> pra jogar online.'},
  {sel:'#friendBtn',ic:'👥',t:'Jogue com um amigo',d:'Crie uma sala e mande o convite pelo WhatsApp. Seu amigo abre o link e cai direto na partida com você.'},
- {sel:'#bingoCard',ic:'🎱',t:'Bingo ao vivo',d:'Rodadas automáticas o dia todo, <b>grátis</b>. Pegue suas cartelas e toque em <b>BINGO!</b> quando fechar.'},
  {sel:'#rankBox',ic:'🏆',t:'Ranking da semana',d:'Cada rodada vencida vale 1 vitória. Os 3 primeiros aparecem no pódio. Zera toda segunda-feira.'},
- {sel:'#bagCard',ic:'🎁',t:'Ganhe acessórios',d:'A cada <b>3 minutos jogando</b> um baú fica pronto. <b>Vença a rodada</b> pra abrir e ganhar molduras, entradas, emojis e mesas.'},
- {sel:'#nav [data-go="online"]',ic:'🟢',t:'Quem está online',d:'Veja quem está no app agora, convide pra jogar e <b>assista partidas ao vivo</b>.'},
- {sel:'#nav [data-go="chats"]',ic:'💬',t:'Conversas',d:'Mande mensagem, foto, áudio e faça ligação de voz com outros jogadores.'},
- {sel:'#nav [data-go="profile"]',ic:'👤',t:'Seu perfil',d:'Coloque sua <b>foto e seu nome</b>, veja seus <b>amigos</b> e seus <b>🎒 acessórios</b> — molduras, entradas e emojis que você ganha nos baús. O tutorial também fica aqui.'}];
+ {sel:'#nav [data-go="online"]',ic:'🟢',t:'Quem está online',d:'Veja quem está no app agora, convide pra jogar, desafie os <b>🏠 Jogadores da Casa</b> e <b>assista partidas ao vivo</b>.'},
+ {sel:'#nav [data-go="chats"]',ic:'💬',t:'Conversas',d:'Mensagem, foto, áudio e ligação de voz com outros jogadores. Aqui também fica a <b>Comunidade</b> com as postagens.'},
+ {sel:'#nav [data-go="wallet"]',ic:'🛍️',t:'Loja',d:'<b>Premium</b>, 💎 diamantes, molduras e os <b>Serviços NEXA</b> pra quem tem negócio.'},
+ {sel:'#nav [data-go="profile"]',ic:'👤',t:'Seu perfil',d:'Coloque sua <b>foto e seu nome</b>, veja seus <b>amigos</b> e seus <b>🎒 acessórios</b>. O tutorial também fica aqui.'}];
 const TIPS={
  online:{ic:'🟢',t:'Jogadores online',d:'Toque em <b>Convidar</b> pra chamar alguém pra jogar. Em <b>🔴 Ao vivo</b> você assiste partidas e pode entrar na fila pra jogar a próxima.'},
  chats:{ic:'💬',t:'Conversas',d:'Toque em <b>+ Nova</b> pra falar com alguém. Segure o 🎤 pra gravar áudio, use 📎 pra foto e 📞 pra ligar. No 🚫 você bloqueia quem incomodar.'},
@@ -2555,6 +2555,9 @@ function tourNext(){
       <div class="tcard2 ${below?'dn':'up'}" style="${below?`top:${Math.min(r.bottom+16,innerHeight-230)}px`:`bottom:${Math.min(innerHeight-r.top+16,innerHeight-230)}px`}">
       <div class="tc2h"><span class="tc2i">${st.ic}</span><b>${st.t}</b><em>${tourI+1}/${TOUR.length}</em></div><p>${st.d}</p>
       <div class="tc2b"><button class="tskip">Pular</button><button class="pri tnext">${tourI===TOUR.length-1?'Começar a jogar 🎮':'Próximo →'}</button></div></div>`;
+    {const cd=fx.querySelector('.tcard2'),ch=cd.offsetHeight,H=innerHeight;let top=below?r.bottom+pad+12:r.top-pad-12-ch;
+      if(top+ch>H-8||top<8){const spB=H-(r.bottom+pad),spA=r.top-pad;top=spB>=spA?Math.max(8,H-ch-8):8;}
+      cd.style.top=Math.max(8,Math.min(top,H-ch-8))+'px';cd.style.bottom='auto';}
     fx.querySelector('.tnext').onclick=tourNext;fx.querySelector('.tskip').onclick=tourEnd;};
 }
 function tipCard(k,tp){const fx=document.createElement('div');fx.className='tipfx';
