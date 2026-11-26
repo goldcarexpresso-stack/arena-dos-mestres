@@ -2374,7 +2374,8 @@ setInterval(()=>{const w=weekId(),m=monthId();if(w!==RKW){busUnsub(TOP.rank(RKW)
 const SUBOK=['blocos','cacapalavras','forca','kaboom','go','buraco','cacheta','stop','gamao','truco','naval','mancala','cartas','dama','xadrez','domino','sinuca','ludo','lig4'];
 function woValid(){if(!M)return false;if((M.me||0)+(M.op||0)>=1)return true;const need={blocos:6,cacapalavras:3,forca:4,kaboom:30,go:20,buraco:20,cacheta:10,stop:4,gamao:30,truco:6,naval:10,mancala:10,cartas:12,lig4:10,dama:24,xadrez:30,domino:M.duo?14:12,sinuca:8,ludo:30}[M.g&&M.g.id]||20;return (M.acts||0)>=need;}
 function addWeek(win){const k=myWeek(),m=myMonth();k.games++;m.games++;if(win){k.wins++;m.wins++;}save();pubRank();}
-function pubRank(){const k=myWeek(),m=myMonth(),base={name:S.name,thumb:thumb(),cos:myCos()};
+const ROBONAV=!!(navigator.webdriver||/HeadlessChrome|Lighthouse|bot|crawl|spider|facebookexternalhit/i.test(navigator.userAgent||''));
+function pubRank(){if(ROBONAV)return;const k=myWeek(),m=myMonth(),base={name:S.name,thumb:thumb(),cos:myCos()};
   if(k.games)busPub(TOP.rank(k.id)+'/'+S.uid,{...base,wins:k.wins,games:k.games},true);
   if(m.games)busPub(TOP.rank(m.id)+'/'+S.uid,{...base,wins:m.wins,games:m.games},true);rankSave();}
 /* ranking fixo no banco: não some quando a página atualiza */
@@ -2924,7 +2925,7 @@ function thumb(){
   im.src=src;return null;
 }
 function myStatus(){return NET.on?(NET.spec?'assistindo':NET.started?'jogando':'sala'):(typeof M!=='undefined'&&M&&!M.over&&!M.watch&&!M.net?'jogando':'livre');}
-function presence(){if(invOn()){if(!OKEY)busPub(TOP.inv+'/'+S.uid,{name:S.name,thumb:thumb(),st:myStatus(),game:NET.on&&NET.game?NET.game.name:null,cos:myCos()});return;}const lvOn=!!(LIVE&&LIVE.on);let live=NET.on&&!NET.spec&&NET.allowSpec!==false&&NET.game&&(NET.started||lvOn||NET.players.length>=2)?{room:NET.room,g:NET.game.id,n:NET.players.map(p=>p.name),w:NET.specs.length,lv:lvOn?1:0,wait:NET.started?0:1}:null;
+function presence(){if(ROBONAV)return;if(invOn()){if(!OKEY)busPub(TOP.inv+'/'+S.uid,{name:S.name,thumb:thumb(),st:myStatus(),game:NET.on&&NET.game?NET.game.name:null,cos:myCos()});return;}const lvOn=!!(LIVE&&LIVE.on);let live=NET.on&&!NET.spec&&NET.allowSpec!==false&&NET.game&&(NET.started||lvOn||NET.players.length>=2)?{room:NET.room,g:NET.game.id,n:NET.players.map(p=>p.name),w:NET.specs.length,lv:lvOn?1:0,wait:NET.started?0:1}:null;
   if(!live&&SOLO.room&&M&&!M.over&&!M.watch)live={room:SOLO.room,g:M.g.id,n:[S.name,M.opp.name+(M.opp.casa?' 🏠':' 🤖')],w:SOLO.specs.length,bot:1};
   busPub(TOP.lobby,{t:'pres',name:S.name,thumb:thumb(),st:myStatus(),game:NET.on&&NET.game?NET.game.name:(M&&!M.over&&!M.watch&&!M.net?M.g.name:null),live,cos:myCos()});}
 function onLobby(o){
@@ -4083,7 +4084,7 @@ function modNorm(t){
 /* ========== ESTATÍSTICAS + LIBERAR BLOQUEADOS ========== */
 const dkey=d=>{const x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');};
 function isInstalled(){try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;}catch(e){return false;}}
-function pubStat(){
+function pubStat(){if(ROBONAV)return;
   const st=S.st=S.st||{first:Date.now(),days:[],g:{},n:0};const d=dkey(Date.now());
   if(!st.days.includes(d)){st.days.push(d);st.days=st.days.slice(-60);}if(isInstalled())st.inst=1;save();
   const md=S.mod||{};const blk=md.until&&md.until>Date.now()?{until:md.until,cat:md.cat||'',at:md.at||0}:null;
@@ -4132,6 +4133,8 @@ function renderStats(){ownerChips();
   const box=$('#oStats');if(!box)return;statSrvLoad();const L=statAll();const now=Date.now(),td=dkey(now);
   const act=n=>L.filter(x=>now-(x.last||0)<n*864e5).length;
   const games=Math.ceil(L.reduce((a,x)=>a+(x.n||0),0)/2);const gbot=L.reduce((a,x)=>a+(x.nb||0),0);const inst=L.filter(x=>x.inst).length;
+  const real=x=>(x.n||0)>0||(x.nb||0)>0||(x.days||[]).length>=2||Object.values(x.mt||{}).some(v=>v>=1)||x.inst||(x.name&&x.name!=='Jogador');
+  const reais=L.filter(real).length;
   const LU=L.filter(x=>x.from!==S.uid);const minDia=d=>LU.reduce((a,x)=>a+((x.mt||{})[d]||0),0);const hojeMin=minDia(td);const hojeU=LU.filter(x=>((x.mt||{})[td]||0)>0).length;
   const fmtMin=m=>m<60?Math.round(m)+' min':(Math.floor(m/60)+'h'+(Math.round(m%60)?String(Math.round(m%60)).padStart(2,'0'):''));
   const tile=(v,t,c)=>`<div class="stile" style="--c:${c}"><b>${v}</b><span>${t}</span></div>`;
@@ -4149,7 +4152,7 @@ function renderStats(){ownerChips();
   const novos7=L.filter(x=>dkey(x.first||0)>ha(7)).length,novosAntes=L.filter(x=>dkey(x.first||0)>ha(14)&&dkey(x.first||0)<=ha(7)).length;
   const nomePer={dia:'por dia (14 dias)',semana:'por semana (8 semanas)',mes:'por mês (6 meses)'}[statPer];
   const chip=(k,t)=>`<button type="button" data-per="${k}" class="${statPer===k?'on':''}">${t}</button>`;
-  box.innerHTML=`<div class="dash"><div class="stiles">${tile(L.length,'Pessoas que já abriram','#00e5ff')}${tile(inst,'Instalaram na tela inicial','#b026ff')}${tile(onlineList().length,'Online agora (fora você)','#25d366')}
+  box.innerHTML=`<div class="dash"><div class="stiles">${tile(L.length,'Pessoas que já abriram','#00e5ff')}${tile(inst,'Instalaram na tela inicial','#b026ff')}${tile(reais,'Jogadores de verdade (jogaram, voltaram ou ficaram 1+ min)','#f472b6')}${tile(L.filter(x=>real(x)&&ult(x)===td).length,'Jogadores de verdade hoje','#fb923c')}${tile(onlineList().length,'Online agora (fora você)','#25d366')}
     ${tile(L.filter(x=>ult(x)===td).length,'Usaram hoje','#ffc23d')}${tile(act(7),'Últimos 7 dias','#ff2bd6')}${tile(act(30),'Últimos 30 dias','#7df9ff')}
     ${tile(novos7,'Novos em 7 dias ('+(novos7===novosAntes?'igual':(novos7>novosAntes?'+':'')+(novos7-novosAntes))+')','#2dd4bf')}${tile(parou,'Pararam de usar (8+ dias)','#fb923c')}
     ${tile(games,'Partidas entre pessoas','#ffe27a')}${tile(gbot,'Partidas contra robô','#7dd3fc')}${tile(games+gbot,'Partidas no total','#c77dff')}${tile(L.filter(x=>x.blk&&x.blk.until>now).length,'Bloqueados agora','#ff5a5f')}${tile(fmtMin(hojeMin),'Tempo no app hoje (sem você)','#38bdf8')}${tile(hojeU?fmtMin(hojeMin/hojeU):'0 min','Tempo médio por jogador hoje','#a3e635')}</div>
