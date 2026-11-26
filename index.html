@@ -229,9 +229,24 @@ body.lvduo #camDockT,body.lvduo #camDockB,body.lvduo .camwin{display:none!import
 .comcard{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:0 0 12px;padding:14px;border-radius:20px;border:1px solid #f472b666;background:linear-gradient(135deg,#4a0f3a,#5b21b6 60%,#1d0a3e);color:#fff;box-shadow:0 0 24px #f472b622}
 .comcard .pi{font-size:32px}.comcard div{flex:1}.comcard b{display:block;font-size:16px;color:#f9a8d4}.comcard small{opacity:.85;font-size:12px}.comcard .go{background:#f472b6;color:#2a0018;font-weight:900;border-radius:12px;padding:8px 10px;font-size:13px;white-space:nowrap}
 .hmes{display:flex;align-items:center;gap:6px;padding:10px;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff14;margin-bottom:6px}.hmes span{flex:1}.hmes b{display:block;text-transform:capitalize}.hmes small{color:var(--mut);font-size:12px}.hmes button{padding:7px 10px;font-size:15px}
-.chmsg{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:12px 14px;border-radius:18px;margin-bottom:12px;background:#ffffff0d;border:1px solid #ffffff1f;color:var(--txt)}
-.chmsg .mi{font-size:26px}.chmsg div{flex:1;min-width:0}.chmsg b{display:block;font-size:15px}.chmsg b em{font-style:normal;background:#ff2d55;color:#fff;border-radius:99px;padding:1px 7px;font-size:12px;margin-left:4px}.chmsg small{color:var(--mut);font-size:12px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.chmsg .ma{display:flex}.chmsg .ma .av{width:28px;height:28px;margin-left:-8px;border:2px solid #0b0d1a;font-size:11px}.chmsg .mv{font-size:16px;color:var(--mut)}
+.chmsg{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px 14px;border-radius:20px;margin-bottom:14px;color:var(--txt);border:0;background:linear-gradient(135deg,#2a1260 0%,#1a1040 45%,#0f2a4a 100%);box-shadow:0 0 0 1px #c77dff55,0 8px 28px #7b2ff755,0 0 22px #00d4ff22;transition:transform .15s}
+.chmsg:active{transform:scale(.98)}
+.chmsg::before{content:"";position:absolute;inset:-2px;z-index:-2;border-radius:22px;background:conic-gradient(from var(--ca,0deg),#ff3cac,#7b2ff7,#00d4ff,#00ff9d,#ff3cac);animation:chmspin 4s linear infinite}
+.chmsg::after{content:"";position:absolute;inset:2px;z-index:-1;border-radius:18px;background:linear-gradient(135deg,#2a1260 0%,#160c38 50%,#0c2240 100%)}
+@property --ca{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes chmspin{to{--ca:360deg}}
+.chmsg .msh{position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(105deg,transparent 35%,#ffffff22 50%,transparent 65%);transform:translateX(-120%);animation:chmshine 3.6s ease-in-out infinite;border-radius:20px}
+@keyframes chmshine{0%,55%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+.chmsg>*{position:relative;z-index:1}
+.chmsg .mi{flex:none;width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:24px;background:linear-gradient(135deg,#ff3cac,#7b2ff7 55%,#00d4ff);box-shadow:0 0 0 2px #ffffff22 inset,0 4px 16px #ff3cac66,0 0 18px #7b2ff788;animation:chmpulse 2.2s ease-in-out infinite}
+@keyframes chmpulse{0%,100%{box-shadow:0 0 0 2px #ffffff22 inset,0 4px 16px #ff3cac55,0 0 14px #7b2ff766}50%{box-shadow:0 0 0 2px #ffffff33 inset,0 4px 22px #ff3caccc,0 0 30px #00d4ffaa}}
+.chmsg div{flex:1;min-width:0}
+.chmsg b{display:block;white-space:nowrap;font-size:17px;font-weight:900;letter-spacing:.2px;background:linear-gradient(90deg,#fff,#ffd6f5 40%,#9ef3ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.chmsg b em{font-style:normal;-webkit-text-fill-color:#fff;color:#fff;background:#ff2d55;border-radius:99px;padding:1px 8px;font-size:12px;margin-left:6px;box-shadow:0 0 12px #ff2d55;animation:chmpulse2 1.4s ease-in-out infinite;display:inline-block}
+@keyframes chmpulse2{50%{transform:scale(1.15)}}
+.chmsg small{color:#c9b8ff;font-size:12px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
+.chmsg .ma{display:flex;flex:none}.chmsg .ma .av{width:28px;height:28px;margin-left:-9px;border:2px solid #1a1040;font-size:11px;box-shadow:0 0 8px #c77dff66}
+.chmsg .mv{flex:none;font-size:12px;font-weight:800;color:#fff;padding:6px 10px;border-radius:99px;background:linear-gradient(135deg,#ff3cac,#7b2ff7);box-shadow:0 0 14px #ff3cac88;white-space:nowrap}
 .cmemb.sm{gap:6px;margin:0 0 6px}.cmemb.sm button{width:44px}.cmemb.sm .av{width:34px;height:34px;font-size:12px}.cmemb.sm small{font-size:9px}
 .chcom{background:linear-gradient(135deg,#2a0f3a,#1d1650);border:1px solid #f472b644;border-radius:18px;padding:10px 10px 4px;margin-bottom:12px}.chch{display:flex;align-items:center;margin-bottom:6px}.chch b{flex:1;color:#f9a8d4}.chch button{font-size:12px;padding:7px 10px;border-radius:10px}
 .cvb{margin-left:auto;font-size:12px;padding:8px 10px;border-radius:12px}
@@ -4209,8 +4224,8 @@ function renderChats(){
   const l=$('#chList');l.innerHTML='';
   const arr=Object.entries(CH).sort((a,b)=>(b[1].last||0)-(a[1].last||0));
   {const mc=$('#chMsgCard'),wr=$('#chListWrap');const un=arr.reduce((n,[,c])=>n+(c.unread||0),0);
-    mc.innerHTML=`<span class="mi">💬</span><div><b>Mensagens${un?` <em>${un}</em>`:''}</b><small>${arr.length?arr.length+' conversa'+(arr.length>1?'s':'')+' · toque pra abrir, mandar mensagem ou ligar':'Toque em + Nova pra falar com quem está online'}</small></div><span class="ma"></span><span class="mv">${wr.style.display==='none'?'▾':'▴'}</span>`;
-    const ma=mc.querySelector('.ma');arr.slice(0,4).forEach(([id,c])=>{const a=h('i','av');setAv(a,c.thumb,c.name,'#7209b7',id);ma.append(a);});
+    mc.innerHTML=`<span class="mi">💬</span><div><b>Mensagens${un?` <em>${un}</em>`:''}</b><small>${arr.length?arr.length+' conversa'+(arr.length>1?'s':'')+' · toque pra abrir':'Toque em + Nova pra falar com quem está online'}</small></div><span class="ma"></span><span class="mv">${wr.style.display==='none'?'Abrir ▾':'Fechar ▴'}</span><i class="msh"></i>`;
+    const ma=mc.querySelector('.ma');arr.slice(0,3).forEach(([id,c])=>{const a=h('i','av');setAv(a,c.thumb,c.name,'#7209b7',id);ma.append(a);});
     mc.onclick=()=>{wr.style.display=wr.style.display==='none'?'':'none';renderChats();if(wr.style.display==='')setTimeout(()=>wr.scrollIntoView({behavior:'smooth',block:'start'}),50);};}
   if(!arr.length){l.innerHTML='<div class="empty2"><div class="eic">💬</div><b>Nenhuma conversa ainda</b><span>Toque em <b>+ Nova</b> pra falar com quem está online.</span></div>';return;}
   arr.forEach(([id,c])=>{const last=c.msgs[c.msgs.length-1];const on=ONLINE.get(id);
