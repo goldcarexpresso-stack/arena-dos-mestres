@@ -1286,7 +1286,7 @@ body:has(#legalGate) #mod{z-index:100000!important}
 #instWel .iwgo{width:100%;padding:15px;font-size:17px;font-weight:900;border-radius:16px;border:0;background:linear-gradient(135deg,#ff3cac,#7b2ff7 60%,#00d4ff);box-shadow:0 6px 22px #ff3cac77;animation:iwPulse 1.8s ease-in-out infinite}
 @keyframes iwPulse{50%{box-shadow:0 6px 30px #ff3caccc,0 0 0 6px #ff3cac22}}
 #instWel .iwno{width:100%;margin-top:8px;padding:11px;background:transparent;border:0;color:#c9b8ff;font-size:14px;font-weight:700}
-#instWel .iwop{display:block;font-style:normal;font-size:11px;color:#9f8fd0;margin-top:2px}
+#instWel .iwopt{display:inline-block;margin:0 0 10px;padding:6px 14px;border-radius:99px;font-size:12.5px;font-weight:900;letter-spacing:.4px;color:#052e16;background:linear-gradient(135deg,#4ade80,#22c55e);box-shadow:0 0 0 2px #bbf7d066,0 0 18px #22c55e99}
 #legalGate .lgok{width:100%;margin-top:10px;padding:14px;font-size:16px}#legalGate .lgok:disabled{opacity:.45}
 /* ===== Perfil sofisticado (vidro + brilho) ===== */.pst{margin:6px 12px 0!important;display:grid!important;grid-template-columns:repeat(3,1fr);gap:0!important;border-radius:20px;background:linear-gradient(180deg,#ffffff12,#ffffff05);border:1px solid #ffffff22;box-shadow:inset 0 1px 0 #ffffff22,0 10px 24px #0007;backdrop-filter:blur(8px);overflow:hidden}.pst .st{background:none!important;border:none!important;border-radius:0!important;padding:12px 4px!important;position:relative}.pst .st+.st::before{content:"";position:absolute;left:0;top:18%;bottom:18%;width:1px;background:linear-gradient(#0000,#ffffff33,#0000)}.pst .st span{font-size:18px;opacity:.9}.pst .st b{font-size:24px!important;letter-spacing:.5px}.pst .st small{font-size:10.5px!important;text-transform:uppercase;letter-spacing:1px;font-weight:800}.ptiles{gap:12px!important}.ptile{background:linear-gradient(160deg,#ffffff14,#ffffff05)!important;border:1px solid #ffffff1f!important;box-shadow:inset 0 1px 0 #ffffff26,0 12px 26px #0008!important;backdrop-filter:blur(10px);overflow:hidden;min-height:112px!important;padding:16px!important;transition:transform .15s}.ptile:active{transform:scale(.97)}.ptile::before{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,var(--g) 0,#0000 70%);opacity:.55}.ptile::after{content:"›";position:absolute;right:14px;bottom:10px;font-size:22px;font-weight:300;color:#ffffff88}.ptile span{display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:14px;font-size:24px!important;margin-bottom:8px;background:linear-gradient(135deg,var(--g),var(--g2));box-shadow:0 6px 16px var(--gs),inset 0 1px 0 #ffffff55;filter:none!important}.ptile b{font-size:16px!important;letter-spacing:.3px}.ptile small{color:#ffffffa8!important;font-weight:600!important}.ptile.t1{--g:#b026ff;--g2:#ff2b8a;--gs:#b026ff66}.ptile.t2{--g:#00c896;--g2:#0277bd;--gs:#00c89666}.ptile.t3{--g:#ff5a6e;--g2:#7a1f3a;--gs:#ff5a6e55}.ptile.t4{--g:#ffc23d;--g2:#ff7a00;--gs:#ffb62766}.pgrp{background:linear-gradient(160deg,#ffffff0f,#ffffff04)!important;border:1px solid #ffffff1c!important;border-radius:20px!important;box-shadow:inset 0 1px 0 #ffffff1c,0 10px 22px #0006;backdrop-filter:blur(8px)}.pgrp>summary{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.pgrp>summary::after{content:'›'!important;font-size:22px;top:50%!important;transform:translateY(-50%);transition:transform .2s;color:#ffffff88!important}.pgrp[open]>summary::after{content:'›'!important;transform:translateY(-50%) rotate(90deg)}.pgrp>summary small{flex-basis:100%;margin-top:-6px;padding-left:2px}</style>
 </head>
@@ -2378,7 +2378,7 @@ function pubRank(){const k=myWeek(),m=myMonth(),base={name:S.name,thumb:thumb(),
   if(k.games)busPub(TOP.rank(k.id)+'/'+S.uid,{...base,wins:k.wins,games:k.games},true);
   if(m.games)busPub(TOP.rank(m.id)+'/'+S.uid,{...base,wins:m.wins,games:m.games},true);rankSave();}
 /* ranking fixo no banco: não some quando a página atualiza */
-function rkAnon(fn,args){return fetch(SB.url+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:SB.key,Authorization:'Bearer '+SB.key,'Content-Type':'application/json'},body:JSON.stringify(args)}).then(r=>r.ok?r.json().catch(()=>null):null).catch(()=>null);}
+function rkAnon(fn,args){return fetch(SB.url+'/rest/v1/rpc/'+fn,{method:'POST',keepalive:true,headers:{apikey:SB.key,Authorization:'Bearer '+SB.key,'Content-Type':'application/json'},body:JSON.stringify(args)}).then(r=>r.ok?r.json().catch(()=>null):null).catch(()=>null);}
 function rankSave(){const k=myWeek(),m=myMonth(),c=(()=>{try{return myCos();}catch(e){return null;}})();
   [k,m].forEach(x=>{if(x.games)rkAnon('arena_rank_put',{p_per:x.id,p_uid:S.uid,p_name:S.name||'Jogador',p_thumb:thumb()||null,p_cos:c,p_wins:x.wins,p_games:x.games});});}
 async function rankLoad(){for(const [per,map] of [[weekId(),RANK],[monthId(),RANKM]]){const r=await rkAnon('arena_rank_get',{p_per:per});
@@ -4092,7 +4092,13 @@ function pubStat(){
   try{rkAnon('arena_estat_put',{p:{uid:S.uid,...pl}});}catch(e){}
 }
 /* tempo no app: conta 1 minuto a cada minuto com a tela aberta */
-setInterval(()=>{try{if(document.hidden)return;const st=S.st=S.st||{first:Date.now(),days:[],g:{},n:0};const d=dkey(Date.now());st.mt=st.mt||{};st.mt[d]=Math.min(1440,(st.mt[d]||0)+1);const ks=Object.keys(st.mt).sort();while(ks.length>60)delete st.mt[ks.shift()];if(!st.days.includes(d)){st.days.push(d);st.days=st.days.slice(-60);}save();}catch(e){}},60000);
+setInterval(()=>{try{if(document.hidden)return;const st=S.st=S.st||{first:Date.now(),days:[],g:{},n:0};const d=dkey(Date.now());
+  st.sec=st.sec||{};st.sec[d]=Math.min(86400,(st.sec[d]||0)+15);st.mt=st.mt||{};st.mt[d]=Math.round(st.sec[d]/60);
+  for(const o of [st.mt,st.sec]){const ks=Object.keys(o).sort();while(ks.length>60)delete o[ks.shift()];}
+  if(!st.days.includes(d)){st.days.push(d);st.days=st.days.slice(-60);}save();}catch(e){}},15000);
+/* manda o tempo na hora que a pessoa sai ou troca de app, pra visita curta também contar */
+let pubHideT=0;const pubOnHide=()=>{if(Date.now()-pubHideT<20000)return;pubHideT=Date.now();try{pubStat();}catch(e){}};
+document.addEventListener('visibilitychange',()=>{if(document.hidden)pubOnHide();});window.addEventListener('pagehide',pubOnHide);
 function statBot(id){try{const st=S.st=S.st||{first:Date.now(),days:[],g:{},n:0};st.nb=(st.nb||0)+1;st.gb=st.gb||{};if(id)st.gb[id]=(st.gb[id]||0)+1;save();pubStat();}catch(e){}}
 function statGame(id){const st=S.st=S.st||{first:Date.now(),days:[],g:{},n:0};st.n=(st.n||0)+1;if(id)st.g[id]=(st.g[id]||0)+1;save();pubStat();}
 const STATS=new Map();let statT=null;
@@ -6678,9 +6684,9 @@ let instEv=null;
 const UA=navigator.userAgent||'',IOS=/iPhone|iPad|iPod/i.test(UA),INAPP=/FBAN|FBAV|Instagram|WhatsApp|Line\/|; wv\)/i.test(UA);
 const INST_BEN='<div class="instchips"><span>⚡ Abre em 1 toque</span><span>💾 Nada se perde</span><span>🏠 Direto do ícone</span></div>';
 function instCard(title,sub){if(document.getElementById('instWel'))return;const o=h('div');o.id='instWel';
-  o.innerHTML=`<div class="iwc"><div class="iwglow"></div><div class="iwph"><span>📲</span></div><b class="iwt">${title}</b><small class="iws">${sub}</small>
+  o.innerHTML=`<div class="iwc"><div class="iwglow"></div><div class="iwph"><span>📲</span></div><span class="iwopt">✓ OPCIONAL · não é obrigatório</span><b class="iwt">${title}</b><small class="iws">${sub}</small>
     <div class="iwb"><div><i>⚡</i><span>Abre em<br>1 toque</span></div><div><i>💾</i><span>Nada<br>se perde</span></div><div><i>🏠</i><span>Direto<br>do ícone</span></div></div>
-    <button class="pri iwgo">${instEv?'📲 Instalar agora':'📲 Como instalar'}</button><button class="iwno">Agora não · continuar jogando</button><em class="iwop">É opcional</em></div>`;
+    <button class="pri iwgo">${instEv?'📲 Instalar agora':'📲 Como instalar'}</button><button class="iwno">Agora não · continuar jogando</button></div>`;
   const close=()=>{o.classList.add('out');setTimeout(()=>o.remove(),250);};
   o.querySelector('.iwgo').onclick=()=>{close();setTimeout(instGo,120);};o.querySelector('.iwno').onclick=close;o.onclick=e=>{if(e.target===o)close();};
   document.body.append(o);sfx&&sfx('gem');}
@@ -6711,7 +6717,7 @@ $('#friendBtn').onclick=()=>{const body=h('div');body.innerHTML='Qual jogo você
   modal('👥 Jogar com um amigo',body,[{t:'Cancelar'}]);};
 busSub(TOP.lobby);busSub(TOP.me());busSub(TOP.cfg);busSub(TOP.freq+'/'+S.uid+'/+');busSub(TOP.fol+'/'+S.uid+'/+');bimgSubs();
 if(OKEY)setTimeout(()=>{(O.banners||[]).map(banObj).forEach(b=>{const im=banImg(b);if(b.h&&im)busPub(TOP.bimg+'/'+b.h,{img:im},true);});},6000);busSub(TOP.rank(weekId())+'/+');busSub(TOP.rank(monthId())+'/+');busSub(TOP.ib(S.uid)+'/+');busConnect();
-busSub(TOP.unb+'/'+S.uid);setTimeout(()=>{pubRank();fetchIce();pubStat();},2500);rankLoad();setInterval(rankLoad,5*60e3);setInterval(pubStat,5*60e3);chatBadge();tourSubs();if(OKEY){busSub(TOP.parc+'/+');renderParc();}
+busSub(TOP.unb+'/'+S.uid);setTimeout(()=>{pubRank();fetchIce();pubStat();},2500);rankLoad();setInterval(rankLoad,5*60e3);setInterval(pubStat,2*60e3);chatBadge();tourSubs();if(OKEY){busSub(TOP.parc+'/+');renderParc();}
 function ownerVis(){$('#ownerBtn').style.display=OKEY?'block':'none';}
 ownerVis();
 let pTaps=[];$('#pTitle').onclick=()=>{const n=Date.now();pTaps=pTaps.filter(t=>n-t<3000);pTaps.push(n);if(pTaps.length>=7){pTaps=[];$('#ownerBtn').click();}};
