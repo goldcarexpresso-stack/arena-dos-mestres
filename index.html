@@ -1959,7 +1959,7 @@ function itemPrev(id,big){const it=ITEMS[id];
   if(it.c==='ut')return `<span style="font-size:${big?44:30}px">💡</span>`;return '';}
 /* entradas */
 const ENTART={e_jatinho:['E:✈️','ouro','move'],e_iate:['E:🛥️','gelo','move'],e_helicoptero:['E:🚁','neon','move'],e_fogos:['E:🎆','ouro','zoom'],e_meteoro:['E:☄️','fogo','move'],e_diamante:['E:💎','gelo','zoom'],e_trovao:['E:🌩️','raio','zoom'],e_cabo:['E:🏖️','gelo','zoom'],e_coracao:['coracoes','rosa','zoom'],e_rainha:['carruagem','rosa','move'],ew_unicornio:['unicornio','rosa','move'],e_carro:['carro','neon','move'],e_rei:['trono','ouro','zoom'],e_dragao:['dragao','fogo','move'],e_raio:['raio','raio','zoom'],e_fogo:['fenix','fogo','move'],e_tapete:['tapete','ouro','zoom'],e_neon:[null,'neon','zoom']};
-(function(){Object.values(ENTART).forEach(a=>{if(a[0])new Image().src='img/entradas/'+a[0]+'.webp';new Image().src='img/entradas/placa_'+a[1]+'.webp';});})();
+(function(){Object.values(ENTART).forEach(a=>{if(a[0]&&!String(a[0]).startsWith('E:'))new Image().src='img/entradas/'+a[0]+'.webp';new Image().src='img/entradas/placa_'+a[1]+'.webp';});})();
 const ENTQ=[];let entBusy=false;const ENTSEEN=new Set();let entRoom=null;
 function entCheck(){if(!NET.on)return;if(entRoom!==NET.room){entRoom=NET.room;ENTSEEN.clear();}
   [...NET.players,...NET.specs].forEach(p=>{if(!p||ENTSEEN.has(p.id))return;ENTSEEN.add(p.id);const c=p.id===S.uid?myCos():(p.cos||COS.get(p.id));
@@ -2762,14 +2762,15 @@ function openParc(pre){
   if(typeof pre!=='string')pre='';
   const body=h('div','tform');
   const pp=O.prices||{};
-  body.innerHTML=`Conta pra gente o que você tem em mente. Respondemos pelo contato que você deixar.
-    ${pp.adW||pp.tour?`<button class="seeplans" type="button">💰 Ver preços dos anúncios e patrocínios</button>`:''}
+  const priv=pre===PTYPES[3]||pre===PTYPES[4];
+  body.innerHTML=`${priv?'Faça seu pedido sobre seus dados (ver, corrigir, apagar) ou denuncie um conteúdo ou jogador. Respondemos em até 15 dias pelo contato que você deixar.':'Conta pra gente o que você tem em mente. Respondemos pelo contato que você deixar.'}
+    ${!priv&&(pp.adW||pp.tour)?`<button class="seeplans" type="button">💰 Ver preços dos anúncios e patrocínios</button>`:''}
     <div class="lbl">Nome ou apelido</div><input type="text" data-k="nome" maxlength="60" value="${esc(S.name!=='Jogador'?S.name:'')}">
     <div class="lbl">Contato (WhatsApp, Instagram ou e-mail)</div><input type="text" data-k="contato" maxlength="100" placeholder="Ex.: 81 99999-9999 ou @seuperfil">
-    <div class="lbl">Tipo de parceria</div><select data-k="tipo">${PTYPES.map(t=>`<option ${t===pre?'selected':''}>${t}</option>`).join('')}</select>
-    <div class="lbl">Mensagem</div><textarea data-k="msg" maxlength="800" placeholder="O que você gostaria de fazer com a Arena dos Mestres?"></textarea>`;
+    <div class="lbl">${priv?'Assunto':'Tipo de parceria'}</div><select data-k="tipo">${(priv?PTYPES.slice(3,5):PTYPES).map(t=>`<option ${t===pre?'selected':''}>${t}</option>`).join('')}</select>
+    <div class="lbl">Mensagem</div><textarea data-k="msg" maxlength="800" placeholder="${priv?'Conte o que você precisa ou o que aconteceu (nome do jogador, jogo, horário…)':'O que você gostaria de fazer com a Arena dos Mestres?'}"></textarea>`;
   const sp=body.querySelector('.seeplans');if(sp)sp.onclick=()=>openPlans();
-  modal('🤝 Quer fazer parceria?',body,[{t:'Cancelar'},{t:'Enviar',pri:1,f:async()=>{
+  modal(priv?'✉️ Pedido sobre dados ou denúncia':'🤝 Quer fazer parceria?',body,[{t:'Cancelar'},{t:'Enviar',pri:1,f:async()=>{
     const d={};body.querySelectorAll('[data-k]').forEach(x=>d[x.dataset.k]=x.value.trim());
     if(!d.nome||!d.contato||!d.msg){modal('Faltou preencher','Preencha nome, contato e mensagem pra gente conseguir te responder.',[{t:'Voltar',pri:1,f:()=>openParc(pre)}]);return;}
     d.ts=Date.now();d.uid=S.uid;d.perfil=S.name;
@@ -5326,27 +5327,29 @@ function Kaboom(el,end,ctx){
     sfx('pot');sfx('cue');}
   function danger(extra){const D=new Set(Object.keys(G.fi).map(Number));const bs=extra?G.bm.concat([extra]):G.bm;
     for(const b of bs){D.add(b.i);const x0=b.i%W,y0=b.i/W|0;for(const [dx,dy] of Object.values(DIRS))for(let k=1;k<=b.r;k++){const i=(y0+dy*k)*W+x0+dx*k;if(G.g[i]===1)break;D.add(i);if(G.g[i]===2&&!b.mg)break;}}return D;}
+  function hot(tmax){const H=new Set(Object.keys(G.fi).map(Number));for(const b of G.bm){if(b.t>tmax)continue;H.add(b.i);const x0=b.i%W,y0=b.i/W|0;for(const [dx,dy] of Object.values(DIRS))for(let k=1;k<=b.r;k++){const i=(y0+dy*k)*W+x0+dx*k;if(G.g[i]===1)break;H.add(i);if(G.g[i]===2&&!b.mg)break;}}return H;}
   function bfs(from,goal,D,avoidD){const q=[from],prev={[from]:-1};while(q.length){const c=q.shift();if(goal(c))
       {let k=c,st=c;while(prev[k]!==-1&&prev[k]!==from){k=prev[k];}return {cell:c,first:prev[c]===-1?c:k};}
       const x=c%W,y=c/W|0;for(const [dx,dy] of Object.values(DIRS)){const n=(y+dy)*W+x+dx;if(n in prev)continue;if(!free(n))continue;if(avoidD&&D.has(n)&&!goal(n))continue;prev[n]=c;q.push(n);}}return null;}
   function dirTo(p,cell){const x=cell%W,y=cell/W|0;if(x>p.x)return 'r';if(x<p.x)return 'l';if(y>p.y)return 'd';if(y<p.y)return 'u';return null;}
-  function ai(p){if(p.pr>0)return;p.ai-=DT;if(p.ai>0)return;p.ai=.12+Math.random()*.12;const c=p.y*W+p.x,D=danger();
-    if(D.has(c)){const r=bfs(c,i=>!D.has(i),D,false);p.d=r?dirTo(p,r.first):null;p.wb=false;return;}
+  function ai(p){if(p.pr>0)return;p.ai-=DT;if(p.ai>0&&!p.d)return;p.ai=.12+Math.random()*.12;const c=p.y*W+p.x,D=danger();
+    if(D.has(c)){const HOT=hot(.75);const r=bfs(c,i=>!D.has(i),HOT,true)||bfs(c,i=>!D.has(i),D,false);p.d=r?dirTo(p,r.first):null;p.wb=false;return;}
     const foes=G.P.filter(o=>o.al&&o.tm!==p.tm),line=o=>{const oc=cellOf(o),ox=oc%W,oy=oc/W|0;if(ox!==p.x&&oy!==p.y)return false;const dist=Math.abs(ox-p.x)+Math.abs(oy-p.y);if(dist>p.r)return false;
       const dx=Math.sign(ox-p.x),dy=Math.sign(oy-p.y);for(let k=1;k<dist;k++){if(G.g[(p.y+dy*k)*W+p.x+dx*k])return false;}return true;};
     const nearSoft=Object.values(DIRS).some(([dx,dy])=>G.g[(p.y+dy)*W+p.x+dx]===2);
     if((foes.some(line)||nearSoft&&Math.random()<.7)&&G.bm.filter(b=>b.o===p.s).length<p.nb&&!bombAt(c)){
       const D2=danger({i:c,r:p.r,mg:p.mg});if(bfs(c,i=>!D2.has(i),D2,false)){place(p);p.d=null;return;}}
-    let r=bfs(c,i=>G.pu[i],D,true)||bfs(c,i=>{const x=i%W,y=i/W|0;return i!==c&&Object.values(DIRS).some(([dx,dy])=>G.g[(y+dy)*W+x+dx]===2);},D,true);
-    if(!r&&foes.length){const f=foes[0];r=bfs(c,i=>Math.abs(i%W-f.x)+Math.abs((i/W|0)-f.y)<=1,D,true);}
+    let r=bfs(c,i=>G.pu[i]&&!D.has(i),D,true)||bfs(c,i=>{const x=i%W,y=i/W|0;return i!==c&&!D.has(i)&&Object.values(DIRS).some(([dx,dy])=>G.g[(y+dy)*W+x+dx]===2);},D,true);
+    if(!r&&foes.length){const f=foes[0];r=bfs(c,i=>!D.has(i)&&Math.abs(i%W-f.x)+Math.abs((i/W|0)-f.y)<=1,D,true);}
     p.d=r&&r.first!==c&&!D.has(r.first)?dirTo(p,r.first):null;}
   function kill(p){if(!p.al||p.inv>0)return;if(p.sh){p.sh=0;p.inv=1.5;sfx('gem');return;}p.al=0;sfx('lose');sfxVib(120);if(p.s===mySeat)bigMsg='💥 Você explodiu!';}
   function step(){if(G.over)return;G.t+=DT;
     for(const p of G.P){if(!p.al)continue;if(p.inv>0)p.inv-=DT;
       if(p.bot||(net&&SUB&&p.s!==mySeat&&!p.hb))ai(p);
-      const want=p.d;
+      let want=p.d;
       if(p.pr>0){if(want&&want===OPP[p.dir]){[p.x,p.tx]=[p.tx,p.x];[p.y,p.ty]=[p.ty,p.y];p.pr=1-p.pr;p.dir=want;}
-        p.pr+=p.sp*DT;if(p.pr>=1){p.x=p.tx;p.y=p.ty;p.pr=0;const i=p.y*W+p.x;const u=G.pu[i];if(u){delete G.pu[i];sfx('gem');if(u==='b')p.nb=Math.min(6,p.nb+1);if(u==='f')p.r=Math.min(7,p.r+1);if(u==='s')p.sp=Math.min(5.6,p.sp+.55);if(u==='h')p.sh=1;if(u==='m')p.mg=1;if(p.s===mySeat)toast({b:'💣 +1 bomba',f:'🔥 Fogo maior',s:'⚡ Mais rápido',h:'🛡️ Escudo',m:'🌀 Mega bomba: atravessa caixas'}[u]);}}}
+        p.pr+=p.sp*DT;if(p.pr>=1){p.x=p.tx;p.y=p.ty;p.pr=0;const i=p.y*W+p.x;const u=G.pu[i];if(u){delete G.pu[i];sfx('gem');if(u==='b')p.nb=Math.min(6,p.nb+1);if(u==='f')p.r=Math.min(7,p.r+1);if(u==='s')p.sp=Math.min(5.6,p.sp+.55);if(u==='h')p.sh=1;if(u==='m')p.mg=1;if(p.s===mySeat)toast({b:'💣 +1 bomba',f:'🔥 Fogo maior',s:'⚡ Mais rápido',h:'🛡️ Escudo',m:'🌀 Mega bomba: atravessa caixas'}[u]);}
+          if(p.bot||(net&&SUB&&p.s!==mySeat&&!p.hb)){p.ai=0;ai(p);want=p.d;}}}
       if(!p.pr&&want){const [dx,dy]=DIRS[want];const n=(p.y+dy)*W+p.x+dx;if(free(n)){p.tx=p.x+dx;p.ty=p.y+dy;p.dir=want;p.pr=.0001;}}
       if(p.wb){p.wb=false;place(p);}}
     for(const b of G.bm.slice()){b.t-=DT;if(b.t<=0)explode(b);}
