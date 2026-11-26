@@ -4063,8 +4063,9 @@ function pubStat(){
   const st=S.st=S.st||{first:Date.now(),days:[],g:{},n:0};const d=dkey(Date.now());
   if(!st.days.includes(d)){st.days.push(d);st.days=st.days.slice(-60);}if(isInstalled())st.inst=1;save();
   const md=S.mod||{};const blk=md.until&&md.until>Date.now()?{until:md.until,cat:md.cat||'',at:md.at||0}:null;
-  busPub(TOP.st+'/'+S.uid,{name:S.name,first:st.first,last:Date.now(),inst:!!st.inst,days:st.days,n:st.n||0,g:st.g||{},blk},true);
+  busPub(TOP.st+'/'+S.uid,{name:S.name,first:st.first,last:Date.now(),inst:!!st.inst,days:st.days,n:st.n||0,g:st.g||{},nb:st.nb||0,gb:st.gb||{},blk},true);
 }
+function statBot(id){try{const st=S.st=S.st||{first:Date.now(),days:[],g:{},n:0};st.nb=(st.nb||0)+1;st.gb=st.gb||{};if(id)st.gb[id]=(st.gb[id]||0)+1;save();pubStat();}catch(e){}}
 function statGame(id){const st=S.st=S.st||{first:Date.now(),days:[],g:{},n:0};st.n=(st.n||0)+1;if(id)st.g[id]=(st.g[id]||0)+1;save();pubStat();}
 const STATS=new Map();let statT=null;
 function onStat(t,o){const id=t.split('/').pop();if(!o){STATS.delete(id);}else STATS.set(id,o);
@@ -4084,9 +4085,9 @@ function ownerChips(){const el=$('#oChips');if(!el)return;const L=[...STATS.valu
 function renderStats(){ownerChips();
   const box=$('#oStats');if(!box)return;const L=[...STATS.values()];const now=Date.now(),td=dkey(now);
   const act=n=>L.filter(x=>now-(x.last||0)<n*864e5).length;
-  const games=L.reduce((a,x)=>a+(x.n||0),0);const inst=L.filter(x=>x.inst).length;
+  const games=Math.ceil(L.reduce((a,x)=>a+(x.n||0),0)/2);const gbot=L.reduce((a,x)=>a+(x.nb||0),0);const inst=L.filter(x=>x.inst).length;
   const tile=(v,t,c)=>`<div class="stile" style="--c:${c}"><b>${v}</b><span>${t}</span></div>`;
-  const gc={};L.forEach(x=>Object.entries(x.g||{}).forEach(([k,v])=>gc[k]=(gc[k]||0)+v));
+  const gc={};L.forEach(x=>{Object.entries(x.g||{}).forEach(([k,v])=>gc[k]=(gc[k]||0)+v/2);Object.entries(x.gb||{}).forEach(([k,v])=>gc[k]=(gc[k]||0)+v);});Object.keys(gc).forEach(k=>gc[k]=Math.ceil(gc[k]));
   const gl=GAMES.map(g=>[g.name,gc[g.id]||0]).sort((a,b)=>b[1]-a[1]);const gm=Math.max(1,...gl.map(x=>x[1]));
   const per=statPeriodos(statPer);const labels=per.map(p=>({curto:p.curto,longo:p.longo}));
   const dentro=(p,d)=>!!d&&d>=p.a&&d<p.b;
@@ -4103,7 +4104,7 @@ function renderStats(){ownerChips();
   box.innerHTML=`<div class="dash"><div class="stiles">${tile(L.length,'Pessoas que já abriram','#00e5ff')}${tile(inst,'Instalaram na tela inicial','#b026ff')}${tile(ONLINE.size,'Online agora','#25d366')}
     ${tile(L.filter(x=>ult(x)===td).length,'Usaram hoje','#ffc23d')}${tile(act(7),'Últimos 7 dias','#ff2bd6')}${tile(act(30),'Últimos 30 dias','#7df9ff')}
     ${tile(novos7,'Novos em 7 dias ('+(novos7===novosAntes?'igual':(novos7>novosAntes?'+':'')+(novos7-novosAntes))+')','#2dd4bf')}${tile(parou,'Pararam de usar (8+ dias)','#fb923c')}
-    ${tile(games,'Partidas online jogadas','#ffe27a')}${tile(L.filter(x=>x.blk&&x.blk.until>now).length,'Bloqueados agora','#ff5a5f')}</div>
+    ${tile(games,'Partidas entre pessoas','#ffe27a')}${tile(gbot,'Partidas contra robô','#7dd3fc')}${tile(games+gbot,'Partidas no total','#c77dff')}${tile(L.filter(x=>x.blk&&x.blk.until>now).length,'Bloqueados agora','#ff5a5f')}</div>
     <div class="dash-chips">${chip('dia','14 dias')}${chip('semana','8 semanas')}${chip('mes','6 meses')}</div>
     <div class="dash-card"><div class="dash-h"><b>🆕 Novos jogadores</b><small>Quem baixou e abriu pela 1ª vez, ${nomePer}</small></div><div id="g-novos"></div></div>
     <div class="dash-card"><div class="dash-h"><b>🔥 Pessoas usando o app</b><small>Quem abriu, ${nomePer}</small></div><div id="g-usando"></div></div>
@@ -4605,6 +4606,7 @@ function finishMatch(win,label){try{if(!(M&&M.watch))setTimeout(()=>{if(!$('#mod
       [{t:'Sair',f:()=>{netLeave(true);go('lobby');}},...(REPS[0]&&Date.now()-REPS[0].at<6e4?[{t:'🎬 Replay',f:()=>rpOpen(REPS[0].id)}]:[]),{t:'🔁 Revanche',pri:1,f:()=>{NET.rm.add(S.uid);roomPub({t:'rematch'});toast('Revanche pedida! Aguardando os outros…');checkRematch();}}]);
     return;
   }
+  statBot(g&&g.id);
   if(win){S.bal+=prize(stake);S.w++;addHist('Prêmio: '+g.name,prize(stake));}else{S.l++;save();}
   modal(win?(M.duo?'🏆 Sua dupla venceu!':'🏆 Você venceu!'):(M.duo?'Sua dupla perdeu':'Você perdeu'),
     win?`Prêmio de <b style="color:var(--grn)">${fmt(prize(stake))}</b> creditado no saldo de teste.<br>Saldo: <b style="color:var(--txt)">${fmt(S.bal)}</b>`:`A entrada de ${fmt(stake)} ficou no pote do adversário.<br>Saldo: <b style="color:var(--txt)">${fmt(S.bal)}</b>`,
