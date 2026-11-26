@@ -1265,7 +1265,28 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
 #legalGate .lglinks{display:flex;gap:8px;margin:12px 0}#legalGate .lglinks button{flex:1;font-size:13px}
 #legalGate label{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;margin:8px 0;line-height:1.4;cursor:pointer}#legalGate input{width:22px;height:22px;flex:none;margin-top:1px}
 body:has(#legalGate) #mod{z-index:100000!important}
-#mod .instben{margin:6px 0 0;padding-left:4px;list-style:none;font-size:13.5px;line-height:1.45}#mod .instben li{margin:6px 0}
+#mod .instchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}#mod .instchips span{font-size:12px;font-weight:800;padding:5px 10px;border-radius:99px;background:#7b2ff733;border:1px solid #c77dff55}
+#instWel{position:fixed;inset:0;z-index:9800;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 50% 45%,#3b0f7acc,#05030ee6 70%);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:iwIn .3s ease}
+#instWel.out{animation:iwOut .25s ease forwards}
+@keyframes iwIn{from{opacity:0}}@keyframes iwOut{to{opacity:0}}
+#instWel .iwc{position:relative;width:min(340px,100%);text-align:center;padding:26px 20px 18px;border-radius:28px;color:#fff;overflow:hidden;isolation:isolate;
+  background:linear-gradient(165deg,#2c1270,#150b38 60%,#0d1a3c);box-shadow:0 0 0 1.5px #c77dff88,0 20px 60px #000c,0 0 50px #b026ff66;animation:iwPop .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes iwPop{from{transform:scale(.7) translateY(30px);opacity:0}}
+#instWel .iwglow{position:absolute;inset:-40%;z-index:-1;background:conic-gradient(from 0deg,transparent,#ff3cac33,transparent 30%,#00d4ff33,transparent 60%);animation:iwSpin 6s linear infinite}
+@keyframes iwSpin{to{transform:rotate(360deg)}}
+#instWel .iwph{width:84px;height:84px;margin:0 auto 12px;border-radius:26px;display:grid;place-items:center;font-size:44px;background:linear-gradient(135deg,#ff3cac,#7b2ff7 55%,#00d4ff);box-shadow:0 8px 26px #ff3cac88,0 0 0 6px #ffffff12;animation:iwBob 2s ease-in-out infinite}
+@keyframes iwBob{50%{transform:translateY(-6px) rotate(-4deg)}}
+#instWel .iwt{display:block;font-size:22px;font-weight:900;line-height:1.15;background:linear-gradient(90deg,#fff,#ffd6f5,#9ef3ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+#instWel .iws{display:block;margin-top:6px;font-size:14px;color:#d9c8ff}
+#instWel .iwb{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0 16px}
+#instWel .iwb div{padding:12px 4px 10px;border-radius:16px;background:#ffffff10;border:1px solid #ffffff1f;animation:iwPop .5s cubic-bezier(.2,1.4,.4,1) backwards}
+#instWel .iwb div:nth-child(2){animation-delay:.1s}#instWel .iwb div:nth-child(3){animation-delay:.2s}
+#instWel .iwb i{display:block;font-style:normal;font-size:26px;margin-bottom:4px}
+#instWel .iwb span{display:block;font-size:12.5px;font-weight:800;line-height:1.2;color:#f1eaff}
+#instWel .iwgo{width:100%;padding:15px;font-size:17px;font-weight:900;border-radius:16px;border:0;background:linear-gradient(135deg,#ff3cac,#7b2ff7 60%,#00d4ff);box-shadow:0 6px 22px #ff3cac77;animation:iwPulse 1.8s ease-in-out infinite}
+@keyframes iwPulse{50%{box-shadow:0 6px 30px #ff3caccc,0 0 0 6px #ff3cac22}}
+#instWel .iwno{width:100%;margin-top:8px;padding:11px;background:transparent;border:0;color:#c9b8ff;font-size:14px;font-weight:700}
+#instWel .iwop{display:block;font-style:normal;font-size:11px;color:#9f8fd0;margin-top:2px}
 #legalGate .lgok{width:100%;margin-top:10px;padding:14px;font-size:16px}#legalGate .lgok:disabled{opacity:.45}
 /* ===== Perfil sofisticado (vidro + brilho) ===== */.pst{margin:6px 12px 0!important;display:grid!important;grid-template-columns:repeat(3,1fr);gap:0!important;border-radius:20px;background:linear-gradient(180deg,#ffffff12,#ffffff05);border:1px solid #ffffff22;box-shadow:inset 0 1px 0 #ffffff22,0 10px 24px #0007;backdrop-filter:blur(8px);overflow:hidden}.pst .st{background:none!important;border:none!important;border-radius:0!important;padding:12px 4px!important;position:relative}.pst .st+.st::before{content:"";position:absolute;left:0;top:18%;bottom:18%;width:1px;background:linear-gradient(#0000,#ffffff33,#0000)}.pst .st span{font-size:18px;opacity:.9}.pst .st b{font-size:24px!important;letter-spacing:.5px}.pst .st small{font-size:10.5px!important;text-transform:uppercase;letter-spacing:1px;font-weight:800}.ptiles{gap:12px!important}.ptile{background:linear-gradient(160deg,#ffffff14,#ffffff05)!important;border:1px solid #ffffff1f!important;box-shadow:inset 0 1px 0 #ffffff26,0 12px 26px #0008!important;backdrop-filter:blur(10px);overflow:hidden;min-height:112px!important;padding:16px!important;transition:transform .15s}.ptile:active{transform:scale(.97)}.ptile::before{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,var(--g) 0,#0000 70%);opacity:.55}.ptile::after{content:"›";position:absolute;right:14px;bottom:10px;font-size:22px;font-weight:300;color:#ffffff88}.ptile span{display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:14px;font-size:24px!important;margin-bottom:8px;background:linear-gradient(135deg,var(--g),var(--g2));box-shadow:0 6px 16px var(--gs),inset 0 1px 0 #ffffff55;filter:none!important}.ptile b{font-size:16px!important;letter-spacing:.3px}.ptile small{color:#ffffffa8!important;font-weight:600!important}.ptile.t1{--g:#b026ff;--g2:#ff2b8a;--gs:#b026ff66}.ptile.t2{--g:#00c896;--g2:#0277bd;--gs:#00c89666}.ptile.t3{--g:#ff5a6e;--g2:#7a1f3a;--gs:#ff5a6e55}.ptile.t4{--g:#ffc23d;--g2:#ff7a00;--gs:#ffb62766}.pgrp{background:linear-gradient(160deg,#ffffff0f,#ffffff04)!important;border:1px solid #ffffff1c!important;border-radius:20px!important;box-shadow:inset 0 1px 0 #ffffff1c,0 10px 22px #0006;backdrop-filter:blur(8px)}.pgrp>summary{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.pgrp>summary::after{content:'›'!important;font-size:22px;top:50%!important;transform:translateY(-50%);transition:transform .2s;color:#ffffff88!important}.pgrp[open]>summary::after{content:'›'!important;transform:translateY(-50%) rotate(90deg)}.pgrp>summary small{flex-basis:100%;margin-top:-6px;padding-left:2px}</style>
 </head>
@@ -6655,18 +6676,25 @@ comCardsUI();
 /* ========== INSTALAR (PWA) ========== */
 let instEv=null;
 const UA=navigator.userAgent||'',IOS=/iPhone|iPad|iPod/i.test(UA),INAPP=/FBAN|FBAV|Instagram|WhatsApp|Line\/|; wv\)/i.test(UA);
-const INST_BEN='<ul class="instben"><li>⚡ <b>Abre em 1 toque</b>, em tela cheia e mais rápido</li><li>💾 <b>Seu progresso fica guardado</b> — saldo, acessórios, partidas e replays não são apagados pelo navegador</li><li>🏠 <b>Volta direto pro jogo</b> pelo ícone, sem procurar o link</li></ul><small style="color:var(--mut);display:block;margin-top:6px">Não é obrigatório — dá pra continuar jogando pelo navegador. Pra levar tudo pra outro celular, entre na sua conta no Perfil.</small>';
+const INST_BEN='<div class="instchips"><span>⚡ Abre em 1 toque</span><span>💾 Nada se perde</span><span>🏠 Direto do ícone</span></div>';
+function instCard(title,sub){if(document.getElementById('instWel'))return;const o=h('div');o.id='instWel';
+  o.innerHTML=`<div class="iwc"><div class="iwglow"></div><div class="iwph"><span>📲</span></div><b class="iwt">${title}</b><small class="iws">${sub}</small>
+    <div class="iwb"><div><i>⚡</i><span>Abre em<br>1 toque</span></div><div><i>💾</i><span>Nada<br>se perde</span></div><div><i>🏠</i><span>Direto<br>do ícone</span></div></div>
+    <button class="pri iwgo">${instEv?'📲 Instalar agora':'📲 Como instalar'}</button><button class="iwno">Agora não · continuar jogando</button><em class="iwop">É opcional</em></div>`;
+  const close=()=>{o.classList.add('out');setTimeout(()=>o.remove(),250);};
+  o.querySelector('.iwgo').onclick=()=>{close();setTimeout(instGo,120);};o.querySelector('.iwno').onclick=close;o.onclick=e=>{if(e.target===o)close();};
+  document.body.append(o);sfx&&sfx('gem');}
 function instHow(){const how=IOS?'<ol class="insth"><li>Toque em <b>Compartilhar</b> <span class="ib">⬆️</span> (embaixo da tela, no Safari)</li><li>Role e toque em <b>Adicionar à Tela de Início</b></li><li>Toque em <b>Adicionar</b> — o ícone do Arena aparece junto dos seus apps</li></ol>'
     :INAPP?'<ol class="insth"><li>Toque nos <b>⋮</b> (três pontinhos) lá em cima</li><li>Toque em <b>Abrir no navegador</b> / <b>Abrir no Chrome</b></li><li>No Chrome, toque em <b>📲 Instalar</b> que aparece aqui no app</li></ol>'
     :'<ol class="insth"><li>No Chrome, toque nos <b>⋮</b> (três pontinhos) lá em cima</li><li>Toque em <b>Instalar app</b> ou <b>Adicionar à tela inicial</b></li><li>Confirme em <b>Instalar</b></li></ol>';
-  modal('📲 Colocar o Arena na tela inicial','<p style="margin:0 0 8px">Fica igual a um aplicativo. É só seguir:</p>'+how+INST_BEN,[{t:'Entendi',pri:1}]);}
+  modal('📲 Colocar o Arena na tela inicial',how+INST_BEN,[{t:'Entendi',pri:1}]);}
 async function instGo(){if(instEv){instEv.prompt();let ok=false;try{ok=(await instEv.userChoice).outcome==='accepted';}catch(e){}instEv=null;instUI();if(ok)toast('📲 Arena instalado! Procure o ícone na sua tela inicial');return;}instHow();}
 function instUI(){const c=$('#instBtn');if(!c)return;let off=0;try{off=+localStorage.getItem('arena_instoff')||0;}catch(e){}
   if(isInstalled()||Date.now()<off){c.style.display='none';return;}
   c.style.display='';c.innerHTML=`<div class="instic">📲</div><div class="insttx"><b>Instale o Arena no celular</b><small>Mais rápido e seu progresso fica guardado</small></div><button class="pri instgo">${instEv?'Instalar':'Como instalar'}</button><button class="instx" aria-label="Fechar">✕</button>`;
   c.querySelector('.instgo').onclick=instGo;c.querySelector('.instx').onclick=()=>{try{localStorage.setItem('arena_instoff',Date.now()+3*864e5);}catch(e){}c.style.display='none';};}
 function instNudge(){if(isInstalled())return;let t=0;try{t=+localStorage.getItem('arena_instnudge')||0;}catch(e){}if(Date.now()<t)return;try{localStorage.setItem('arena_instnudge',Date.now()+2*864e5);}catch(e){}
-  setTimeout(()=>{if($('#mod').classList.contains('on'))return;modal('📲 Gostou do Arena?','<p style="margin:0 0 6px">Coloque o app na tela inicial do seu celular — leva 5 segundos:</p>'+INST_BEN,[{t:'Agora não'},{t:instEv?'📲 Instalar':'📲 Como instalar',pri:1,f:()=>setTimeout(instGo,60)}]);},2500);}
+  setTimeout(()=>{if($('#mod').classList.contains('on'))return;instCard('Gostou do Arena?','Coloque na tela inicial em 5 segundos');},2500);}
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();instEv=e;instUI();});
 window.addEventListener('appinstalled',()=>{instEv=null;instUI();toast('📲 App instalado!');});
 setTimeout(instUI,800);
@@ -6675,7 +6703,7 @@ setTimeout(instUI,800);
   if(S.instW)return;let tries=0;const tk=setInterval(()=>{tries++;if(tries>60){clearInterval(tk);return;}
     if(document.getElementById('legalGate')||(typeof tourI!=='undefined'&&tourI>=0)||$('#mod').classList.contains('on')||!$('#lobby').classList.contains('on')||!S.gift0||[...document.querySelectorAll('.chbox,.entfx')].some(e=>e.offsetParent))return;
     if(tries<4)return;clearInterval(tk);S.instW=1;save();try{localStorage.setItem('arena_instnudge',Date.now()+2*864e5);}catch(e){}
-    modal('📲 Instale o Arena no celular','<p style="margin:0 0 6px">Você já pode jogar agora mesmo. Mas com o app na tela inicial você ganha:</p>'+INST_BEN,[{t:'Agora não'},{t:instEv?'📲 Instalar':'📲 Como instalar',pri:1,f:()=>setTimeout(instGo,60)}]);},5000);})();
+    instCard('Leve o Arena no seu celular','Já pode jogar! Instalado fica melhor:');},5000);})();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
 
 $('#friendBtn').onclick=()=>{const body=h('div');body.innerHTML='Qual jogo vocês vão jogar?';const row=h('div','chips');row.style.marginTop='12px';
