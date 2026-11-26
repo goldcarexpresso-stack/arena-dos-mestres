@@ -4107,11 +4107,13 @@ const STSRV=new Map();let stSrvAt=0,stSrvOk=null;const STSENT=new Set();
 function stMerge(a,b){if(!a)return b;if(!b)return a;const mx=(x,y)=>{const o={...(x||{})};Object.entries(y||{}).forEach(([k,v])=>o[k]=Math.max(o[k]||0,v||0));return o;};
   return {...a,...b,from:a.from||b.from,name:b.name||a.name,first:Math.min(a.first||Infinity,b.first||Infinity),last:Math.max(a.last||0,b.last||0),inst:!!(a.inst||b.inst),
     days:[...new Set([...(a.days||[]),...(b.days||[])])].sort(),n:Math.max(a.n||0,b.n||0),g:mx(a.g,b.g),nb:Math.max(a.nb||0,b.nb||0),gb:mx(a.gb,b.gb),mt:mx(a.mt,b.mt),blk:b.blk!==undefined?b.blk:a.blk};}
-function statAll(){const m=new Map();STSRV.forEach((v,k)=>m.set(k,{...v}));STATS.forEach((v,k)=>m.set(k,stMerge(m.get(k),{...v,from:k})));return [...m.values()];}
+const stReal=x=>(x.n||0)>0||(x.nb||0)>0||(x.days||[]).length>=2||Object.values(x.mt||{}).some(v=>v>=1)||x.inst||(x.name&&x.name!=='Jogador');
+function statAll(){const m=new Map();STSRV.forEach((v,k)=>m.set(k,{...v}));STATS.forEach((v,k)=>{if(stSrvOk&&!m.has(k)&&!stReal(v)&&now0()-(v.last||0)>36e5)return;m.set(k,stMerge(m.get(k),{...v,from:k}));});return [...m.values()];}
+const now0=()=>Date.now();
 async function statSrvLoad(force){if(!CL.ses)return;if(!force&&Date.now()-stSrvAt<55e3)return;stSrvAt=Date.now();
   try{const r=await clRpc('arena_estat_list',{});if(r&&r.ok&&Array.isArray(r.rows)){stSrvOk=true;STSRV.clear();r.rows.forEach(x=>STSRV.set(x.from,x));
       /* guarda no servidor quem só existe no canal ao vivo, pra nada se perder */
-      STATS.forEach((v,k)=>{if(STSENT.has(k))return;const sv=STSRV.get(k);if(!sv||(v.n||0)>(sv.n||0)||(v.first||9e15)<(sv.first||9e15)||(v.days||[]).some(d=>!(sv.days||[]).includes(d))){STSENT.add(k);rkAnon('arena_estat_put',{p:{uid:k,...v}});}});
+      STATS.forEach((v,k)=>{if(STSENT.has(k))return;const sv=STSRV.get(k);if(!sv&&!stReal(v))return;if(!sv||(v.n||0)>(sv.n||0)||(v.first||9e15)<(sv.first||9e15)||(v.days||[]).some(d=>!(sv.days||[]).includes(d))){STSENT.add(k);rkAnon('arena_estat_put',{p:{uid:k,...v}});}});
       if($('#owner').classList.contains('on'))renderStats();}
     else stSrvOk=false;}catch(e){stSrvOk=false;}}
 setInterval(()=>{if(OKEY&&$('#owner')&&$('#owner').classList.contains('on'))statSrvLoad();},60000);
