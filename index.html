@@ -2012,11 +2012,12 @@ function setAv(el,photo,name,color,id){
   el.textContent=photo?'':(name||'?').trim().charAt(0).toUpperCase();
 }
 function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2000);}
-function modal(title,body,btns){
+let MODG=0;
+function modal(title,body,btns){MODG++;
   const m=$('#mod');m.innerHTML='';const box=h('div','box');box.append(h('h3',null,title));
   if(body!=null){const mb=h('div','mb');if(typeof body==='string')mb.innerHTML=body;else mb.append(body);box.append(mb);}
   const row=h('div','row');
-  btns.forEach(b=>{const x=h('button',b.pri?'pri':'',b.t);x.onclick=()=>{if(b.f&&b.f()===false)return;m.classList.remove('on');};row.append(x);});
+  btns.forEach(b=>{const x=h('button',b.pri?'pri':'',b.t);x.onclick=()=>{const g0=MODG;if(b.f&&b.f()===false)return;if(MODG===g0)m.classList.remove('on');};row.append(x);});
   box.append(row);m.append(box);m.classList.add('on');
 }
 function fly(e,down){const s=h('div','fly'+(down?' dn':''),e);s.style[down?'top':'bottom']=down?'90px':'110px';document.body.append(s);setTimeout(()=>s.remove(),1800);}
@@ -4631,7 +4632,7 @@ function finishMatch(win,label){try{if(!(M&&M.watch))setTimeout(()=>{if(!$('#mod
   if(win){S.bal+=prize(stake);S.w++;addHist('Prêmio: '+g.name,prize(stake));}else{S.l++;save();}
   modal(win?(M.duo?'🏆 Sua dupla venceu!':'🏆 Você venceu!'):(M.duo?'Sua dupla perdeu':'Você perdeu'),
     win?`Prêmio de <b style="color:var(--grn)">${fmt(prize(stake))}</b> creditado no saldo de teste.<br>Saldo: <b style="color:var(--txt)">${fmt(S.bal)}</b>`:`A entrada de ${fmt(stake)} ficou no pote do adversário.<br>Saldo: <b style="color:var(--txt)">${fmt(S.bal)}</b>`,
-    [{t:'Lobby',f:()=>go('lobby')},...(REPS[0]&&Date.now()-REPS[0].at<6e4?[{t:'🎬 Replay',f:()=>{go('lobby');rpOpen(REPS[0].id);}}]:[]),{t:'Jogar de novo',pri:1,f:()=>{go('lobby');openStake(g);}}]);
+    [{t:'Lobby',f:()=>go('lobby')},...(REPS[0]&&Date.now()-REPS[0].at<6e4?[{t:'🎬 Replay',f:()=>{go('lobby');rpOpen(REPS[0].id);}}]:[]),{t:'Jogar de novo',pri:1,f:()=>{const bo=M.bo||1,lp=M.lp||2;if(stake&&S.bal<stake){go('lobby');openStake(g);return;}S.lastStake=stake||S.lastStake;startMatch(g,stake,bo,{lp});}}]);
 }
 $('#wBack').onclick=()=>{leaveWatch(true);go('lobby');};
 $('#wSend').onclick=wchatSend;$('#wIn').onkeydown=e=>{if(e.key==='Enter')wchatSend();};
