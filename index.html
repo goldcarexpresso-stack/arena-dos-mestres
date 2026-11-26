@@ -4063,11 +4063,27 @@ function pubStat(){
   const st=S.st=S.st||{first:Date.now(),days:[],g:{},n:0};const d=dkey(Date.now());
   if(!st.days.includes(d)){st.days.push(d);st.days=st.days.slice(-60);}if(isInstalled())st.inst=1;save();
   const md=S.mod||{};const blk=md.until&&md.until>Date.now()?{until:md.until,cat:md.cat||'',at:md.at||0}:null;
-  busPub(TOP.st+'/'+S.uid,{name:S.name,first:st.first,last:Date.now(),inst:!!st.inst,days:st.days,n:st.n||0,g:st.g||{},nb:st.nb||0,gb:st.gb||{},blk},true);
+  const pl={name:S.name,first:st.first,last:Date.now(),inst:!!st.inst,days:st.days,n:st.n||0,g:st.g||{},nb:st.nb||0,gb:st.gb||{},mt:st.mt||{},blk};
+  busPub(TOP.st+'/'+S.uid,pl,true);
+  try{rkAnon('arena_estat_put',{p:{uid:S.uid,...pl}});}catch(e){}
 }
+/* tempo no app: conta 1 minuto a cada minuto com a tela aberta */
+setInterval(()=>{try{if(document.hidden)return;const st=S.st=S.st||{first:Date.now(),days:[],g:{},n:0};const d=dkey(Date.now());st.mt=st.mt||{};st.mt[d]=Math.min(1440,(st.mt[d]||0)+1);const ks=Object.keys(st.mt).sort();while(ks.length>60)delete st.mt[ks.shift()];if(!st.days.includes(d)){st.days.push(d);st.days=st.days.slice(-60);}save();}catch(e){}},60000);
 function statBot(id){try{const st=S.st=S.st||{first:Date.now(),days:[],g:{},n:0};st.nb=(st.nb||0)+1;st.gb=st.gb||{};if(id)st.gb[id]=(st.gb[id]||0)+1;save();pubStat();}catch(e){}}
 function statGame(id){const st=S.st=S.st||{first:Date.now(),days:[],g:{},n:0};st.n=(st.n||0)+1;if(id)st.g[id]=(st.g[id]||0)+1;save();pubStat();}
 const STATS=new Map();let statT=null;
+const STSRV=new Map();let stSrvAt=0,stSrvOk=null;const STSENT=new Set();
+function stMerge(a,b){if(!a)return b;if(!b)return a;const mx=(x,y)=>{const o={...(x||{})};Object.entries(y||{}).forEach(([k,v])=>o[k]=Math.max(o[k]||0,v||0));return o;};
+  return {...a,...b,from:a.from||b.from,name:b.name||a.name,first:Math.min(a.first||Infinity,b.first||Infinity),last:Math.max(a.last||0,b.last||0),inst:!!(a.inst||b.inst),
+    days:[...new Set([...(a.days||[]),...(b.days||[])])].sort(),n:Math.max(a.n||0,b.n||0),g:mx(a.g,b.g),nb:Math.max(a.nb||0,b.nb||0),gb:mx(a.gb,b.gb),mt:mx(a.mt,b.mt),blk:b.blk!==undefined?b.blk:a.blk};}
+function statAll(){const m=new Map();STSRV.forEach((v,k)=>m.set(k,{...v}));STATS.forEach((v,k)=>m.set(k,stMerge(m.get(k),{...v,from:k})));return [...m.values()];}
+async function statSrvLoad(force){if(!CL.ses)return;if(!force&&Date.now()-stSrvAt<55e3)return;stSrvAt=Date.now();
+  try{const r=await clRpc('arena_estat_list',{});if(r&&r.ok&&Array.isArray(r.rows)){stSrvOk=true;STSRV.clear();r.rows.forEach(x=>STSRV.set(x.from,x));
+      /* guarda no servidor quem só existe no canal ao vivo, pra nada se perder */
+      STATS.forEach((v,k)=>{if(STSENT.has(k))return;const sv=STSRV.get(k);if(!sv||(v.n||0)>(sv.n||0)||(v.first||9e15)<(sv.first||9e15)||(v.days||[]).some(d=>!(sv.days||[]).includes(d))){STSENT.add(k);rkAnon('arena_estat_put',{p:{uid:k,...v}});}});
+      if($('#owner').classList.contains('on'))renderStats();}
+    else stSrvOk=false;}catch(e){stSrvOk=false;}}
+setInterval(()=>{if(OKEY&&$('#owner')&&$('#owner').classList.contains('on'))statSrvLoad();},60000);
 function onStat(t,o){const id=t.split('/').pop();if(!o){STATS.delete(id);}else STATS.set(id,o);
   if(OKEY&&$('#owner').classList.contains('on')){clearTimeout(statT);statT=setTimeout(renderStats,300);}}
 let statPer='semana',statSlice=-1;
@@ -4080,12 +4096,14 @@ function statPeriodos(g){const h=new Date();h.setHours(0,0,0,0);const L=[];const
 let oTab='geral';
 function ownerTab(t){oTab=t;document.querySelectorAll('#oTabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
   document.querySelectorAll('#owner .ocard').forEach(c=>c.style.display=c.dataset.tab===t?'':'none');window.scrollTo({top:0,behavior:'smooth'});}
-function ownerChips(){const el=$('#oChips');if(!el)return;const L=[...STATS.values()],now=Date.now(),td=dkey(now),pn=+(($('#oParcN')||{}).textContent||0);
-  el.innerHTML=`<span>🟢 ${ONLINE.size} online</span><span>📅 ${L.filter(x=>(x.days||[]).includes(td)).length} hoje</span><span>👥 ${L.length} total</span>${pn?`<span class="hot2">📨 ${pn} parceria</span>`:''}`;}
+function ownerChips(){const el=$('#oChips');if(!el)return;const L=statAll(),now=Date.now(),td=dkey(now),pn=+(($('#oParcN')||{}).textContent||0);
+  el.innerHTML=`<span>🟢 ${onlineList().length+1} online</span><span>📅 ${L.filter(x=>(x.days||[]).includes(td)).length} hoje</span><span>👥 ${L.length} total</span>${pn?`<span class="hot2">📨 ${pn} parceria</span>`:''}`;}
 function renderStats(){ownerChips();
-  const box=$('#oStats');if(!box)return;const L=[...STATS.values()];const now=Date.now(),td=dkey(now);
+  const box=$('#oStats');if(!box)return;statSrvLoad();const L=statAll();const now=Date.now(),td=dkey(now);
   const act=n=>L.filter(x=>now-(x.last||0)<n*864e5).length;
   const games=Math.ceil(L.reduce((a,x)=>a+(x.n||0),0)/2);const gbot=L.reduce((a,x)=>a+(x.nb||0),0);const inst=L.filter(x=>x.inst).length;
+  const minDia=d=>L.reduce((a,x)=>a+((x.mt||{})[d]||0),0);const hojeMin=minDia(td);const hojeU=L.filter(x=>((x.mt||{})[td]||0)>0).length;
+  const fmtMin=m=>m<60?Math.round(m)+' min':(Math.floor(m/60)+'h'+(Math.round(m%60)?String(Math.round(m%60)).padStart(2,'0'):''));
   const tile=(v,t,c)=>`<div class="stile" style="--c:${c}"><b>${v}</b><span>${t}</span></div>`;
   const gc={};L.forEach(x=>{Object.entries(x.g||{}).forEach(([k,v])=>gc[k]=(gc[k]||0)+v/2);Object.entries(x.gb||{}).forEach(([k,v])=>gc[k]=(gc[k]||0)+v);});Object.keys(gc).forEach(k=>gc[k]=Math.ceil(gc[k]));
   const gl=GAMES.map(g=>[g.name,gc[g.id]||0]).sort((a,b)=>b[1]-a[1]);const gm=Math.max(1,...gl.map(x=>x[1]));
@@ -4101,22 +4119,25 @@ function renderStats(){ownerChips();
   const novos7=L.filter(x=>dkey(x.first||0)>ha(7)).length,novosAntes=L.filter(x=>dkey(x.first||0)>ha(14)&&dkey(x.first||0)<=ha(7)).length;
   const nomePer={dia:'por dia (14 dias)',semana:'por semana (8 semanas)',mes:'por mês (6 meses)'}[statPer];
   const chip=(k,t)=>`<button type="button" data-per="${k}" class="${statPer===k?'on':''}">${t}</button>`;
-  box.innerHTML=`<div class="dash"><div class="stiles">${tile(L.length,'Pessoas que já abriram','#00e5ff')}${tile(inst,'Instalaram na tela inicial','#b026ff')}${tile(ONLINE.size,'Online agora','#25d366')}
+  box.innerHTML=`<div class="dash"><div class="stiles">${tile(L.length,'Pessoas que já abriram','#00e5ff')}${tile(inst,'Instalaram na tela inicial','#b026ff')}${tile(onlineList().length+1,'Online agora (com você)','#25d366')}
     ${tile(L.filter(x=>ult(x)===td).length,'Usaram hoje','#ffc23d')}${tile(act(7),'Últimos 7 dias','#ff2bd6')}${tile(act(30),'Últimos 30 dias','#7df9ff')}
     ${tile(novos7,'Novos em 7 dias ('+(novos7===novosAntes?'igual':(novos7>novosAntes?'+':'')+(novos7-novosAntes))+')','#2dd4bf')}${tile(parou,'Pararam de usar (8+ dias)','#fb923c')}
-    ${tile(games,'Partidas entre pessoas','#ffe27a')}${tile(gbot,'Partidas contra robô','#7dd3fc')}${tile(games+gbot,'Partidas no total','#c77dff')}${tile(L.filter(x=>x.blk&&x.blk.until>now).length,'Bloqueados agora','#ff5a5f')}</div>
+    ${tile(games,'Partidas entre pessoas','#ffe27a')}${tile(gbot,'Partidas contra robô','#7dd3fc')}${tile(games+gbot,'Partidas no total','#c77dff')}${tile(L.filter(x=>x.blk&&x.blk.until>now).length,'Bloqueados agora','#ff5a5f')}${tile(fmtMin(hojeMin),'Tempo no app hoje (todos)','#38bdf8')}${tile(hojeU?fmtMin(hojeMin/hojeU):'0 min','Tempo médio por pessoa hoje','#a3e635')}</div>
     <div class="dash-chips">${chip('dia','14 dias')}${chip('semana','8 semanas')}${chip('mes','6 meses')}</div>
     <div class="dash-card"><div class="dash-h"><b>🆕 Novos jogadores</b><small>Quem baixou e abriu pela 1ª vez, ${nomePer}</small></div><div id="g-novos"></div></div>
     <div class="dash-card"><div class="dash-h"><b>🔥 Pessoas usando o app</b><small>Quem abriu, ${nomePer}</small></div><div id="g-usando"></div></div>
+    <div class="dash-card"><div class="dash-h"><b>⏱️ Tempo no app</b><small>Horas somadas de todo mundo, ${nomePer}</small></div><div id="g-tempo"></div></div>
     <div class="dash-card"><div class="dash-h"><b>📈 Crescimento</b><small>Total de pessoas ao longo do tempo</small></div><div id="g-cresc"></div></div>
     <div class="dash-card"><div class="dash-h"><b>⏳ Quem parou de usar</b><small>Toque numa fatia para ver as pessoas</small></div><div id="g-parou"></div><div id="g-parou-lista" class="dash-lista"></div></div>
     <div class="dash-card"><div class="dash-h"><b>📲 Instalação</b><small>Quem colocou o app na tela inicial</small></div><div id="g-inst"></div></div>
-    <div class="dash-card"><div class="dash-h"><b>🎮 Jogos mais jogados</b><small>Partidas online</small></div>
+    <div class="dash-card"><div class="dash-h"><b>🎮 Jogos mais jogados</b><small>Partidas entre pessoas e contra robô</small></div>
     ${gl.map(([n,v])=>`<div class="sgame"><span>${esc(n)}</span><div><i style="width:${Math.round(v/gm*100)}%"></i></div><b>${v}</b></div>`).join('')}</div>
-    <small class="dash-nota" style="display:block">Conta cada celular que abriu esta versão do app. O uso guarda os últimos 60 dias de cada pessoa, então "por mês" mostra o uso só desses 60 dias. Os números ficam no servidor público e são aproximados até o app ter banco de dados.</small></div>`;
+    <small class="dash-nota" style="display:block">${stSrvOk?'✅ Números salvos no banco de dados da Arena e atualizados a cada minuto — não se perdem.':stSrvOk===false?'⚠️ Não deu pra ler o banco agora; mostrando só o que chegou ao vivo.':CL.ses?'⏳ Carregando o histórico do banco…':'⚠️ Entre na sua conta de dono (Perfil › Conta) pra ver o histórico completo salvo no banco.'} Cada celular conta como uma pessoa. Partidas contra robô e tempo no app começaram a ser contados em 25/11.</small></div>`;
   if(window.GF){
     GF.barras($('#g-novos'),{labels,series:[{nome:'Novos',cor:'#00e5ff',valores:novos}]});
     GF.barras($('#g-usando'),{labels,series:[{nome:'Pessoas',cor:'#ff2bd6',valores:usando}]});
+    {const tempo=per.map(p=>{let m=0;L.forEach(x=>Object.entries(x.mt||{}).forEach(([d,v])=>{if(dentro(p,d))m+=v;}));return Math.round(m/6)/10;});
+      GF.barras($('#g-tempo'),{labels,series:[{nome:'Horas',cor:'#38bdf8',valores:tempo}]});}
     GF.linha($('#g-cresc'),{labels,series:[{nome:'Pessoas',cor:'#ffc23d',valores:cresc}]});
     const lista=$('#g-parou-lista');
     const mostra=i=>{statSlice=i;if(i<0){lista.innerHTML='';return;}const m=faixas[i].membros;
