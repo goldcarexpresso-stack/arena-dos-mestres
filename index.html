@@ -4099,7 +4099,7 @@ let oTab='geral';
 function ownerTab(t){oTab=t;document.querySelectorAll('#oTabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
   document.querySelectorAll('#owner .ocard').forEach(c=>c.style.display=c.dataset.tab===t?'':'none');window.scrollTo({top:0,behavior:'smooth'});}
 function ownerChips(){const el=$('#oChips');if(!el)return;const L=statAll(),now=Date.now(),td=dkey(now),pn=+(($('#oParcN')||{}).textContent||0);
-  el.innerHTML=`<span>🟢 ${onlineList().length+1} online</span><span>📅 ${L.filter(x=>(x.days||[]).includes(td)).length} hoje</span><span>👥 ${L.length} total</span>${pn?`<span class="hot2">📨 ${pn} parceria</span>`:''}`;}
+  el.innerHTML=`<span>🟢 ${onlineList().length} online fora você</span><span>📅 ${L.filter(x=>(x.days||[]).includes(td)).length} hoje</span><span>👥 ${L.length} total</span>${pn?`<span class="hot2">📨 ${pn} parceria</span>`:''}`;}
 function renderStats(){ownerChips();
   const box=$('#oStats');if(!box)return;statSrvLoad();const L=statAll();const now=Date.now(),td=dkey(now);
   const act=n=>L.filter(x=>now-(x.last||0)<n*864e5).length;
@@ -4121,7 +4121,7 @@ function renderStats(){ownerChips();
   const novos7=L.filter(x=>dkey(x.first||0)>ha(7)).length,novosAntes=L.filter(x=>dkey(x.first||0)>ha(14)&&dkey(x.first||0)<=ha(7)).length;
   const nomePer={dia:'por dia (14 dias)',semana:'por semana (8 semanas)',mes:'por mês (6 meses)'}[statPer];
   const chip=(k,t)=>`<button type="button" data-per="${k}" class="${statPer===k?'on':''}">${t}</button>`;
-  box.innerHTML=`<div class="dash"><div class="stiles">${tile(L.length,'Pessoas que já abriram','#00e5ff')}${tile(inst,'Instalaram na tela inicial','#b026ff')}${tile(onlineList().length+1,'Online agora (com você)','#25d366')}
+  box.innerHTML=`<div class="dash"><div class="stiles">${tile(L.length,'Pessoas que já abriram','#00e5ff')}${tile(inst,'Instalaram na tela inicial','#b026ff')}${tile(onlineList().length,'Online agora (fora você)','#25d366')}
     ${tile(L.filter(x=>ult(x)===td).length,'Usaram hoje','#ffc23d')}${tile(act(7),'Últimos 7 dias','#ff2bd6')}${tile(act(30),'Últimos 30 dias','#7df9ff')}
     ${tile(novos7,'Novos em 7 dias ('+(novos7===novosAntes?'igual':(novos7>novosAntes?'+':'')+(novos7-novosAntes))+')','#2dd4bf')}${tile(parou,'Pararam de usar (8+ dias)','#fb923c')}
     ${tile(games,'Partidas entre pessoas','#ffe27a')}${tile(gbot,'Partidas contra robô','#7dd3fc')}${tile(games+gbot,'Partidas no total','#c77dff')}${tile(L.filter(x=>x.blk&&x.blk.until>now).length,'Bloqueados agora','#ff5a5f')}${tile(fmtMin(hojeMin),'Tempo no app hoje (todos)','#38bdf8')}${tile(hojeU?fmtMin(hojeMin/hojeU):'0 min','Tempo médio por pessoa hoje','#a3e635')}</div>
