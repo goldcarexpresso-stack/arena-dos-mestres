@@ -4105,7 +4105,7 @@ function renderStats(){ownerChips();
   const box=$('#oStats');if(!box)return;statSrvLoad();const L=statAll();const now=Date.now(),td=dkey(now);
   const act=n=>L.filter(x=>now-(x.last||0)<n*864e5).length;
   const games=Math.ceil(L.reduce((a,x)=>a+(x.n||0),0)/2);const gbot=L.reduce((a,x)=>a+(x.nb||0),0);const inst=L.filter(x=>x.inst).length;
-  const minDia=d=>L.reduce((a,x)=>a+((x.mt||{})[d]||0),0);const hojeMin=minDia(td);const hojeU=L.filter(x=>((x.mt||{})[td]||0)>0).length;
+  const LU=L.filter(x=>x.from!==S.uid);const minDia=d=>LU.reduce((a,x)=>a+((x.mt||{})[d]||0),0);const hojeMin=minDia(td);const hojeU=LU.filter(x=>((x.mt||{})[td]||0)>0).length;
   const fmtMin=m=>m<60?Math.round(m)+' min':(Math.floor(m/60)+'h'+(Math.round(m%60)?String(Math.round(m%60)).padStart(2,'0'):''));
   const tile=(v,t,c)=>`<div class="stile" style="--c:${c}"><b>${v}</b><span>${t}</span></div>`;
   const gc={};L.forEach(x=>{Object.entries(x.g||{}).forEach(([k,v])=>gc[k]=(gc[k]||0)+v/2);Object.entries(x.gb||{}).forEach(([k,v])=>gc[k]=(gc[k]||0)+v);});Object.keys(gc).forEach(k=>gc[k]=Math.ceil(gc[k]));
@@ -4125,11 +4125,11 @@ function renderStats(){ownerChips();
   box.innerHTML=`<div class="dash"><div class="stiles">${tile(L.length,'Pessoas que já abriram','#00e5ff')}${tile(inst,'Instalaram na tela inicial','#b026ff')}${tile(onlineList().length,'Online agora (fora você)','#25d366')}
     ${tile(L.filter(x=>ult(x)===td).length,'Usaram hoje','#ffc23d')}${tile(act(7),'Últimos 7 dias','#ff2bd6')}${tile(act(30),'Últimos 30 dias','#7df9ff')}
     ${tile(novos7,'Novos em 7 dias ('+(novos7===novosAntes?'igual':(novos7>novosAntes?'+':'')+(novos7-novosAntes))+')','#2dd4bf')}${tile(parou,'Pararam de usar (8+ dias)','#fb923c')}
-    ${tile(games,'Partidas entre pessoas','#ffe27a')}${tile(gbot,'Partidas contra robô','#7dd3fc')}${tile(games+gbot,'Partidas no total','#c77dff')}${tile(L.filter(x=>x.blk&&x.blk.until>now).length,'Bloqueados agora','#ff5a5f')}${tile(fmtMin(hojeMin),'Tempo no app hoje (todos)','#38bdf8')}${tile(hojeU?fmtMin(hojeMin/hojeU):'0 min','Tempo médio por pessoa hoje','#a3e635')}</div>
+    ${tile(games,'Partidas entre pessoas','#ffe27a')}${tile(gbot,'Partidas contra robô','#7dd3fc')}${tile(games+gbot,'Partidas no total','#c77dff')}${tile(L.filter(x=>x.blk&&x.blk.until>now).length,'Bloqueados agora','#ff5a5f')}${tile(fmtMin(hojeMin),'Tempo no app hoje (sem você)','#38bdf8')}${tile(hojeU?fmtMin(hojeMin/hojeU):'0 min','Tempo médio por jogador hoje','#a3e635')}</div>
     <div class="dash-chips">${chip('dia','14 dias')}${chip('semana','8 semanas')}${chip('mes','6 meses')}</div>
     <div class="dash-card"><div class="dash-h"><b>🆕 Novos jogadores</b><small>Quem baixou e abriu pela 1ª vez, ${nomePer}</small></div><div id="g-novos"></div></div>
     <div class="dash-card"><div class="dash-h"><b>🔥 Pessoas usando o app</b><small>Quem abriu, ${nomePer}</small></div><div id="g-usando"></div></div>
-    <div class="dash-card"><div class="dash-h"><b>⏱️ Tempo no app</b><small>Horas somadas de todo mundo, ${nomePer}</small></div><div id="g-tempo"></div></div>
+    <div class="dash-card"><div class="dash-h"><b>⏱️ Tempo no app</b><small>Horas somadas dos jogadores (sem você), ${nomePer}</small></div><div id="g-tempo"></div></div>
     <div class="dash-card"><div class="dash-h"><b>📈 Crescimento</b><small>Total de pessoas ao longo do tempo</small></div><div id="g-cresc"></div></div>
     <div class="dash-card"><div class="dash-h"><b>⏳ Quem parou de usar</b><small>Toque numa fatia para ver as pessoas</small></div><div id="g-parou"></div><div id="g-parou-lista" class="dash-lista"></div></div>
     <div class="dash-card"><div class="dash-h"><b>📲 Instalação</b><small>Quem colocou o app na tela inicial</small></div><div id="g-inst"></div></div>
@@ -4139,7 +4139,7 @@ function renderStats(){ownerChips();
   if(window.GF){
     GF.barras($('#g-novos'),{labels,series:[{nome:'Novos',cor:'#00e5ff',valores:novos}]});
     GF.barras($('#g-usando'),{labels,series:[{nome:'Pessoas',cor:'#ff2bd6',valores:usando}]});
-    {const tempo=per.map(p=>{let m=0;L.forEach(x=>Object.entries(x.mt||{}).forEach(([d,v])=>{if(dentro(p,d))m+=v;}));return Math.round(m/6)/10;});
+    {const tempo=per.map(p=>{let m=0;LU.forEach(x=>Object.entries(x.mt||{}).forEach(([d,v])=>{if(dentro(p,d))m+=v;}));return Math.round(m/6)/10;});
       GF.barras($('#g-tempo'),{labels,series:[{nome:'Horas',cor:'#38bdf8',valores:tempo}]});}
     GF.linha($('#g-cresc'),{labels,series:[{nome:'Pessoas',cor:'#ffc23d',valores:cresc}]});
     const lista=$('#g-parou-lista');
