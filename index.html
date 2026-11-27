@@ -1333,6 +1333,17 @@ body[data-sc="match"]::before,body[data-sc="watch"]::before{background:linear-gr
 .hero1.hroyal h1{color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.5)}
 .hero1.hroyal h1 em{background:linear-gradient(180deg,#fff8d6,#ffd24a 55%,#f5a623);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero1 .hmas{position:absolute;right:10px;top:9px;width:110px;height:110px;border-radius:22px;object-fit:cover;border:2px solid #ffd24a;box-shadow:0 0 18px rgba(255,194,61,.6);z-index:1;animation:iwBob 2.6s ease-in-out infinite}
+
+#roomCam{position:fixed;inset:0;z-index:29;background:#000}
+#roomCam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#roomCam::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,transparent 16%,transparent 45%,rgba(0,0,0,.6) 60%);pointer-events:none}
+#roomCam .lvtag{position:absolute;top:calc(14px + env(safe-area-inset-top));left:14px;z-index:2;font-size:13px;font-weight:900;letter-spacing:.5px;color:#fff;background:#ff2d55;padding:5px 11px;border-radius:9px;animation:lvbl 1.4s ease-in-out infinite}
+#roomCam .lvviews{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;z-index:2;font-size:13px;font-weight:800;color:#fff;background:rgba(0,0,0,.45);padding:5px 10px;border-radius:9px}
+#roomCam .lvwho{position:absolute;left:14px;top:calc(50px + env(safe-area-inset-top));z-index:2;line-height:1.15}
+#roomCam .lvwho b{display:block;color:#fff;font-size:17px;text-shadow:0 1px 6px #000}
+#roomCam .lvwho small{display:block;color:#ffd24a;font-size:12.5px;font-weight:800;text-shadow:0 1px 4px #000}
+#mod.livebg{background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+#mod.livebg .box{max-height:44vh!important;background:linear-gradient(180deg,rgba(30,12,74,.78),rgba(14,8,36,.94))!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 /* ===== Tema Real da Arena: roxo real + ouro (combina com o mascote e os cenários) ===== */
 :root{--gold:#ffd24a;--gold2:#f5a623;--royal:#2a0f6e;--royal2:#150a3a}
 .card{background:linear-gradient(165deg,rgba(46,20,112,.82),rgba(20,10,50,.86))!important;border:1px solid rgba(255,210,74,.26)!important;border-radius:20px!important;
@@ -3226,7 +3237,7 @@ function renderRoom(){
     ${NET.host?`<input type="text" readonly value="${link}" style="font-size:13px;margin-top:10px">
     <div class="row" style="margin-top:10px"><a class="wpp" href="https://wa.me/?text=${encodeURIComponent(msg+link)}" target="_blank" rel="noopener">💬 WhatsApp</a><button id="cpL">📋 Copiar</button></div>
     <button id="invOn" style="width:100%;margin-top:8px">🟢 Convidar quem está online</button>
-    <button id="lvRoom" class="${LIVE.on?'pri':''}" style="width:100%;margin-top:8px">${LIVE.on?'🔴 Ao vivo — tocar pra encerrar':'🔴 Abrir live enquanto espera'}</button>${LIVE.on?`<div class="lvprev"><span class="lvtag">● AO VIVO</span><span class="lvviews">👁 ${NET.specs.length||0}</span><div class="lvwho"><b>${esc(S.name)}</b><small>${esc((NET.game&&NET.game.name)||'Arena dos Mestres')}</small></div></div><small style="color:var(--mut);display:block;text-align:center">Quem está online vê sua live em "🔴 Lives nos jogos" e pode entrar pra assistir.</small>`:''}`:''}
+    <button id="lvRoom" class="${LIVE.on?'pri':''}" style="width:100%;margin-top:8px">${LIVE.on?'🔴 Ao vivo — tocar pra encerrar':'🔴 Abrir live enquanto espera'}</button>${LIVE.on?`<small style="color:var(--mut);display:block;text-align:center;margin-top:6px">Quem está online vê sua live em "🔴 Lives nos jogos" e pode entrar pra assistir.</small>`:''}`:''}
     <div class="lbl">Jogadores na sala (${NET.players.length}/${NET.max})</div><div id="rl"></div>`;
   const rl=body.querySelector('#rl');
   if(g.duo){['A','B'].forEach((tm,k)=>{rl.append(h('div','lbl',k?'🔵 Dupla 2':'🟣 Dupla 1'));const ps=NET.players.filter(p=>(p.tm||'A')===tm);
@@ -3240,13 +3251,22 @@ function renderRoom(){
   modal(`👥 Sala — ${g.name}`,body,btns);
   const cp=body.querySelector('#cpL');if(cp)cp.onclick=async()=>{try{await navigator.clipboard.writeText(link);toast('Link copiado!');}catch(e){body.querySelector('input').select();toast('Segure o link e toque em Copiar');}};
   const lvr=body.querySelector('#lvRoom');if(lvr)lvr.onclick=async()=>{await liveToggle();renderRoom();};
-  const lvp=body.querySelector('.lvprev');if(lvp&&CAM.stream)lvp.append(camVid(CAM.stream,true));
+  roomCamUI();
   const io=body.querySelector('#invOn');if(io)io.onclick=()=>{
     const b2=h('div');const ps=onlineList().filter(p=>!NET.players.some(q=>q.id===p.id));
     if(!ps.length)b2.innerHTML='<span style="color:var(--mut)">Ninguém disponível online agora.</span>';
     ps.forEach(p=>b2.append(personRow(p,'Convidar',(q,bt)=>{sendInvite(q);bt.textContent='Enviado ✓';bt.disabled=true;})));
     modal('🟢 Online agora',b2,[{t:'Voltar à sala',pri:1,f:renderRoom}]);};
 }
+/* câmera da sala em tela cheia, estilo live do TikTok, com a sala por cima embaixo */
+function roomCamUI(){let el=document.getElementById('roomCam');const on=LIVE.on&&CAM.stream&&NET.on&&!NET.started;
+  $('#mod').classList.toggle('livebg',!!on);
+  if(!on){if(el)el.remove();return;}
+  if(!el){el=h('div');el.id='roomCam';document.body.append(el);}
+  if(!el.querySelector('video')||el.querySelector('video').srcObject!==CAM.stream){el.innerHTML='';el.append(camVid(CAM.stream,true));
+    el.insertAdjacentHTML('beforeend',`<span class="lvtag">● AO VIVO</span><span class="lvviews"></span><div class="lvwho"><b></b><small></small></div>`);}
+  el.querySelector('.lvviews').textContent='👁 '+((NET.specs||[]).length);el.querySelector('.lvwho b').textContent=S.name||'Jogador';el.querySelector('.lvwho small').textContent=(NET.game&&NET.game.name)||'Arena dos Mestres';}
+setInterval(()=>{const el=document.getElementById('roomCam');if(el&&(!LIVE.on||!NET.on||NET.started||!$('#mod').classList.contains('on'))){el.remove();$('#mod').classList.remove('livebg');}},500);
 function joinFromLink(){
   const room=QS.get('sala'),g=gameOf(QS.get('jogo'),QS.get('modo'));if(!room||!g)return;
   try{history.replaceState(null,'',location.pathname);}catch(e){}
