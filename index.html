@@ -1503,6 +1503,24 @@ body[data-sc="match"]::before,body[data-sc="watch"]::before{background:linear-gr
 .moreg .mgtx{flex:1}.moreg b{display:block;font-size:18px;font-weight:900;letter-spacing:.3px}.moreg small{display:block;font-size:12.5px;font-weight:800;color:#4a1800}
 .moreg .mgar{flex:none;font-size:40px;font-weight:900;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.35);transition:transform .2s}
 .moreg.on{animation:none;background:linear-gradient(120deg,#3a138f,#5b1fd0)!important;color:#fff!important}.moreg.on small{color:#e9d5ff}.moreg.on .mgar{transform:rotate(-90deg)}
+
+/* cards modernizados: anúncio/parceria, aviso neon, 777 */
+.adlinks{gap:10px!important;margin-top:10px!important}
+.adlinks button{display:flex!important;align-items:center;gap:10px;text-align:left;padding:11px 12px!important;border-radius:16px!important;color:#fff!important;border:1px solid rgba(255,255,255,.25)!important;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.adlinks #adHere{background:linear-gradient(135deg,#ff3cac,#b026ff)!important}.adlinks #parcBtn{background:linear-gradient(135deg,#00c853,#00a3cc)!important}
+.adlinks button i{flex:none;font-style:normal;font-size:24px;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.22)}
+.adlinks button b{display:block;font-size:14.5px;font-weight:900}.adlinks button small{display:block;font-size:11px;font-weight:700;opacity:.92}
+.neon2{--n:#ffd24a;position:relative;overflow:hidden;margin:6px 0 14px;padding:14px 16px 16px;border-radius:22px;text-align:center;
+  background:linear-gradient(160deg,rgba(20,10,50,.9),rgba(40,16,90,.85));border:2px solid var(--n);box-shadow:0 0 18px color-mix(in srgb,var(--n) 55%,transparent),inset 0 0 22px color-mix(in srgb,var(--n) 18%,transparent)}
+.neon2 .n2tag{display:inline-block;font-size:11px;font-weight:900;letter-spacing:.8px;color:#1a0b00;background:var(--n);padding:4px 10px;border-radius:99px;margin-bottom:10px}
+.neon2 .n2tx{color:#fff;font-weight:900;font-size:19px;line-height:1.35;white-space:pre-wrap;word-break:break-word;text-shadow:0 0 8px color-mix(in srgb,var(--n) 70%,transparent)}
+.neon2 .n2sh{position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.18) 50%,transparent 65%);transform:translateX(-120%);animation:chmshine 4s ease-in-out infinite;pointer-events:none}
+.sortecard{border:2px solid #ffd24a!important;border-radius:22px!important;box-shadow:0 10px 28px rgba(0,0,0,.5),0 0 24px rgba(255,194,61,.4)!important;padding:16px!important}
+.sortecard .sctag{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:.6px;color:#1a0b00;background:#ffd24a;padding:3px 9px;border-radius:99px;margin-bottom:4px}
+.sortecard b{font-size:19px!important;color:#ffd24a!important;text-shadow:0 2px 6px rgba(0,0,0,.7)}
+.sortecard .scbal{display:inline-flex!important;align-items:center;gap:4px;margin-top:4px;font-size:15px!important;font-weight:900;color:#fff!important;background:rgba(0,0,0,.45);padding:4px 10px;border-radius:10px}
+.sortecard .scbal span{font-size:11px;font-weight:700;color:#d9c8ff}
+.sortecard em{font-size:17px!important;padding:12px 16px!important;animation:iwPulse 1.8s ease-in-out infinite}
 /* ===== Tema Real da Arena: roxo real + ouro (combina com o mascote e os cenários) ===== */
 :root{--gold:#ffd24a;--gold2:#f5a623;--royal:#2a0f6e;--royal2:#150a3a}
 .card{background:linear-gradient(165deg,rgba(46,20,112,.82),rgba(20,10,50,.86))!important;border:1px solid rgba(255,210,74,.26)!important;border-radius:20px!important;
@@ -2507,7 +2525,7 @@ const NETS={instagram:{n:'Instagram',i:'📷',u:v=>'https://instagram.com/'+v.re
   site:{n:'Site',i:'🌐',u:v=>v}};
 const socUrl=s=>{const v=s.v.trim();if(/^https?:\/\//i.test(v))return v;const u=NETS[s.k].u(v);return /^https?:\/\//i.test(u)?u:'https://'+u;};
 const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function neonHTML(txt,col){return txt.trim()?`<div class="neon" style="--n:${col}">${esc(txt)}</div>`:'';}
+function neonHTML(txt,col){return txt.trim()?`<div class="neon2" style="--n:${col}"><span class="n2tag">📢 AVISO DA ARENA</span><div class="n2tx">${esc(txt)}</div><i class="n2sh"></i></div>`:'';}
 const b64u={enc:buf=>btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''),
   dec:s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return Uint8Array.from(atob(s),c=>c.charCodeAt(0));}};
 async function signCfg(str){const k=await crypto.subtle.importKey('jwk',{...OWNER_PUB,d:OKEY.replace(/^ARENA-/,''),ext:true},{name:'ECDSA',namedCurve:'P-256'},false,['sign']);
@@ -2553,7 +2571,7 @@ const INFO={
 function infoOpen(id){const d=INFO[id];if(!d)return;const b=h('div','infobox');b.innerHTML=d[1].map(([i,t,x])=>`<div class="infoi"><span>${i}</span><div><b>${t}</b><small>${x}</small></div></div>`).join('')+`<small class="infofoot">Ainda com dúvida? Toque em 💬 Dúvidas ou fale no Instagram @arenadosmesstres</small>`;
   modal(d[0],b,[{t:'Entendi 👍',pri:1}]);}
 function infoBtns(){Object.keys(INFO).forEach(id=>{const sc=document.getElementById(id);if(!sc||sc.querySelector(':scope > .infobtn'))return;
-  const bt=h('button','infobtn','<i>ℹ️</i><span><b>Como funciona esta tela?</b><small>Toque e veja tudo explicado</small></span><em>›</em>');bt.onclick=()=>infoOpen(id);sc.append(bt);});}
+  const bt=h('button','infobtn','<i>ℹ️</i><span><b>Como funciona esta tela?</b><small>Toque e veja tudo explicado</small></span><em>›</em>');bt.onclick=()=>infoOpen(id);const ft=sc.querySelector(':scope > .lfoot');if(ft)sc.insertBefore(bt,ft);else sc.append(bt);});}
 setTimeout(infoBtns,800);
 function renderCommunity(){
   const hb=$('#heroBox');const AB=activeBanners();
@@ -3013,7 +3031,7 @@ function renderVit(){
   html+=`<div class="adneon"><b>📣 ANÚNCIOS</b><small>Sua marca aqui pra toda a Arena</small></div>`;
   if(slides.length)html+=`<div class="rot" id="rotBox">${slides.join('')}${slides.length>1?`<div class="rdots">${slides.map(()=>'<i></i>').join('')}</div>`:''}</div>`;
   else html+=`<button class="adhere" id="adHere"><span>📣</span><div><b>ANUNCIE AQUI</b><small>${priceLine()||'Sua loja ou serviço pra toda a comunidade da Arena'}</small></div><em>→</em></button>`;
-  html+=slides.length?`<div class="adlinks"><button id="adHere">📣 Anuncie aqui</button><button id="parcBtn">🤝 Parceria</button></div>`:`<button class="parc" id="parcBtn">🤝 QUER FAZER PARCERIA?</button>`;
+  html+=slides.length?`<div class="adlinks"><button id="adHere"><i>📣</i><span><b>Anuncie aqui</b><small>a partir de R$ 15/semana</small></span></button><button id="parcBtn"><i>🤝</i><span><b>Parceria</b><small>torneios e patrocínio</small></span></button></div>`:`<button class="parc" id="parcBtn">🤝 QUER FAZER PARCERIA?</button>`;
   if(box.dataset.k===html&&box.querySelector('#rotBox,#adHere'))return;box.dataset.k=html;
   box.innerHTML=html;
   const cta=box.querySelector('#vCta');if(cta)cta.onclick=()=>goLink(v.url);
@@ -6738,7 +6756,7 @@ function agVerdeUI(){const ag=$('#agoraSc');if(!ag)return;let c=$('#agCk');
   sorteUI();}
 function sorteUI(){const b=$('#sorteGames');if(!b)return;let c=$('#slotCard');
   if(!c){c=h('button','sortecard');c.id='slotCard';c.onclick=slotOpen;b.append(c);cardArt(c,'777');}
-  c.innerHTML=`<span class="sc7">7<i>7</i>7</span><div><b>CAÇA-NÍQUEL 777</b><small>Gire com <i class="gv">💎</i> diamantes de jogo · seu saldo: <i class="gv">💎</i> ${S.gemJ|0}</small></div><em>Jogar ›</em>`;}
+  c.innerHTML=`<span class="sc7">7<i>7</i>7</span><div><span class="sctag">🎰 SORTE DO DIA</span><b>CAÇA-NÍQUEL 777</b><small class="scbal"><i class="gv">💎</i> ${S.gemJ|0} <span>diamantes de jogo</span></small></div><em>GIRAR ›</em>`;}
 /* artes dos cartões: img/cards/<nome>.jpg — se a imagem existir, entra sozinha */
 function cardArt(el,k){const u='img/cards/'+k+'.jpg';const im=new Image();im.onload=()=>{el.style.setProperty('--im',`url(${u})`);el.classList.add('phbg','artok');};im.src=u;}
 function agOrder(){const ag=$('#agoraSc');if(!ag)return;['bingoCard','agCk','agCasa','agTour','liveMini'].forEach(id=>{const e=document.getElementById(id);if(e&&e.parentNode===ag)ag.append(e);});ag.scrollLeft=0;}
