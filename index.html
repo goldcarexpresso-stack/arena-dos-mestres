@@ -6781,9 +6781,14 @@ function servOpen(){const body=h('div');
 function servItem(x){const use=servUse(x),desc=x.full&&use>=x.full?x.v:use/GEM_POR_REAL,fica=Math.max(0,x.v-desc);
   const body=h('div');body.innerHTML=`<div style="font-size:42px;text-align:center">${x.ic}</div><p>${esc(x.d)}</p>
    <div class="vdi"><b>Preço: ${brl(x.v)}${x.m?' + '+brl(x.m)+' por mês':''}</b>${use>=GEM_POR_REAL?`<small>Com 💎 ${use}: desconto de ${brl(desc)} → você paga <b style="color:#5ef08f">${fica?brl(fica):'nada'}</b>${x.m?' + a mensalidade':''}</small>`:`<small>Com diamantes da Loja você ganha até ${x.full?'100%':'30%'} de desconto.</small>`}</div>`;
-  const B=[{t:'📩 Falar no Instagram',f:()=>servZap(x)}];
+  const B=[{t:'💠 Pagar com Pix',pri:use<GEM_POR_REAL?1:0,f:()=>{servPix(x);}},{t:'📩 Falar no Instagram',f:()=>servZap(x)}];
   if(use>=GEM_POR_REAL)B.push({t:'💎 Usar meus diamantes',pri:1,f:()=>{servTroca(x,use,fica);}});
   B.push({t:'Fechar'});modal(x.ic+' '+x.n,body,B);}
+function servPix(x){const cod='SV'+Math.random().toString(36).slice(2,7).toUpperCase();const code=pixCode(x.v,'ARENA'+cod);const body=h('div');
+  body.innerHTML=`<div class="pixv">${brl(x.v)}</div><div class="pixc">${esc(x.n)} · pedido <b>${cod}</b></div>
+   <ol style="padding-left:18px;margin:10px 0;line-height:1.5"><li>Toque em <b>📋 Copiar Pix</b></li><li>Abra o app do seu banco → <b>Pix → Pix Copia e Cola</b></li><li>Cole, confira o valor e pague</li><li>Toque em <b>✅ Já paguei</b> — abrimos o Instagram com o seu pedido pronto pra combinar os detalhes</li></ol>
+   <div class="pixb">${esc(code)}</div><small style="color:var(--mut)">Ou use a chave Pix: ${PIX_CHAVE} — e escreva o código <b>${cod}</b> na mensagem.${x.m?` A mensalidade de ${brl(x.m)} é combinada depois, no Instagram.`:''}</small>`;
+  modal('💠 Pagar com Pix · '+x.n,body,[{t:'📋 Copiar Pix',f:()=>{copyTxt(code,'📋 Pix copiado — cole no app do banco');return false;}},{t:'✅ Já paguei',pri:1,f:()=>{servZap(x,`Já paguei no Pix ✅ — pedido ${cod}.`);}},{t:'Voltar',f:()=>servItem(x)}]);}
 async function servTroca(x,use,fica){if(!CL.ses){needLogin();return;}await dirLoad(true);if((S.gem||0)<use){toast('Diamantes insuficientes');return;}
   let r;try{r=await clRpc('arena_pedir_servico',{p_item:x.id,p_gem:use,p_player_uid:S.uid,p_nome:S.name||'Jogador'});}catch(e){toast(/mes/.test(e.message)?'Você já usou diamantes num serviço este mês':'Não deu agora, tente de novo');return;}
   if(r&&r.erro==='saldo'){toast('Diamantes insuficientes');dirLoad(true);return;}
