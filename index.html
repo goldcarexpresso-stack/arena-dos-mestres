@@ -1521,6 +1521,29 @@ body[data-sc="match"]::before,body[data-sc="watch"]::before{background:linear-gr
 .sortecard .scbal{display:inline-flex!important;align-items:center;gap:4px;margin-top:4px;font-size:15px!important;font-weight:900;color:#fff!important;background:rgba(0,0,0,.45);padding:4px 10px;border-radius:10px}
 .sortecard .scbal span{font-size:11px;font-weight:700;color:#d9c8ff}
 .sortecard em{font-size:17px!important;padding:12px 16px!important;animation:iwPulse 1.8s ease-in-out infinite}
+
+/* caça-níquel: cara de máquina de verdade */
+.slbox{background:linear-gradient(180deg,#3a0f6e,#1a0838 45%,#0d0624)!important;border:4px solid transparent!important;background-clip:padding-box!important;box-shadow:0 0 0 3px #ffd24a,0 0 0 7px #7a4a00,0 0 50px rgba(255,194,61,.5),inset 0 0 40px rgba(176,38,255,.35)!important;padding:16px 16px 18px!important}
+.slmq{margin:-4px -4px 12px;padding:8px 6px;border-radius:16px;background:linear-gradient(180deg,#b3123c,#6a0820);border:2px solid #ffd24a;box-shadow:inset 0 0 18px rgba(0,0,0,.5)}
+.slmq h3{margin:4px 0!important;font-size:24px!important;font-weight:900!important;letter-spacing:1px;color:#fff!important;-webkit-text-fill-color:#fff!important;background:none!important;text-shadow:0 2px 0 #3a0010,0 0 14px rgba(255,210,74,.8)}
+.slmq h3 em{font-style:normal;color:#ffd24a;-webkit-text-fill-color:#ffd24a}
+.slbulbs{display:flex;justify-content:space-between;padding:0 4px}.slbulbs i{width:9px;height:9px;border-radius:50%;background:#ffd24a;box-shadow:0 0 8px #ffd24a;animation:slb 1s steps(1) infinite}
+.slbulbs i:nth-child(even){animation-delay:.5s}@keyframes slb{50%{background:#7a4a00;box-shadow:none}}
+.slsaldo{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:99px;background:rgba(0,0,0,.45);border:1px solid rgba(93,255,156,.5);margin-bottom:12px!important}
+.slsaldo span{font-size:10.5px;font-weight:900;letter-spacing:.8px;color:#b9f5d0}.slsaldo b{font-size:22px!important}
+.slreels{position:relative;padding:14px 10px!important;background:linear-gradient(180deg,#1a0b3d,#0b0620)!important;border:3px solid #ffd24a!important;box-shadow:inset 0 0 22px rgba(0,0,0,.8),0 0 18px rgba(255,210,74,.35)}
+.slreels .slline{position:absolute;left:4px;right:4px;top:50%;height:3px;background:#ff2d55;box-shadow:0 0 10px #ff2d55;z-index:2;opacity:.75;pointer-events:none}
+.slr{height:104px!important;font-size:58px!important;border:2px solid #c9b27a}
+.slmsg{font-size:19px!important;margin:12px 0 10px!important}
+.slap{gap:10px!important}.slap span{font-size:11px;font-weight:900;letter-spacing:.8px;color:#d9c8ff}
+.slap button{min-width:62px!important;padding:10px 12px!important;font-size:16px!important;border-radius:14px!important}
+.slspin{width:100%!important;padding:18px!important;font-size:26px!important;letter-spacing:3px!important;border-radius:99px!important;background:radial-gradient(circle at 50% 30%,#fff3a6,#ffd24a 45%,#f59e0b)!important;box-shadow:0 7px 0 #8a5200,0 0 30px rgba(255,194,61,.7)!important;animation:iwPulse 1.8s ease-in-out infinite}
+.slspin:disabled{animation:none;opacity:.7}
+.slpay{margin-top:12px;padding:10px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,210,74,.3)}
+.slpay summary{font-weight:900;color:#ffd24a}
+.slinfo{font-size:11.5px!important;color:#cbb8ff!important}
+.slbox .slx{z-index:5!important;top:-14px!important;right:-14px!important;width:38px;height:38px;border-radius:50%!important;background:#ff2d55!important;color:#fff!important;border:2px solid #fff!important;box-shadow:0 4px 12px rgba(0,0,0,.5)}
+.slbox{overflow:visible!important}
 /* ===== Tema Real da Arena: roxo real + ouro (combina com o mascote e os cenários) ===== */
 :root{--gold:#ffd24a;--gold2:#f5a623;--royal:#2a0f6e;--royal2:#150a3a}
 .card{background:linear-gradient(165deg,rgba(46,20,112,.82),rgba(20,10,50,.86))!important;border:1px solid rgba(255,210,74,.26)!important;border-radius:20px!important;
@@ -6774,20 +6797,20 @@ const slSym=x=>x==='7'?'<i class="s7">7</i>':x;
 function slotOpen(){if(!CL.ses)return verdeLogin();let o=$('#slotOv');
   if(!o){o=h('div','slotov');o.id='slotOv';
     const pay=[['777',50],['💎💎💎',20],['⭐⭐⭐',10],['🔔🔔🔔',5],['🍋🍋🍋',3],['🍒🍒🍒',2],['🍒🍒 (dois)',1]].map(([a,m])=>`<div><span>${a.replace(/7/g,'<i class="s7">7</i>')}</span><b>× ${m}${m===1?' (devolve)':''}</b></div>`).join('');
-    o.innerHTML=`<div class="slbox"><button class="slx" id="slX">✕</button><h3>🎰 CAÇA-NÍQUEL 777</h3><div class="slsaldo"><i class="gv">💎</i> <b id="slSaldo">0</b> diamantes de jogo</div>
-    <div class="slreels"><div class="slr">${slSym('7')}</div><div class="slr">${slSym('7')}</div><div class="slr">${slSym('7')}</div></div>
+    o.innerHTML=`<div class="slbox"><button class="slx" id="slX">✕</button><div class="slmq"><div class="slbulbs">${"<i></i>".repeat(14)}</div><h3>CAÇA-NÍQUEL <em>777</em></h3><div class="slbulbs">${"<i></i>".repeat(14)}</div></div><div class="slsaldo"><span>SEU SALDO</span><i class="gv">💎</i> <b id="slSaldo">0</b></div>
+    <div class="slreels"><i class="slline"></i><div class="slr">${slSym('7')}</div><div class="slr">${slSym('7')}</div><div class="slr">${slSym('7')}</div></div>
     <div class="slmsg" id="slMsg">Boa sorte! 🍀</div>
-    <div class="slap">Aposta: <button data-a="1"><i class="gv">💎</i> 1</button><button data-a="2"><i class="gv">💎</i> 2</button><button data-a="5"><i class="gv">💎</i> 5</button></div>
+    <div class="slap"><span>APOSTA</span><button data-a="1"><i class="gv">💎</i> 1</button><button data-a="2"><i class="gv">💎</i> 2</button><button data-a="5"><i class="gv">💎</i> 5</button></div>
     <button class="slspin" id="slSpin">GIRAR</button>
     <div class="slinfo" id="slInfo">Resultado sorteado no servidor, sem truque · devolve em média 90% do que é apostado · 30 giros por dia</div>
     <details class="slpay"><summary>📋 Tabela de prêmios (vezes a aposta)</summary>${pay}</details>
-    <div class="slinfo">Só vale 🟢 diamantes de jogo: não se compram e não viram dinheiro, 💎 azul nem desconto. Ganhe 🟢 no check-in diário e jogando online.</div></div>`;
+    <div class="slinfo">Só vale <i class="gv">💎</i> diamante de jogo: não se compra e não vira dinheiro nem desconto. Ganhe no check-in diário e jogando online.</div></div>`;
     document.body.append(o);$('#slX').onclick=()=>{if(!SL.busy)o.classList.remove('on');};o.onclick=e=>{if(e.target===o&&!SL.busy)o.classList.remove('on');};
     o.querySelectorAll('.slap button').forEach(b=>b.onclick=()=>{if(SL.busy)return;SL.ap=+b.dataset.a;sfx('tap');slAp();});$('#slSpin').onclick=slSpin;}
   slAp();$('#slSaldo').textContent=S.gemJ|0;o.classList.add('on');}
 function slAp(){document.querySelectorAll('#slotOv .slap button').forEach(b=>b.classList.toggle('on',+b.dataset.a===SL.ap));}
 async function slSpin(){if(SL.busy)return;const msg=$('#slMsg'),bt=$('#slSpin'),rs=[...document.querySelectorAll('#slotOv .slr')];
-  if((S.gemJ|0)<SL.ap){msg.className='slmsg';msg.textContent='Sem 🟢 suficientes. Pegue no 📅 check-in ou jogue online!';return;}
+  if((S.gemJ|0)<SL.ap){msg.className='slmsg';msg.textContent='Sem diamantes de jogo suficientes. Pegue no 📅 check-in ou jogue online!';return;}
   SL.busy=true;bt.disabled=true;msg.className='slmsg';msg.textContent='Girando…';rs.forEach(r=>r.classList.remove('hit'));
   S.gemJ=(S.gemJ|0)-SL.ap;$('#slSaldo').textContent=S.gemJ;sfx('cue');
   const stop=[false,false,false];rs.forEach(r=>r.classList.add('spin'));
