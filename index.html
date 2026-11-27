@@ -1266,6 +1266,17 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
 #legalGate label{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;margin:8px 0;line-height:1.4;cursor:pointer}#legalGate input{width:22px;height:22px;flex:none;margin-top:1px}
 body:has(#legalGate) #mod{z-index:100000!important}
 #mod .instchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}#mod .instchips span{font-size:12px;font-weight:800;padding:5px 10px;border-radius:99px;background:#7b2ff733;border:1px solid #c77dff55}
+
+#instBtn{position:relative;overflow:hidden;isolation:isolate;display:flex;align-items:center;gap:10px;padding:10px 34px 10px 10px!important;border-radius:20px!important;border:0!important;
+  background:linear-gradient(135deg,#2c1270,#150b38 60%,#0d1a3c)!important;box-shadow:0 0 0 1.5px #ffc23d88,0 6px 22px #0008,0 0 24px #b026ff55!important}
+#instBtn .ibglow{position:absolute;inset:-60%;z-index:-1;background:conic-gradient(from 0deg,transparent,#ff3cac33,transparent 30%,#ffc23d2e,transparent 60%);animation:iwSpin 7s linear infinite}
+#instBtn .ibmas{flex:none;width:58px;height:58px;border-radius:16px;object-fit:cover;border:2px solid #ffd24a;box-shadow:0 0 14px #ffc23d88;animation:iwBob 2.4s ease-in-out infinite}
+#instBtn .insttx{flex:1;min-width:0;line-height:1.2}
+#instBtn .insttx b{display:block;font-size:15px;font-weight:900;color:#fff}
+#instBtn .insttx small{display:block;font-size:12px;color:#d9c8ff;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#instBtn .ibopt{display:inline-block;font-size:9.5px;font-weight:900;letter-spacing:.4px;color:#052e16;background:linear-gradient(135deg,#4ade80,#22c55e);padding:2px 7px;border-radius:99px;margin-bottom:3px;box-shadow:0 0 8px #22c55e88}
+#instBtn .instgo{flex:none;padding:10px 12px!important;font-size:13px!important;font-weight:900;border-radius:14px!important;border:0;background:linear-gradient(135deg,#ff3cac,#7b2ff7 60%,#00d4ff)!important;box-shadow:0 4px 14px #ff3cac77;animation:iwPulse 1.8s ease-in-out infinite}
+#instBtn .instx{position:absolute;top:4px;right:4px;width:26px;height:26px;padding:0!important;border-radius:50%;background:#ffffff14!important;border:0;color:#cbb8ff;font-size:13px}
 #instWel{position:fixed;inset:0;z-index:9800;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 50% 45%,#3b0f7acc,#05030ee6 70%);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:iwIn .3s ease}
 #instWel.out{animation:iwOut .25s ease forwards}
 @keyframes iwIn{from{opacity:0}}@keyframes iwOut{to{opacity:0}}
@@ -6704,7 +6715,7 @@ function instHow(){const how=IOS?'<ol class="insth"><li>Toque em <b>Compartilhar
 async function instGo(){if(instEv){instEv.prompt();let ok=false;try{ok=(await instEv.userChoice).outcome==='accepted';}catch(e){}instEv=null;instUI();if(ok)toast('📲 Arena instalado! Procure o ícone na sua tela inicial');return;}instHow();}
 function instUI(){const c=$('#instBtn');if(!c)return;let off=0;try{off=+localStorage.getItem('arena_instoff')||0;}catch(e){}
   if(isInstalled()||Date.now()<off){c.style.display='none';return;}
-  c.style.display='';c.innerHTML=`<div class="instic">📲</div><div class="insttx"><b>Instale o Arena no celular</b><small>Mais rápido e seu progresso fica guardado</small></div><button class="pri instgo">${instEv?'Instalar':'Como instalar'}</button><button class="instx" aria-label="Fechar">✕</button>`;
+  c.style.display='';c.innerHTML=`<i class="ibglow"></i><img class="ibmas" src="img/mascote.webp" alt=""><div class="insttx"><span class="ibopt">✓ OPCIONAL</span><b>Leve a Arena no celular</b><small>Rápido e nada se perde</small></div><button class="pri instgo">📲 Instalar</button><button class="instx" aria-label="Fechar">✕</button>`;
   c.querySelector('.instgo').onclick=instGo;c.querySelector('.instx').onclick=()=>{try{localStorage.setItem('arena_instoff',Date.now()+3*864e5);}catch(e){}c.style.display='none';};}
 function instNudge(){if(isInstalled())return;let t=0;try{t=+localStorage.getItem('arena_instnudge')||0;}catch(e){}if(Date.now()<t)return;try{localStorage.setItem('arena_instnudge',Date.now()+2*864e5);}catch(e){}
   setTimeout(()=>{if($('#mod').classList.contains('on'))return;instCard('Mandou bem, mestre!','Coloque a Arena na tela inicial em 5 segundos');},2500);}
