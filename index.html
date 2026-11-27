@@ -1429,6 +1429,19 @@ body[data-sc="match"]::before,body[data-sc="watch"]::before{background:linear-gr
 .bigdet .bdtx{flex:1;min-width:0}.bigdet .bdtx b{display:block;font-size:19px;font-weight:900;color:#fff}.bigdet .bdtx small{display:block;font-size:12.5px;color:#d9c8ff;margin-top:2px}
 .bigdet .bdgo{flex:none;font-size:14px;font-weight:900;color:#2a1600;background:linear-gradient(180deg,#fff3a6,#ffd24a 55%,#f5a623);padding:10px 14px;border-radius:14px;box-shadow:0 4px 14px rgba(255,194,61,.5);animation:iwPulse 2s ease-in-out infinite}
 .bigdet[open] .bdgo{animation:none;background:rgba(255,255,255,.12);color:#fff;box-shadow:none}
+
+.shi{padding:14px 12px!important;background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03))!important;border:1px solid rgba(255,210,74,.3)!important}
+.shi b{color:#fff!important;font-size:17.5px!important;font-weight:900!important;letter-spacing:.2px;text-shadow:0 1px 6px rgba(0,0,0,.5);-webkit-text-fill-color:#fff!important;background:none!important}
+.shi small{opacity:1!important;color:#efe6ff!important;font-size:13.5px!important;line-height:1.35;display:block;margin-top:3px}
+.shi .ic{font-size:34px!important;width:46px!important;filter:drop-shadow(0 4px 10px rgba(255,194,61,.45))}
+.shits{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.shits i{font-style:normal;font-size:12.5px;font-weight:800;color:#fff;padding:4px 9px;border-radius:10px;background:rgba(123,47,247,.45);border:1px solid rgba(199,125,255,.55)}
+.shits i.own{background:rgba(34,197,94,.25);border-color:rgba(34,197,94,.6);color:#bbf7d0}
+.shi button{font-size:16px!important;padding:12px 14px!important}
+.shtabs button{font-weight:900!important}
+.pvant{padding:14px!important;border:1px solid rgba(255,210,74,.5)!important;background:linear-gradient(160deg,rgba(255,210,74,.12),rgba(123,47,247,.12))!important}
+.pvant>b{display:block;font-size:17px;color:#ffd24a!important;-webkit-text-fill-color:#ffd24a;margin-bottom:6px}
+.pvant ul{list-style:none;margin:0;padding:0}.pvant li{color:#fff;font-size:14px;font-weight:700;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.08)}.pvant li:last-child{border:0}
 /* ===== Tema Real da Arena: roxo real + ouro (combina com o mascote e os cenários) ===== */
 :root{--gold:#ffd24a;--gold2:#f5a623;--royal:#2a0f6e;--royal2:#150a3a}
 .card{background:linear-gradient(165deg,rgba(46,20,112,.82),rgba(20,10,50,.86))!important;border:1px solid rgba(255,210,74,.26)!important;border-radius:20px!important;
@@ -6605,7 +6618,7 @@ const LOJA={
   prem:[{id:'prem_sem',n:'Premium Semanal',d:'7 dias',v:4.90,ic:'👑'},{id:'prem_mes',n:'Premium Mensal',d:'30 dias',v:12.90,ic:'👑',hot:'MAIS VENDIDO'},{id:'prem_tri',n:'Premium Trimestral',d:'90 dias · sai R$ 9,97/mês',v:29.90,ic:'💎',hot:'ECONOMIA'}],
   gem:[{id:'gem100',n:'100 diamantes',d:'Pra presentes e lojinha',v:2.90,ic:'💎'},{id:'gem350',n:'350 diamantes',d:'+20% de bônus',v:9.90,ic:'💎'},{id:'gem800',n:'800 diamantes',d:'+38% de bônus',v:19.90,ic:'💎',hot:'POPULAR'},{id:'gem2000',n:'2.000 diamantes',d:'+45% de bônus',v:44.90,ic:'💰'}],
   pac:[{id:'pac_rei',n:'Pacote Rei',it:['f_rei','e_rei','fm_leao'],v:9.90,ic:'🤴'},{id:'pac_rainha',n:'Pacote Rainha',it:['f_rainha','e_rainha','fw_perolas'],v:9.90,ic:'👸'}]};
-const PREM_VANT=['👻 Modo invisível — ninguém vê que você está online','👑 Selo Premium no seu nome','🚫 Sem anúncios no app','💎 +50 diamantes toda semana','🎬 Guarda 40 replays (grátis: 15)'];
+const PREM_VANT=['💬 Conversa sem limite — áudios, fotos e ligações','🔒 Live privada com código em qualquer nível','👻 Modo invisível — ninguém vê que você está online','👑 Selo Premium no seu nome','🚫 Sem anúncios no app','💎 +50 diamantes toda semana','🎬 Guarda 40 replays (grátis: 15)'];
 const lojaItem=id=>[...LOJA.prem,...LOJA.gem,...LOJA.pac].find(x=>x.id===id)||(typeof SERV!=='undefined'&&SERV.find(x=>x.id===id));
 const brl=v=>'R$ '+Number(v).toFixed(2).replace('.',',');
 function isPrem(){return (S.premAte||0)>Date.now();}
@@ -6700,11 +6713,12 @@ function shopOpen(tab){tab=tab||'prem';const body=h('div');
   const tabs=h('div','shtabs');[['prem','👑 Premium'],['gem','💎 Diamantes'],['pac','🎁 Pacotes']].forEach(([k,t])=>{const b=h('button',k===tab?'on':'',t);b.onclick=()=>{tab=k;draw();};tabs.append(b);});
   const list=h('div','shl');body.append(tabs,list);
   function draw(){tabs.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',['prem','gem','pac'][i]===tab));list.innerHTML='';
-    if(tab==='prem'){list.append(h('div','vdi',`<b>${isPrem()?'👑 Seu Premium vai até '+new Date(S.premAte).toLocaleDateString('pt-BR'):'O que o Premium dá'}</b><small>${PREM_VANT.join('<br>')}</small>`));
+    if(tab==='prem'){list.append(h('div','vdi pvant',`<b>${isPrem()?'👑 Seu Premium vai até '+new Date(S.premAte).toLocaleDateString('pt-BR'):'👑 O que o Premium dá'}</b><ul>${PREM_VANT.map(v=>`<li>${v}</li>`).join('')}</ul>`));
       if(!isPrem()&&!DIR.teste){const t=h('div','shi shhot',`<span class="ic">🎁</span><div><b>Testar 3 dias grátis</b><small>Uma vez por conta</small></div>`);const b=h('button','pri','Testar');b.onclick=freeTrial;t.append(b);list.append(t);}}
     if(tab==='gem')list.append(h('small',null,`Você tem <b style="color:var(--txt)">💎 ${S.gem||0}</b>. Diamantes servem pra presentes e pra lojinha. <b>Não viram dinheiro nem aposta.</b>`));
     LOJA[tab].forEach(x=>{const desc=x.it?x.it.map(i=>ITEMS[i]?ITEMS[i].n+(own(i)?' ✓':''):i).join(' + '):x.d;
-      const r=h('div','shi'+(x.hot?' shhot':''),`<span class="ic">${x.ic}</span><div><b>${esc(x.n)}${x.hot?`<span class="tag">${x.hot}</span>`:''}</b><small>${esc(desc)}</small></div>`);
+      const dh=x.it?`<span class="shits">${x.it.map(i=>`<i class="${own(i)?'own':''}">${esc(ITEMS[i]?ITEMS[i].n:i)}${own(i)?' ✓':''}</i>`).join('')}</span>`:`<small>${esc(desc)}</small>`;
+      const r=h('div','shi'+(x.hot?' shhot':''),`<span class="ic">${x.ic}</span><div><b>${esc(x.n)}${x.hot?`<span class="tag">${x.hot}</span>`:''}</b>${dh}</div>`);
       const b=h('button','pri',brl(x.v));b.onclick=()=>buy(x);r.append(b);list.append(r);});
     if(DIR.ped.length){list.append(h('h4',null,'Meus pedidos'));DIR.ped.slice(0,5).forEach(p=>{const it=lojaItem(p.item);const stt={aguardando:'⏳ esperando o Pix',pago:'🕐 você avisou que pagou — o dono vai conferir',liberado:'✅ liberado',recusado:'❌ não confirmado'}[p.status]||p.status;
       list.append(h('div','vdi'+(p.status==='pago'?' pago':''),`<b>${esc(it?it.n:p.item)} · ${brl(p.valor)}</b><small>Código ${esc(p.codigo)} · ${stt}</small>`));});}}
