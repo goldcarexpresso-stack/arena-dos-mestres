@@ -1544,6 +1544,26 @@ body[data-sc="match"]::before,body[data-sc="watch"]::before{background:linear-gr
 .slinfo{font-size:11.5px!important;color:#cbb8ff!important}
 .slbox .slx{z-index:5!important;top:-14px!important;right:-14px!important;width:38px;height:38px;border-radius:50%!important;background:#ff2d55!important;color:#fff!important;border:2px solid #fff!important;box-shadow:0 4px 12px rgba(0,0,0,.5)}
 .slbox{overflow:visible!important}
+
+/* Jogar com amigo + Online agora */
+#friendBtn.fb1{position:relative;overflow:hidden;padding:16px!important;border-radius:22px!important;border:1.5px solid rgba(255,210,74,.55)!important;background:linear-gradient(120deg,rgba(91,31,208,.92),rgba(30,10,70,.92))!important;box-shadow:0 10px 26px rgba(0,0,0,.45),0 0 22px rgba(176,38,255,.35)!important}
+#friendBtn .fic{width:56px!important;height:56px!important;border-radius:18px!important;background:linear-gradient(135deg,#00d4ff,#7b2ff7)!important;box-shadow:0 0 16px rgba(0,212,255,.55)!important}
+#friendBtn b{display:block;font-size:18px;font-weight:900;color:#fff}
+#friendBtn .finfo{display:flex!important;flex-wrap:wrap;gap:6px;margin-top:6px}
+#friendBtn .fch{font-style:normal;font-size:12px;font-weight:800;padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff}
+#friendBtn .fch.on{background:rgba(34,197,94,.22);border-color:rgba(34,197,94,.6);color:#bbf7d0}
+#friendBtn .fgo{flex:none;font-size:13.5px!important;font-weight:900;color:#2a1600!important;background:linear-gradient(180deg,#fff3a6,#ffd24a 55%,#f5a623);padding:10px 12px;border-radius:14px;box-shadow:0 4px 14px rgba(255,194,61,.5)}
+#onStrip{margin:0 0 14px;padding:12px 10px 8px;border-radius:22px;background:linear-gradient(160deg,rgba(20,40,30,.75),rgba(14,10,36,.85));border:1px solid rgba(34,197,94,.45);box-shadow:0 8px 22px rgba(0,0,0,.35)}
+#onStrip:empty{display:none}
+.onh2{display:flex;align-items:center;gap:8px;margin:0 4px 10px}
+.onh2 .ondot{width:11px;height:11px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.7);animation:ondot 1.6s ease-out infinite}
+@keyframes ondot{100%{box-shadow:0 0 0 10px rgba(34,197,94,0)}}
+.onh2 b{font-size:16px;font-weight:900;color:#fff}.onh2 em{font-style:normal;font-size:12px;font-weight:900;color:#052e16;background:#22c55e;padding:2px 8px;border-radius:99px}
+.onh2 small{margin-left:auto;font-size:11px;color:#b9f5d0;font-weight:700}
+.onp{width:74px!important}.onp small{font-size:11.5px!important;font-weight:800;color:#fff;max-width:74px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.onp .onst{font-size:10px;font-weight:900;padding:1px 7px;border-radius:99px;background:rgba(34,197,94,.2);color:#86efac;border:1px solid rgba(34,197,94,.45)}
+.onp.busy .onst{background:rgba(255,194,61,.18);color:#ffd24a;border-color:rgba(255,194,61,.45)}
+.onp.casap .onst{background:rgba(123,47,247,.3);color:#e9d5ff;border-color:rgba(199,125,255,.5)}
 /* ===== Tema Real da Arena: roxo real + ouro (combina com o mascote e os cenários) ===== */
 :root{--gold:#ffd24a;--gold2:#f5a623;--royal:#2a0f6e;--royal2:#150a3a}
 .card{background:linear-gradient(165deg,rgba(46,20,112,.82),rgba(20,10,50,.86))!important;border:1px solid rgba(255,210,74,.26)!important;border-radius:20px!important;
@@ -1584,7 +1604,7 @@ button.pri{box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 4px 14px rgba(123,47
   <button id="shareBtn" class="shbtn2"><i class="shglow"></i>
     <span class="vsrow"><span class="vsme"><img src="img/mascote.webp" alt=""><small>O MESTRE</small></span><b class="vsx">VS</b><span class="vsyou"><i>?</i><small>SEU AMIGO</small></span></span>
     <span class="vstx"><b>⚔️ Desafie um amigo!</b><span class="vsgames"><span class="vstrack"><i>Dominó</i><i>Xadrez</i><i>Forca</i><i>Truco</i><i>Sinuca</i><i>Dama</i><i>Ludo</i><i>KABOOM</i><i>Dominó</i><i>Xadrez</i><i>Forca</i><i>Truco</i><i>Sinuca</i><i>Dama</i><i>Ludo</i><i>KABOOM</i></span></span><span class="vsgo">Desafiar agora ➤</span></span></button>
-  <button class="fbanner fb1 phbg" data-img="amigo" id="friendBtn"><span class="fic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3.5-6 6.5-6s6 2 6.5 6"/><circle cx="17.5" cy="9" r="2.6"/><path d="M16.5 14c2.5 0 4.5 1.6 5 4.6"/></svg></span><div><b>Jogar com um amigo</b><span id="friendSub" class="finfo">Escolha o jogo e mande o link no WhatsApp</span></div><span class="fgo">›</span></button>
+  <button class="fbanner fb1 phbg" data-img="amigo" id="friendBtn"><span class="fic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3.5-6 6.5-6s6 2 6.5 6"/><circle cx="17.5" cy="9" r="2.6"/><path d="M16.5 14c2.5 0 4.5 1.6 5 4.6"/></svg></span><div><b>Jogar com um amigo</b><span id="friendSub" class="finfo">Escolha o jogo e mande o link no WhatsApp</span></div><span class="fgo">Criar sala ›</span></button>
   <div id="onStrip"></div>
   <div class="agora" id="agora"><div class="agh">🎉 Acontecendo agora</div><div class="agsc" id="agoraSc"><button id="bingoCard" class="bingocard phbg" data-img="bingo" style="display:none"></button><button class="livemini" id="liveMini"></button></div></div>
   <div id="heroBox"></div>
@@ -3306,14 +3326,14 @@ function onlineUI(){
   try{liveBadges();}catch(e){}
   const n=onlineList().length;
   const bd=$('#onBadge');if(bd){bd.textContent=n;bd.style.display=n?'inline-block':'none';}
-  const CE=casaEstado();const fs=$('#friendSub');if(fs)fs.textContent=n?`🟢 ${n} ${n===1?'jogador online':'jogadores online'} agora · 🏠 ${CE.ons.length} da Casa`:`🏠 ${CE.ons.length} jogadores da Casa prontos · ou chame um amigo`;
+  const CE=casaEstado();const fs=$('#friendSub');if(fs)fs.innerHTML=`<i class="fch on">🟢 ${n} online</i><i class="fch">🏠 ${CE.ons.length} da Casa</i>`;
   if($('#online').classList.contains('on'))renderOnline();
   const os=$('#onStrip');
   if(os){const ps=onlineList();
     if(!ps.length&&!CE.ons.length)os.innerHTML='';
-    else{os.innerHTML=`<div class="onh">🟢 Online agora${CE.ons.length?' <small>· 🏠 = Jogador da Casa (robô)</small>':''}</div><div class="ons"></div>`;const box=os.querySelector('.ons');
-      ps.forEach(p=>{const b=h('button','onp'+(p.st==='jogando'?' busy':''));const av=h('div','av');setAv(av,p.thumb,p.name,'#2b3260',p.id);b.append(av,h('small',null,esc(p.name)));b.onclick=()=>showPlayer(p);box.append(b);});
-      CE.ons.forEach(p=>{const b=h('button','onp casap'+(CE.st[p.id].st==='jogando'?' busy':''));b.append(casaAv(p),h('small',null,esc(p.n)));b.onclick=()=>casaShow(p);box.append(b);});}}
+    else{os.innerHTML=`<div class="onh2"><span class="ondot"></span><b>Online agora</b><em>${ps.length+CE.ons.length}</em>${CE.ons.length?'<small>🏠 = robô da Casa</small>':''}</div><div class="ons"></div>`;const box=os.querySelector('.ons');
+      ps.forEach(p=>{const b=h('button','onp'+(p.st==='jogando'?' busy':''));const av=h('div','av');setAv(av,p.thumb,p.name,'#2b3260',p.id);b.append(av,h('small',null,esc(p.name)),h('span','onst',p.st==='jogando'?'jogando':'livre'));b.onclick=()=>showPlayer(p);box.append(b);});
+      CE.ons.forEach(p=>{const b=h('button','onp casap'+(CE.st[p.id].st==='jogando'?' busy':''));b.append(casaAv(p),h('small',null,esc(p.n)),h('span','onst',CE.st[p.id].st==='jogando'?'jogando':'desafiar'));b.onclick=()=>casaShow(p);box.append(b);});}}
 }
 /* ===== Nível do jogador (XP) ===== */
 const xpOf=()=>(S.w|0)*30+(S.l|0)*10+(S.xpx|0);
