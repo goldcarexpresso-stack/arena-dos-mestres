@@ -1473,6 +1473,18 @@ body[data-sc="match"]::before,body[data-sc="watch"]::before{background:linear-gr
 .gojogos i{font-style:normal;font-size:26px;line-height:.6;color:#ffd24a;animation:gjb 1.1s ease-in-out infinite}
 @keyframes gjb{50%{transform:translateY(6px)}}
 #jogosSec{scroll-margin-top:12px}
+
+.infobtn{display:flex!important;align-items:center;gap:12px;width:100%;margin:18px 0 6px;padding:14px!important;border-radius:20px!important;text-align:left;color:#fff!important;
+  background:linear-gradient(135deg,rgba(0,212,255,.22),rgba(123,47,247,.28))!important;border:1.5px solid rgba(0,212,255,.65)!important;box-shadow:0 0 22px rgba(0,212,255,.3),inset 0 1px 0 rgba(255,255,255,.15)!important}
+.infobtn:active{transform:scale(.97)}
+.infobtn i{flex:none;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:26px;background:linear-gradient(135deg,#00d4ff,#7b2ff7);box-shadow:0 0 0 0 rgba(0,212,255,.6);animation:infop 1.8s ease-out infinite}
+@keyframes infop{0%{box-shadow:0 0 0 0 rgba(0,212,255,.6)}100%{box-shadow:0 0 0 14px rgba(0,212,255,0)}}
+.infobtn span{flex:1}.infobtn b{display:block;font-size:16px;font-weight:900}.infobtn small{display:block;font-size:12.5px;color:#cfe9ff}
+.infobtn em{font-style:normal;font-size:30px;color:#7df9ff}
+.infoi{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.08)}.infoi:last-of-type{border:0}
+.infoi>span{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:rgba(255,210,74,.14);border:1px solid rgba(255,210,74,.4)}
+.infoi b{display:block;color:#ffd24a;font-size:15px}.infoi small{display:block;color:#efe6ff;font-size:13.5px;line-height:1.35;margin-top:2px}
+.infofoot{display:block;margin-top:10px;color:var(--mut);font-size:12px;text-align:center}
 /* ===== Tema Real da Arena: roxo real + ouro (combina com o mascote e os cenários) ===== */
 :root{--gold:#ffd24a;--gold2:#f5a623;--royal:#2a0f6e;--royal2:#150a3a}
 .card{background:linear-gradient(165deg,rgba(46,20,112,.82),rgba(20,10,50,.86))!important;border:1px solid rgba(255,210,74,.26)!important;border-radius:20px!important;
@@ -2509,6 +2521,21 @@ function shareApp(){const url='https://arena-dos-mestres.vercel.app/?v=2',txt='�
     if(navigator.share){navigator.share({title:'Arena dos Mestres',text:txt,url}).catch(()=>{});return;}
     goLink('https://wa.me/?text='+encodeURIComponent(txt+url));})();}
 document.addEventListener('click',e=>{if(e.target.closest('#goJogos')){const g=$('#jogosSec');if(g)g.scrollIntoView({behavior:'smooth',block:'start'});return;}if(e.target.closest('#shareBtn')){sfx&&sfx('tap');shareApp();}});
+
+/* ===== ℹ️ Como funciona esta tela — botão no fim de cada tela ===== */
+const INFO={
+ lobby:['🎮 Tela de Jogos',[['🕹️','Escolha um jogo','Toque no cartão do jogo pra jogar contra o robô ou chamar um amigo.'],['⚔️','Desafie um amigo','O card vermelho e azul manda o convite com o link no WhatsApp.'],['🏆','Ranking da semana','Quem mais vence aparece no pódio. Renova toda semana.'],['🎁','Check-in e baú','Entre todo dia pra ganhar prêmios e abrir o baú.'],['🧪','Saldo de teste','O dinheiro do topo é de mentira, só pra jogar. Não vira dinheiro de verdade.']]],
+ online:['🟢 Tela Online',[['👥','Quem está online','Veja quem está no app agora e toque em Desafiar ou Convidar.'],['🔴','Lives','Assista quem está jogando ao vivo, mande emoji e presente.'],['🎥','Fazer live','Crie uma sala com amigo e abra a câmera enquanto joga.'],['🔒','Live privada','A partir do nível 5 (ou Premium) dá pra fazer live só com código.'],['🏠','Jogadores da Casa','São robôs do app, sempre marcados com 🏠. Bons pra treinar.']]],
+ chats:['💬 Tela de Conversas',[['🌍','Comunidade','Poste stories e fotos do jogo. Links e propaganda não vão pro ar.'],['💬','Mensagens','Converse com amigos. Texto é à vontade.'],['🎙️','Áudio, foto e ligação','Grátis por dia: 5 áudios, 3 fotos e 2 ligações de até 5 min. Premium libera tudo.'],['🕶️','Conversa privada','Os óculos escondem a conversa da tela.'],['🚫','Bloquear','Bloqueia quem incomodar. A pessoa não te manda mais nada.']]],
+ wallet:['🛍️ Tela da Loja',[['👑','Premium','Conversa sem limite, live privada, modo invisível, sem anúncios e +50 💎 por semana.'],['💎','Diamantes','Comprados no Pix. Servem pra presentes e desconto nos serviços. Não viram dinheiro.'],['💎','Diamantes verdes','Ganhos jogando. Servem pra presentes e ligação extra.'],['🎁','Pacotes','Acessórios juntos com desconto (coroas, entradas, molduras).'],['💠','Pagamento','Tudo pelo Pix. Depois toque em "Já paguei" e o dono libera.']]],
+ profile:['👤 Tela do Perfil',[['⚔️','Nível','Vitória +30 XP, derrota +10, partida com amigo +15, live +20. Nível 5 libera live privada.'],['🪙','Ouro','Item repetido do baú vira ouro. Com ouro você troca pelo acessório que quiser.'],['🎒','Acessórios','Molduras, entradas, emojis e mesas. Escolha em "Meu visual".'],['📷','Foto','Toque na câmera da foto pra trocar.'],['☁️','Conta','Entre na conta pra não perder nada ao trocar de celular.']]],
+ torneio:['🏆 Torneios',[['📅','Como funciona','Inscreva-se, jogue as partidas e suba na tabela.'],['🎁','Prêmios','O prêmio aparece no card de cada torneio.']]],
+ bingo:['🎱 Bingo',[['🎟️','Cartela','Pegue sua cartela grátis e marque os números sorteados.'],['🏆','Ganhe','Complete primeiro pra levar o prêmio da rodada.']]]};
+function infoOpen(id){const d=INFO[id];if(!d)return;const b=h('div','infobox');b.innerHTML=d[1].map(([i,t,x])=>`<div class="infoi"><span>${i}</span><div><b>${t}</b><small>${x}</small></div></div>`).join('')+`<small class="infofoot">Ainda com dúvida? Toque em 💬 Dúvidas ou fale no Instagram @arenadosmesstres</small>`;
+  modal(d[0],b,[{t:'Entendi 👍',pri:1}]);}
+function infoBtns(){Object.keys(INFO).forEach(id=>{const sc=document.getElementById(id);if(!sc||sc.querySelector(':scope > .infobtn'))return;
+  const bt=h('button','infobtn','<i>ℹ️</i><span><b>Como funciona esta tela?</b><small>Toque e veja tudo explicado</small></span><em>›</em>');bt.onclick=()=>infoOpen(id);sc.append(bt);});}
+setTimeout(infoBtns,800);
 function renderCommunity(){
   const hb=$('#heroBox');const AB=activeBanners();
   if(AB.length){
