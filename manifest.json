@@ -1,7 +1,7 @@
 {
   "name": "Arena dos Mestres",
   "short_name": "Arena",
-  "description": "Dama, xadrez, dominó, sinuca e ludo — 1 contra 1.",
+  "description": "Dominó, truco, dama, sinuca e mais 15 jogos grátis.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -10,9 +10,29 @@
   "theme_color": "#0c0f1e",
   "lang": "pt-BR",
   "icons": [
-    { "src": "arena-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "arena-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "arena-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "arena-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icon-mascote-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-mascote-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-mascote-mask-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-mascote-mask-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
