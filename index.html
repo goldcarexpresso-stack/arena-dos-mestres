@@ -1366,6 +1366,34 @@ body[data-sc="match"]::before,body[data-sc="watch"]::before{background:linear-gr
 .lvbm .rmdot{background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.3)}
 .lvbv{background:linear-gradient(135deg,#7b2ff7,#b026ff)!important;box-shadow:0 6px 18px rgba(123,47,247,.5),inset 0 1px 0 rgba(255,255,255,.3)!important}
 .lvbm{background:linear-gradient(135deg,#ff2d55,#ff3cac)!important;box-shadow:0 6px 18px rgba(255,45,85,.5),inset 0 1px 0 rgba(255,255,255,.3)!important}
+
+/* Serviços NEXA — cartão premium de negócio */
+.servcard{position:relative;overflow:hidden;isolation:isolate;display:block!important;width:100%;text-align:left;padding:16px!important;border-radius:22px!important;color:#fff!important;
+  background:linear-gradient(150deg,#0d1b3d 0%,#14102e 55%,#2a0f3a 100%)!important;border:1.5px solid rgba(255,210,74,.55)!important;box-shadow:0 10px 26px rgba(0,0,0,.5),0 0 22px rgba(255,194,61,.18),inset 0 1px 0 rgba(255,255,255,.12)!important}
+.servcard:active{transform:scale(.98)}
+.servcard .svglow{position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,.35),transparent 65%);z-index:-1}
+.servcard .svtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.servcard .svtag{font-size:10.5px;font-weight:900;letter-spacing:.6px;color:#ffd24a;background:rgba(255,210,74,.12);border:1px solid rgba(255,210,74,.4);padding:4px 9px;border-radius:99px}
+.servcard .svbr{font-size:13px;font-weight:900;letter-spacing:2px;background:linear-gradient(90deg,#00d4ff,#7b2ff7);-webkit-background-clip:text;background-clip:text;color:transparent}
+.servcard .svt{display:block;font-size:19px;font-weight:900;line-height:1.2;margin-bottom:10px}
+.servcard .svch{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.servcard .svch span{font-size:12px;font-weight:800;padding:6px 10px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)}
+.servcard .svft{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.servcard .svft small{color:#b9c6ff;font-size:12px}
+.servcard .svgo{font-size:13.5px;font-weight:900;color:#2a1600;background:linear-gradient(180deg,#fff3a6,#ffd24a 55%,#f5a623);padding:9px 14px;border-radius:12px;box-shadow:0 4px 14px rgba(255,194,61,.45)}
+.servcard .svsub{display:block;color:#b9c6ff;font-size:13px;margin:-6px 0 10px}
+.servcard .svapps{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:12px;padding:10px;border-radius:14px;background:rgba(0,0,0,.25);border:1px dashed rgba(255,210,74,.35)}
+.servcard .svapps small{flex-basis:100%;color:#ffd24a;font-size:11.5px;font-weight:900;letter-spacing:.3px}
+.servcard .svapps a{font-size:12px;font-weight:800;color:#fff;text-decoration:none;padding:6px 10px;border-radius:10px;background:linear-gradient(135deg,rgba(123,47,247,.55),rgba(0,212,255,.35));border:1px solid rgba(255,255,255,.18)}
+/* Comunidade — cartão novo */
+.chcom{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(46,20,112,.85),rgba(20,10,50,.9))!important;border:1px solid rgba(255,210,74,.35)!important;border-radius:22px!important;padding:14px 12px 6px!important;box-shadow:0 10px 26px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.1)}
+.chcom .cmtt b{background:linear-gradient(180deg,#fff8d6,#ffd24a 55%,#f5a623)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;filter:none!important}
+.chcom #comVisB,.chcom .chch button{background:rgba(0,0,0,.3)!important;border:1px solid rgba(255,210,74,.35)!important;border-radius:12px!important}
+.sty .sr{background:conic-gradient(#ffd24a,#ff3cac,#7b2ff7,#00d4ff,#ffd24a)!important;box-shadow:0 0 14px rgba(255,60,172,.35)}
+.sty.add .sr{position:relative;display:grid;place-items:center;font-size:30px;font-weight:300;color:#fff;background:linear-gradient(145deg,#3a1a8a,#1d0f4a)!important;border:2px dashed rgba(255,210,74,.6);padding:0;box-shadow:none}
+.sty.add .sr::after{content:"+";position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:16px;font-weight:900;color:#2a1600;background:#ffd24a;border:2px solid #150a3a}
+.sty small{font-weight:800}
+.stry:has(> .sty:only-child)::after{content:"Seja o primeiro a postar um story hoje ✨";align-self:center;color:#d9c8ff;font-size:12.5px;font-weight:700;padding-left:6px}
 /* ===== Tema Real da Arena: roxo real + ouro (combina com o mascote e os cenários) ===== */
 :root{--gold:#ffd24a;--gold2:#f5a623;--royal:#2a0f6e;--royal2:#150a3a}
 .card{background:linear-gradient(165deg,rgba(46,20,112,.82),rgba(20,10,50,.86))!important;border:1px solid rgba(255,210,74,.26)!important;border-radius:20px!important;
@@ -1420,7 +1448,7 @@ button.pri{box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 4px 14px rgba(123,47
   <div class="ph1"><span class="phi">🛍️</span><h2>Loja</h2></div>
   <div class="card gemloja" id="gemLoja"></div>
   <div class="card premprof" id="premCard"></div>
-  <button class="servcard" id="servLobby"></button>
+  <div class="servcard" id="servLobby" role="button" tabindex="0"></div>
   <details class="pgrp" open><summary>🧪 Saldo de teste e histórico</summary>
   <div class="card wcard phbg" data-img="wallet">
     <small>SALDO DE TESTE</small>
@@ -6681,7 +6709,16 @@ async function servTroca(x,use,fica){if(!CL.ses){needLogin();return;}await dirLo
     body.innerHTML=`<div class="pixv">${brl(r.valor)}</div><div class="pixc">Pedido <b>${esc(r.codigo)}</b> · 💎 ${r.gem} usados</div><p>Pague o restante no Pix e depois toque em <b>✅ Já paguei</b>. Em seguida fale com a gente no Direct do Instagram <b>@arenadosmesstres</b> pra começar o serviço.</p><div class="pixb">${esc(code)}</div>`;
     modal('💠 Falta pouco · '+x.n,body,[{t:'📋 Copiar Pix',f:()=>{copyTxt(code,'📋 Pix copiado — cole no app do banco');return false;}},{t:'✅ Já paguei',pri:1,f:async()=>{try{await clRpc('arena_paguei',{p_codigo:r.codigo});}catch(e){}servZap(x,msg+' Já paguei o Pix.');}}]);}
   else modal('🎉 Pedido feito!',`Você usou <b style="color:var(--txt)">${r.gem} 💎</b> e não precisa pagar nada.<br>Código: <b style="color:var(--txt)">${esc(r.codigo)}</b><br><br>Agora fale com a gente no Direct do Instagram <b>@arenadosmesstres</b> pra mandar as informações.`,[{t:'📩 Abrir Instagram',pri:1,f:()=>servZap(x,msg)}]);}
-function servUI(){const l=$('#servLobby');if(!l)return;l.innerHTML=`<span class="pi">🛠️</span><div><b>Serviços NEXA</b><small>Página, Google Maps e IA no WhatsApp pro seu negócio — use seus 💎 de desconto</small></div><span class="go">Ver</span>`;l.onclick=servOpen;}
+function servUI(){const l=$('#servLobby');if(!l)return;l.innerHTML=`<i class="svglow"></i><div class="svtop"><span class="svtag">💼 PARA O SEU NEGÓCIO</span><span class="svbr">NEXA</span></div>
+  <b class="svt">Criamos aplicativos para a sua empresa</b>
+  <small class="svsub">Seu negócio no celular dos seus clientes</small>
+  <div class="svch"><span>📱 Apps</span><span>🌐 Sites</span><span>📍 Google Maps</span><span>🤖 IA no WhatsApp</span></div>
+  <div class="svapps"><small>Apps que já criamos:</small>
+    <a href="https://arena-dos-mestres.vercel.app" target="_blank" rel="noopener">👑 Arena dos Mestres</a>
+    <a href="https://rota-certa-global-pro.vercel.app" target="_blank" rel="noopener">🚚 Rota Certa</a>
+    <a href="https://oficina-360-osh5.vercel.app" target="_blank" rel="noopener">🔧 Oficina 360</a></div>
+  <div class="svft"><small>Use seus 💎 de desconto</small><span class="svgo">Quero o meu ›</span></div>`;
+  l.onclick=e=>{if(e.target.closest('a'))return;servOpen();};}
 servUI();
 
 /* ========== COMUNIDADE: stories, posts, curtidas e comentários (sem propaganda) ========== */
@@ -6762,7 +6799,7 @@ async function comLoad(reset){if(reset){COM.feed=[];COM.antes=null;}
 async function comStories(){let L=[];try{L=await rpcAnon('arena_feed',{p_viewer:S.uid,p_tipo:'story',p_antes:null})||[];}catch(e){}
   const g=new Map();L.slice().reverse().forEach(p=>{const k=p.player_uid||p.nome;if(!g.has(k))g.set(k,[]);g.get(k).push(p);});COM.sto=[...g.values()].reverse();
   ['#comStories','#chStories'].forEach(sel=>{const el=$(sel);if(!el)return;el.innerHTML='';
-  if(CL.ses&&S.comVis!=='oculto'){const a=h('button','sty add','<div class="sr">＋</div><small>Seu story</small>');a.onclick=()=>{if(sel==='#chStories'){go('com');setTimeout(()=>{const t=$('#comTxt');if(t){t.focus();toast('Escreva ou escolha foto e toque em ⭕ Story');}},500);return;}const t=$('#comTxt');if(t){t.focus();toast('Escreva ou escolha foto e toque em ⭕ Story');}};el.append(a);}
+  if(CL.ses&&S.comVis!=='oculto'){const a=h('button','sty add','<div class="sr">📷</div><small>Seu story</small>');a.onclick=()=>{if(sel==='#chStories'){go('com');setTimeout(()=>{const t=$('#comTxt');if(t){t.focus();toast('Escreva ou escolha foto e toque em ⭕ Story');}},500);return;}const t=$('#comTxt');if(t){t.focus();toast('Escreva ou escolha foto e toque em ⭕ Story');}};el.append(a);}
   else if(sel==='#chStories'&&!CL.ses){const a=h('button','sty add','<div class="sr">☁️</div><small>Entrar</small>');a.onclick=needLogin;el.append(a);}
   COM.sto.forEach((arr,i)=>{const p=arr[0];const seen=(S.stSeen||{})[arr[arr.length-1].id];const b=h('button','sty');const r=h('div','sr'+(seen?' vis':''));r.append(comAv(p.thumb,p.nome));b.append(r,h('small',null,esc(p.meu?'Você':p.nome||'Jogador')));b.onclick=()=>comStoryView(i,0);el.append(b);});
   el.style.display=el.children.length?'':'none';});}
