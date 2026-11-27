@@ -1467,6 +1467,12 @@ body[data-sc="match"]::before,body[data-sc="watch"]::before{background:linear-gr
 @keyframes vsscroll{to{transform:translateX(-50%)}}
 .vstrack i{font-style:normal;font-size:11.5px;font-weight:900;padding:3px 8px;border-radius:9px;background:rgba(0,0,0,.45);border:1px solid rgba(255,210,74,.7);color:#fff;white-space:nowrap}
 .vsgo{align-self:flex-start;font-size:12.5px;font-weight:900;color:#073;background:#fff;padding:7px 10px;border-radius:11px;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+
+.gojogos{width:100%;display:flex!important;align-items:center;justify-content:center;gap:10px;margin:-4px 0 14px;padding:11px 12px!important;border-radius:16px!important;border:1.5px dashed rgba(255,210,74,.7)!important;background:rgba(0,0,0,.35)!important;color:#fff!important;font-size:14px!important;font-weight:700}
+.gojogos b{color:#ffd24a}
+.gojogos i{font-style:normal;font-size:26px;line-height:.6;color:#ffd24a;animation:gjb 1.1s ease-in-out infinite}
+@keyframes gjb{50%{transform:translateY(6px)}}
+#jogosSec{scroll-margin-top:12px}
 /* ===== Tema Real da Arena: roxo real + ouro (combina com o mascote e os cenários) ===== */
 :root{--gold:#ffd24a;--gold2:#f5a623;--royal:#2a0f6e;--royal2:#150a3a}
 .card{background:linear-gradient(165deg,rgba(46,20,112,.82),rgba(20,10,50,.86))!important;border:1px solid rgba(255,210,74,.26)!important;border-radius:20px!important;
@@ -1503,6 +1509,7 @@ button.pri{box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 4px 14px rgba(123,47
   <button id="shareBtn" class="shbtn2"><i class="shglow"></i>
     <span class="vsrow"><span class="vsme"><img src="img/mascote.webp" alt=""><small>O MESTRE</small></span><b class="vsx">VS</b><span class="vsyou"><i>?</i><small>SEU AMIGO</small></span></span>
     <span class="vstx"><b>⚔️ Desafie um amigo!</b><span class="vsgames"><span class="vstrack"><i>Dominó</i><i>Xadrez</i><i>Forca</i><i>Truco</i><i>Sinuca</i><i>Dama</i><i>Ludo</i><i>KABOOM</i><i>Dominó</i><i>Xadrez</i><i>Forca</i><i>Truco</i><i>Sinuca</i><i>Dama</i><i>Ludo</i><i>KABOOM</i></span></span><span class="vsgo">Desafiar agora ➤</span></span></button>
+  <button id="goJogos" class="gojogos"><span>🎮 Os <b>19 jogos</b> estão logo abaixo — é só arrastar a tela</span><i>⌄</i></button>
   <div class="duo"><div id="rankBox" class="rankbox"></div><div id="vitBox"></div></div>
   <div id="neonBox"></div>
   <div id="socBox"></div>
@@ -1512,7 +1519,7 @@ button.pri{box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 4px 14px rgba(123,47
   <div id="onStrip"></div>
   <button id="bagCard" class="bagcard phbg" data-img="bag" style="display:none!important"></button>
 
-  <div class="sec1"><h2>Escolha o jogo</h2><span>19 jogos + torneios</span></div>
+  <div class="sec1" id="jogosSec"><h2>Escolha o jogo</h2><span>19 jogos + torneios</span></div>
   <div class="grid" id="games"></div>
   <div class="sec1"><h2>🎰 Jogos de sorte</h2><span>só com <i class="gv">💎</i> diamantes de jogo</span></div>
   <div id="sorteGames" class="sortegrid"></div>
@@ -2501,7 +2508,7 @@ function shareApp(){const url='https://arena-dos-mestres.vercel.app/?v=2',txt='�
       if(navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Arena dos Mestres',text:txt+url});return;}}}catch(e){if(e&&e.name==='AbortError')return;}
     if(navigator.share){navigator.share({title:'Arena dos Mestres',text:txt,url}).catch(()=>{});return;}
     goLink('https://wa.me/?text='+encodeURIComponent(txt+url));})();}
-document.addEventListener('click',e=>{if(e.target.closest('#shareBtn')){sfx&&sfx('tap');shareApp();}});
+document.addEventListener('click',e=>{if(e.target.closest('#goJogos')){const g=$('#jogosSec');if(g)g.scrollIntoView({behavior:'smooth',block:'start'});return;}if(e.target.closest('#shareBtn')){sfx&&sfx('tap');shareApp();}});
 function renderCommunity(){
   const hb=$('#heroBox');const AB=activeBanners();
   if(AB.length){
