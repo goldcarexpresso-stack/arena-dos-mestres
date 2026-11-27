@@ -1421,6 +1421,14 @@ body[data-sc="match"]::before,body[data-sc="watch"]::before{background:linear-gr
 .pvbox{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;padding:10px;border-radius:16px;background:rgba(255,210,74,.1);border:1px solid rgba(255,210,74,.5)}
 .pvbox>div{grid-column:1/-1;text-align:center}.pvbox small{display:block;color:#ffd24a;font-weight:900;font-size:11px;letter-spacing:.6px}.pvbox b{display:block;font-size:34px;letter-spacing:12px;color:#fff;font-weight:900}
 .pvbox button{padding:10px!important;border-radius:12px!important;font-size:13px!important;font-weight:800!important}
+
+.bigdet>summary{display:flex!important;align-items:center;gap:12px;flex-wrap:nowrap!important;padding:16px!important;cursor:pointer;list-style:none}
+.bigdet>summary::-webkit-details-marker{display:none}
+.bigdet>summary::after{display:none!important;content:none!important}
+.bigdet .bdic{flex:none;width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:28px;background:linear-gradient(135deg,#22c55e,#0ea5e9);box-shadow:0 6px 16px rgba(34,197,94,.45),inset 0 1px 0 rgba(255,255,255,.4)}
+.bigdet .bdtx{flex:1;min-width:0}.bigdet .bdtx b{display:block;font-size:19px;font-weight:900;color:#fff}.bigdet .bdtx small{display:block;font-size:12.5px;color:#d9c8ff;margin-top:2px}
+.bigdet .bdgo{flex:none;font-size:14px;font-weight:900;color:#2a1600;background:linear-gradient(180deg,#fff3a6,#ffd24a 55%,#f5a623);padding:10px 14px;border-radius:14px;box-shadow:0 4px 14px rgba(255,194,61,.5);animation:iwPulse 2s ease-in-out infinite}
+.bigdet[open] .bdgo{animation:none;background:rgba(255,255,255,.12);color:#fff;box-shadow:none}
 /* ===== Tema Real da Arena: roxo real + ouro (combina com o mascote e os cenários) ===== */
 :root{--gold:#ffd24a;--gold2:#f5a623;--royal:#2a0f6e;--royal2:#150a3a}
 .card{background:linear-gradient(165deg,rgba(46,20,112,.82),rgba(20,10,50,.86))!important;border:1px solid rgba(255,210,74,.26)!important;border-radius:20px!important;
@@ -1477,7 +1485,7 @@ button.pri{box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 4px 14px rgba(123,47
   <div class="card gemloja" id="gemLoja"></div>
   <div class="card premprof" id="premCard"></div>
   <div class="servcard" id="servLobby" role="button" tabindex="0"></div>
-  <details class="pgrp" open><summary>🧪 Saldo de teste e histórico</summary>
+  <details class="pgrp bigdet" id="walDet"><summary><span class="bdic">🧾</span><span class="bdtx"><b>Saldo e histórico</b><small>Saldo de teste, depósitos e todas as partidas</small></span><span class="bdgo">Abrir ▾</span></summary>
   <div class="card wcard phbg" data-img="wallet">
     <small>SALDO DE TESTE</small>
     <div id="wbal"></div>
@@ -2340,7 +2348,7 @@ function noFunds(stake,g){
     <button class="pri nogo">💰 Ir pra Carteira e adicionar moedas</button>
     <button class="nofr">👥 Jogar grátis com um amigo</button><button class="nox">Agora não</button></div>`;
   document.body.append(fx);const cl=()=>fx.remove();
-  fx.querySelector('.nogo').onclick=()=>{cl();$('#mod').classList.remove('on');go('wallet');toast('👇 Toque num valor pra adicionar moedas de teste');};
+  fx.querySelector('.nogo').onclick=()=>{cl();$('#mod').classList.remove('on');go('wallet');{const d=$('#walDet');if(d){d.open=true;setTimeout(()=>d.scrollIntoView({block:'start',behavior:'smooth'}),150);}}toast('👇 Toque num valor pra adicionar moedas de teste');};
   fx.querySelector('.nofr').onclick=()=>{cl();$('#mod').classList.remove('on');if(g)openFriend(g);};
   fx.querySelector('.nox').onclick=cl;fx.onclick=e=>{if(e.target===fx)cl();};
 }
@@ -6715,6 +6723,7 @@ function gemLojaUI(){const el=$('#gemLoja');if(!el)return;
    <small style="color:var(--mut)">💎 comprados: presentes e desconto nos Serviços NEXA. <i class="gv">💎</i> de jogo: só presentes (vença melhor de 3 online — até 10 por dia, 150 por mês). ${CL.ses?'':'<b style="color:var(--txt)">Entre na conta pra usar.</b>'}</small>
    <div class="row" style="margin-top:10px"><button class="pri" id="glGem">💎 Comprar diamantes</button><button id="glPac">🎁 Pacotes</button></div>`;
   $('#glGem').onclick=()=>shopOpen('gem');$('#glPac').onclick=()=>shopOpen('pac');}
+document.addEventListener('toggle',e=>{const d=e.target;if(d&&d.id==='walDet'){const g=d.querySelector('.bdgo');if(g)g.textContent=d.open?'Fechar ▴':'Abrir ▾';}},true);
 function premUI(){try{gemLojaUI();}catch(e){}const pm=isPrem(),ate=pm?new Date(S.premAte).toLocaleDateString('pt-BR'):'';
   const l=$('#premLobby');if(l){l.innerHTML=pm?`<span class="pi">👑</span><div><b>Você é Premium</b><small>Até ${ate} · modo invisível, selo e sem anúncios</small></div><span class="go">Loja</span>`:`<span class="pi">👑</span><div><b>Arena Premium</b><small>Fique invisível, ganhe selo 👑, sem anúncios e diamantes toda semana</small></div><span class="go">A partir de R$ 4,90</span>`;l.onclick=()=>shopOpen(pm?'gem':'prem');}
   const c=$('#premCard');if(c){c.innerHTML=`<div class="ph"><span>👑</span><div style="flex:1"><b>${pm?'Premium ativo até '+ate:'Arena Premium'}</b><br><small style="color:var(--mut)">${pm?'Obrigado por apoiar a Arena!':'Conversa sem limite, modo invisível, selo 👑 e mais'}</small></div></div>
