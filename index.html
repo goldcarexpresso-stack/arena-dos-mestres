@@ -1442,6 +1442,10 @@ body[data-sc="match"]::before,body[data-sc="watch"]::before{background:linear-gr
 .pvant{padding:14px!important;border:1px solid rgba(255,210,74,.5)!important;background:linear-gradient(160deg,rgba(255,210,74,.12),rgba(123,47,247,.12))!important}
 .pvant>b{display:block;font-size:17px;color:#ffd24a!important;-webkit-text-fill-color:#ffd24a;margin-bottom:6px}
 .pvant ul{list-style:none;margin:0;padding:0}.pvant li{color:#fff;font-size:14px;font-weight:700;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.08)}.pvant li:last-child{border:0}
+.shprice{display:inline-block;margin-top:5px;font-size:15.5px;font-weight:900;color:#2a1600;background:linear-gradient(180deg,#fff3a6,#ffd24a 55%,#f5a623);padding:4px 10px;border-radius:10px;box-shadow:0 3px 10px rgba(255,194,61,.35)}
+.shprice em{font-style:normal;font-weight:800;font-size:12.5px;color:#4a2c00}
+.svx b{color:#ffd24a!important;-webkit-text-fill-color:#ffd24a;font-size:17px}.svx small{color:#efe6ff!important;font-size:13.5px}
+.shi .tag{color:#2a1600!important;-webkit-text-fill-color:#2a1600;font-size:11px!important}
 /* ===== Tema Real da Arena: roxo real + ouro (combina com o mascote e os cenários) ===== */
 :root{--gold:#ffd24a;--gold2:#f5a623;--royal:#2a0f6e;--royal2:#150a3a}
 .card{background:linear-gradient(165deg,rgba(46,20,112,.82),rgba(20,10,50,.86))!important;border:1px solid rgba(255,210,74,.26)!important;border-radius:20px!important;
@@ -6799,7 +6803,7 @@ function servOpen(){const body=h('div');
   body.querySelector('[data-ex=pag]').onclick=()=>goLink(SERV_EX.pag);body.querySelector('[data-ex=maps]').onclick=()=>goLink(SERV_EX.maps);
   const list=h('div','shl');list.style.marginTop='10px';body.append(list);
   SERV.forEach(x=>{const use=servUse(x),desc=x.full&&use>=x.full?x.v:use/GEM_POR_REAL;
-    const r=h('div','shi'+(x.hot?' shhot':''),`<span class="ic">${x.ic}</span><div><b>${esc(x.n)}${x.hot?`<span class="tag">${x.hot}</span>`:''}</b><small>${brl(x.v)}${x.m?' + '+brl(x.m)+'/mês':''}</small>${use>=GEM_POR_REAL?`<div class="svd">💎 ${use} = ${desc>=x.v?'GRÁTIS':'−'+brl(desc)}</div>`:''}</div>`);
+    const r=h('div','shi'+(x.hot?' shhot':''),`<span class="ic">${x.ic}</span><div><b>${esc(x.n)}${x.hot?`<span class="tag">${x.hot}</span>`:''}</b><span class="shprice">${brl(x.v)}${x.m?`<em> + ${brl(x.m)}/mês</em>`:''}</span>${use>=GEM_POR_REAL?`<div class="svd">💎 ${use} = ${desc>=x.v?'GRÁTIS':'−'+brl(desc)}</div>`:''}</div>`);
     const b=h('button','pri','Ver');b.onclick=()=>servItem(x);r.append(b);list.append(r);});
   modal('🛠️ Serviços NEXA',body,[{t:'Fechar'}]);}
 function servItem(x){const use=servUse(x),desc=x.full&&use>=x.full?x.v:use/GEM_POR_REAL,fica=Math.max(0,x.v-desc);
