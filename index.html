@@ -2474,8 +2474,10 @@ function activeBanners(){return (O.banners||[]).map(banObj).filter(b=>banImg(b)&
 
 /* botão de compartilhar com amigo */
 function shareApp(){const url='https://arena-dos-mestres.vercel.app/?v=2',txt='👑 Bora jogar comigo na Arena dos Mestres? Dominó, truco, sinuca e +16 jogos grátis, com amigos e ao vivo! ';
-  if(navigator.share){navigator.share({title:'Arena dos Mestres',text:txt,url}).catch(()=>{});return;}
-  goLink('https://wa.me/?text='+encodeURIComponent(txt+url));}
+  (async()=>{try{if(navigator.share&&navigator.canShare){const bl=await (await fetch('og-mascote.jpg')).blob();const f=new File([bl],'arena-dos-mestres.jpg',{type:'image/jpeg'});
+      if(navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Arena dos Mestres',text:txt+url});return;}}}catch(e){if(e&&e.name==='AbortError')return;}
+    if(navigator.share){navigator.share({title:'Arena dos Mestres',text:txt,url}).catch(()=>{});return;}
+    goLink('https://wa.me/?text='+encodeURIComponent(txt+url));})();}
 document.addEventListener('click',e=>{if(e.target.closest('#shareBtn')){sfx&&sfx('tap');shareApp();}});
 function renderCommunity(){
   const hb=$('#heroBox');const AB=activeBanners();
