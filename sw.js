@@ -1,5 +1,5 @@
-const CACHE = 'arena-v1';
-const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
+const CACHE = 'arena-v3';
+const FILES = ['./', './index.html', './manifest.json', './icon-mascote-192.png', './icon-mascote-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
 });
