@@ -1485,6 +1485,15 @@ body[data-sc="match"]::before,body[data-sc="watch"]::before{background:linear-gr
 .infoi>span{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:rgba(255,210,74,.14);border:1px solid rgba(255,210,74,.4)}
 .infoi b{display:block;color:#ffd24a;font-size:15px}.infoi small{display:block;color:#efe6ff;font-size:13.5px;line-height:1.35;margin-top:2px}
 .infofoot{display:block;margin-top:10px;color:var(--mut);font-size:12px;text-align:center}
+
+.gojogos{justify-content:flex-start!important;gap:12px!important;padding:12px 14px!important;margin:-2px 0 16px!important;border:2px solid #fff!important;border-radius:20px!important;
+  background:linear-gradient(120deg,#ff8a00,#ffd24a 45%,#ff3cac)!important;box-shadow:0 8px 26px rgba(255,138,0,.55),0 0 30px rgba(255,210,74,.5)!important;animation:gjglow 1.6s ease-in-out infinite;color:#2a0a00!important}
+@keyframes gjglow{50%{box-shadow:0 8px 30px rgba(255,138,0,.8),0 0 46px rgba(255,210,74,.85)}}
+.gojogos .gjic{flex:none;width:50px;height:50px;border-radius:14px;display:grid;place-items:center;font-size:28px;background:rgba(255,255,255,.35)}
+.gojogos .gjtx{flex:1;text-align:left}.gojogos .gjtx b{display:block;font-size:18px;font-weight:900;color:#2a0a00;letter-spacing:.3px}.gojogos .gjtx small{display:block;font-size:12.5px;font-weight:800;color:#4a1800}
+.gojogos .gjar{flex:none;display:flex;flex-direction:column;align-items:center;line-height:.45}
+.gojogos .gjar i{font-style:normal;font-size:30px;font-weight:900;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.35);animation:gjb 1s ease-in-out infinite}
+.gojogos .gjar i+i{animation-delay:.15s;opacity:.7}
 /* ===== Tema Real da Arena: roxo real + ouro (combina com o mascote e os cenários) ===== */
 :root{--gold:#ffd24a;--gold2:#f5a623;--royal:#2a0f6e;--royal2:#150a3a}
 .card{background:linear-gradient(165deg,rgba(46,20,112,.82),rgba(20,10,50,.86))!important;border:1px solid rgba(255,210,74,.26)!important;border-radius:20px!important;
@@ -1521,7 +1530,7 @@ button.pri{box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 4px 14px rgba(123,47
   <button id="shareBtn" class="shbtn2"><i class="shglow"></i>
     <span class="vsrow"><span class="vsme"><img src="img/mascote.webp" alt=""><small>O MESTRE</small></span><b class="vsx">VS</b><span class="vsyou"><i>?</i><small>SEU AMIGO</small></span></span>
     <span class="vstx"><b>⚔️ Desafie um amigo!</b><span class="vsgames"><span class="vstrack"><i>Dominó</i><i>Xadrez</i><i>Forca</i><i>Truco</i><i>Sinuca</i><i>Dama</i><i>Ludo</i><i>KABOOM</i><i>Dominó</i><i>Xadrez</i><i>Forca</i><i>Truco</i><i>Sinuca</i><i>Dama</i><i>Ludo</i><i>KABOOM</i></span></span><span class="vsgo">Desafiar agora ➤</span></span></button>
-  <button id="goJogos" class="gojogos"><span>🎮 Os <b>19 jogos</b> estão logo abaixo — é só arrastar a tela</span><i>⌄</i></button>
+  <button id="goJogos" class="gojogos"><span class="gjic">🎮</span><span class="gjtx"><b>19 JOGOS AQUI EMBAIXO</b><small>Arraste a tela ou toque aqui</small></span><span class="gjar"><i>⌄</i><i>⌄</i></span></button>
   <div class="duo"><div id="rankBox" class="rankbox"></div><div id="vitBox"></div></div>
   <div id="neonBox"></div>
   <div id="socBox"></div>
