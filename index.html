@@ -2175,7 +2175,7 @@ function chestUI(){const b=$('#chestBtn');if(!b)return;if(S.chestRdy){b.classNam
 function chestOnWin(){addBrilho(3);const g=M&&M.g&&M.g.id;if(S.chestRdy){S.chestRdy=0;save();setTimeout(()=>openChest(g,'Você venceu a rodada!'),1300);}else if(Math.random()<.08)setTimeout(()=>openChest(g,'Sorte grande! Baú surpresa'),1300);}
 function openChest(pool,why){const id=rollItem(pool);const dup=grant(id);const it=ITEMS[id],R=RAR[it.r];
   const fx=$('#chestFx');fx.style.display='';fx.innerHTML=`<div class="chbox" style="--rc:${R.col}"><div class="chwhy">${esc(why||'')} · ${GNAME[pool]||''}</div><div class="chest"><img src="${IMG.bau}" alt=""></div>
-    <div class="chitem"><div class="chrar">${R.n.toUpperCase()}</div><div class="chprev">${itemPrev(id,true)}</div><b>${esc(it.n)}</b><small>${CATS[it.c]}${dup?` · repetido → +${R.dup} ✨ brilhos`:it.c==='ut'?' · use contra o robô':''}</small>
+    <div class="chitem"><div class="chrar">${R.n.toUpperCase()}</div><div class="chprev">${itemPrev(id,true)}</div><b>${esc(it.n)}</b><small>${CATS[it.c]}${dup?` · repetido → +${R.dup} 🪙 de ouro`:it.c==='ut'?' · use contra o robô':''}</small>
     <div class="row">${!dup&&it.c!=='ut'?'<button class="pri" data-eq>Equipar agora</button>':''}<button data-ok>${dup||it.c==='ut'?'Valeu!':'Depois'}</button></div></div></div><canvas id="chConf"></canvas>`;
   const eb=fx.querySelector('[data-eq]');if(eb)eb.onclick=()=>{equip(id);fx.style.display='none';toast('✅ Equipado!');if(it.c==='en')setTimeout(()=>showEntrance({id:S.uid,name:S.name,photo:S.photo,cos:myCos()},'entrou na sala'),300);};
   fx.querySelector('[data-ok]').onclick=()=>{fx.style.display='none';};setTimeout(()=>{fx.querySelector('.chbox').classList.add('open');if(it.r==='e'||it.r==='l')confetti($('#chConf'));if(navigator.vibrate)navigator.vibrate([60,40,120]);},900);}
@@ -2212,20 +2212,20 @@ $('#hintBtn').onclick=()=>{if(!(S.hints>0)){toast('Sem dicas — ganhe nos baús
 /* tela de acessórios */
 let bagCat='fr';
 function bagCardUI(){const b=$('#bagCard');if(!b)return;const tot=Object.keys(ITEMS).filter(k=>ITEMS[k].c!=='ut').length,mine=(isDonoAll()?Object.keys(ITEMS).filter(k=>ITEMS[k].c!=='ut').length:Object.keys(S.inv||{}).filter(k=>ITEMS[k]&&ITEMS[k].c!=='ut').length),nw=Object.keys(S.newI||{}).length;
-  b.innerHTML=`<span class="bagic">🎒</span><div><b>Meus acessórios</b><small>${mine}/${tot} coletados · ✨ ${S.bri||0} brilhos${S.chestRdy?' · 🎁 baú pronto!':''}</small></div>${nw?`<span class="badge" style="display:inline-block">${nw} novo${nw>1?'s':''}</span>`:''}<em>›</em>`;}
-function renderBag(){const me=$('#bagMe');me.innerHTML=`<i class="av big"></i><div><b>${nmHTML(S.name,S.uid)}</b><small>✨ ${S.bri||0} brilhos · 💡 ${S.hints||0} dicas</small><button id="bagEnt" class="pri" ${S.eq&&S.eq.en?'':'disabled'}>▶ Ver minha entrada</button></div>`;
+  b.innerHTML=`<span class="bagic">🎒</span><div><b>Meus acessórios</b><small>${mine}/${tot} coletados · 🪙 ${S.bri||0} de ouro${S.chestRdy?' · 🎁 baú pronto!':''}</small></div>${nw?`<span class="badge" style="display:inline-block">${nw} novo${nw>1?'s':''}</span>`:''}<em>›</em>`;}
+function renderBag(){const me=$('#bagMe');me.innerHTML=`<i class="av big"></i><div><b>${nmHTML(S.name,S.uid)}</b><small>🪙 ${S.bri||0} de ouro · 💡 ${S.hints||0} dicas</small><button id="bagEnt" class="pri" ${S.eq&&S.eq.en?'':'disabled'}>▶ Ver minha entrada</button></div>`;
   setAv(me.querySelector('.av'),S.photo,S.name,null,S.uid);$('#bagEnt').onclick=()=>showEntrance({id:S.uid,name:S.name,photo:S.photo,cos:myCos()},'entrou na sala');
-  $('#bagInfo').innerHTML=`🎁 <b>Como ganhar:</b> a cada <b>3 minutos jogando</b> (contra robô ou online) um baú fica pronto — <b>vença a próxima rodada</b> pra abrir. Bingo também dá baú. Cada jogo solta acessórios diferentes. Repetidos viram ✨ brilhos, e com brilhos você troca pelo que quiser.`;
+  $('#bagInfo').innerHTML=`🎁 <b>Como ganhar:</b> a cada <b>3 minutos jogando</b> (contra robô ou online) um baú fica pronto — <b>vença a próxima rodada</b> pra abrir. Bingo também dá baú. Cada jogo solta acessórios diferentes. Repetidos viram 🪙 ouro, e com ouro você troca pelo que quiser.`;
   const tabs=$('#bagTabs');tabs.innerHTML=Object.entries(CATS).map(([k,v])=>`<button class="${k===bagCat?'on':''}" data-c="${k}">${v}</button>`).join('');tabs.querySelectorAll('button').forEach(b=>b.onclick=()=>{bagCat=b.dataset.c;renderBag();});
   const L=Object.keys(ITEMS).filter(k=>ITEMS[k].c===bagCat).sort((a,b)=>(own(b)?1:0)-(own(a)?1:0)||'clre'.indexOf(ITEMS[a].r)-'clre'.indexOf(ITEMS[b].r));
   const grid=$('#bagGrid');grid.innerHTML=L.map(k=>{const it=ITEMS[k],R=RAR[it.r],o=own(k)&&it.c!=='ut',src=Object.keys(POOL).filter(g=>POOL[g].includes(k)).map(g=>GNAME[g]).join(', ');
     return `<div class="bagit ${o?'own':'lock'} ${isEq(k)?'eq':''}" style="--rc:${R.col}">${S.newI&&S.newI[k]?'<span class="nw">NOVO</span>':''}<div class="bprev">${itemPrev(k)}</div><b>${esc(it.n)}</b><small class="rr">${R.n}</small>
-      ${it.c==='ut'?`<small>Sai em: ${src}</small>`:o?`<button class="${isEq(k)?'':'pri'}" data-eq="${k}">${isEq(k)?'✓ Equipado':'Equipar'}</button>`:`<small>🔒 Sai em: ${src}</small><button data-buy="${k}" ${(S.bri||0)>=R.price?'class="pri"':''}>✨ ${R.price}</button>`}
+      ${it.c==='ut'?`<small>Sai em: ${src}</small>`:o?`<button class="${isEq(k)?'':'pri'}" data-eq="${k}">${isEq(k)?'✓ Equipado':'Equipar'}</button>`:`<small>🔒 Sai em: ${src}</small><button data-buy="${k}" ${(S.bri||0)>=R.price?'class="pri"':''}>🪙 ${R.price}</button>`}
       ${it.c==='en'?`<button data-pv="${k}">▶ Ver</button>`:''}</div>`;}).join('');
   grid.querySelectorAll('[data-eq]').forEach(b=>b.onclick=()=>{equip(b.dataset.eq);renderBag();});
   grid.querySelectorAll('[data-pv]').forEach(b=>b.onclick=()=>showEntrance({id:'_pv',name:S.name,photo:S.photo,cos:Object.assign(myCos(),{e:b.dataset.pv,f:S.eq&&S.eq.fr})},'entrou na sala'));
-  grid.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>{const k=b.dataset.buy,pr=RAR[ITEMS[k].r].price;if((S.bri||0)<pr){toast(`Faltam ${pr-(S.bri||0)} ✨ brilhos — jogue e ganhe mais`);return;}
-    modal('Trocar brilhos?',`Trocar <b style="color:var(--txt)">✨ ${pr}</b> por <b style="color:var(--txt)">${esc(ITEMS[k].n)}</b>?`,[{t:'Cancelar'},{t:'Trocar',pri:1,f:()=>{S.bri-=pr;grant(k);renderBag();toast('🎉 '+ITEMS[k].n+' é seu!');}}]);});
+  grid.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>{const k=b.dataset.buy,pr=RAR[ITEMS[k].r].price;if((S.bri||0)<pr){toast(`Faltam ${pr-(S.bri||0)} 🪙 de ouro — jogue e ganhe mais`);return;}
+    modal('Trocar ouro?',`Trocar <b style="color:var(--txt)">🪙 ${pr} de ouro</b> por <b style="color:var(--txt)">${esc(ITEMS[k].n)}</b>?`,[{t:'Cancelar'},{t:'Trocar',pri:1,f:()=>{S.bri-=pr;grant(k);renderBag();toast('🎉 '+ITEMS[k].n+' é seu!');}}]);});
   if(S.newI){L.forEach(k=>delete S.newI[k]);save();}bagCardUI();}
 $('#bagBack').onclick=()=>go('lobby');$('#bagCard').onclick=()=>go('bag');$('#pBag').onclick=()=>go('bag');
 /* emojis na conversa */
@@ -2445,7 +2445,7 @@ $('#saque').onclick=()=>{
 /* ========== PROFILE ========== */
 function renderProfile(){setAv($('#pav'),S.photo,S.name,null,S.uid);$('#pname').value=S.name;
   $('#pNm').innerHTML=nmHTML(S.name,S.uid);setTimeout(lvUI,0);const t0=S.w+S.l;
-  $('#pChips').innerHTML=`<span class="fol" id="pFol">👣 ${FOLW.size} ${FOLW.size===1?'seguidor':'seguidores'} · ${Object.keys(S.fol||{}).length} seguindo</span><span>✨ ${S.bri||0} brilhos</span><span>👥 ${Object.keys(S.fr||{}).length} amigos</span>${S.chestRdy?'<span class="hot2">🎁 baú pronto</span>':''}`;
+  $('#pChips').innerHTML=`<span class="fol" id="pFol">👣 ${FOLW.size} ${FOLW.size===1?'seguidor':'seguidores'} · ${Object.keys(S.fol||{}).length} seguindo</span><span>🪙 ${S.bri||0} de ouro</span><span>👥 ${Object.keys(S.fr||{}).length} amigos</span>${S.chestRdy?'<span class="hot2">🎁 baú pronto</span>':''}`;
   const tot=Object.keys(ITEMS).filter(k=>ITEMS[k].c!=='ut').length,mine=(isDonoAll()?Object.keys(ITEMS).filter(k=>ITEMS[k].c!=='ut').length:Object.keys(S.inv||{}).filter(k=>ITEMS[k]&&ITEMS[k].c!=='ut').length),nw=Object.keys(S.newI||{}).length;
   $('#pFol').onclick=openFollowers;$('#pBagS').textContent=`${mine}/${tot} coletados${nw?' · '+nw+(nw>1?' novos':' novo'):''}`;$('#pFrS').textContent=`${Object.keys(S.fr||{}).length} amigos`;$('#pBlkS').textContent=`${Object.keys(S.blk||{}).length} pessoas`;frBadge();$('#sw').textContent=S.w;$('#sl').textContent=S.l;const t=S.w+S.l;$('#sr').textContent=t?Math.round(S.w*100/t)+'%':'—';}
 $('#pickf').onclick=()=>$('#file').click();$('#pickf2').onclick=()=>$('#file').click();
@@ -2836,7 +2836,7 @@ const TIPS={
  wallet:{ic:'💰',t:'Carteira de teste',d:'Esse saldo é <b>de mentira</b>, só pra testar. Toque em <b>+ R$ 10,00</b> (ou outro) pra adicionar mais moedas sempre que precisar.'},
  profile:{ic:'👤',t:'Seu perfil',d:'Toque no <b>📷</b> da sua foto pra trocar, ou em <b>✏️ Editar perfil</b> pra mudar o nome. Em <b>🎒 Acessórios</b> você equipa o que ganhou nos baús.'},
  bingo:{ic:'🎱',t:'Como jogar o Bingo',d:'Escolha quantas cartelas quer antes do sorteio. As bolas são marcadas sozinhas. Quando fechar uma <b>linha</b> ou a <b>cartela cheia</b>, toque rápido em <b>BINGO!</b>'},
- bag:{ic:'🎒',t:'Seus acessórios',d:'Toque em <b>Equipar</b> pra usar. Os bloqueados mostram em qual jogo saem. Itens repetidos viram <b>✨ brilhos</b> pra trocar pelo que quiser.'},
+ bag:{ic:'🎒',t:'Seus acessórios',d:'Toque em <b>Equipar</b> pra usar. Os bloqueados mostram em qual jogo saem. Itens repetidos viram <b>🪙 ouro</b> pra trocar pelo que quiser.'},
  torneio:{ic:'🏆',t:'Torneios',d:'Toque em <b>Quero participar</b> pra se inscrever. É grátis! O prêmio aparece em cada card.'},
  match:{ic:'🎮',t:'Dica da partida',d:'A frase amarela no alto diz <b>de quem é a vez</b> e o que fazer. Use os emojis pra provocar 😂 e, contra o robô, o botão <b>💡 Dica</b> mostra a melhor jogada.'}};
 let tourI=-1;
@@ -7059,7 +7059,7 @@ const LG_TERMS=`<p><small>Versão de 21/11/2026</small></p>
 <h4>1. Quem pode usar</h4><ul><li>Somente pessoas com <b>18 anos ou mais</b>.</li><li>Você é responsável pelo seu apelido, sua foto e tudo o que publicar.</li></ul>
 <h4>2. Saldo de teste — não é dinheiro</h4><ul><li>O saldo exibido é <b>fictício</b>, serve só para testar e se divertir.</li><li>Ele <b>não pode ser comprado, vendido, sacado nem trocado</b> por dinheiro, bens ou serviços.</li><li>A plataforma <b>não realiza apostas</b> nem jogos de azar com dinheiro real. Partidas valendo saldo de teste são contra robôs de treino.</li><li>O Bingo é <b>gratuito</b> e não exige nenhuma compra.</li></ul>
 <h4>3. Torneios e prêmios</h4><ul><li>A inscrição nos torneios é gratuita.</li><li>Prêmios (como serviços ou acessos) são oferecidos pelo organizador ou patrocinador indicado em cada torneio, conforme as regras publicadas nele.</li><li>Fraude, uso de robôs, combinação de resultados ou contas falsas levam à desclassificação.</li></ul>
-<h4>4. Acessórios e brilhos</h4><p>Molduras, entradas, emojis, mesas e brilhos são itens cosméticos ganhos jogando, sem valor em dinheiro, e podem mudar ou ser removidos.</p>
+<h4>4. Acessórios e ouro</h4><p>Molduras, entradas, emojis, mesas e ouro são itens cosméticos ganhos jogando, sem valor em dinheiro, e podem mudar ou ser removidos.</p>
 <h4>5. Regras de convivência</h4><p>É proibido: ofensas, assédio, ameaças, discriminação, conteúdo sexual, golpes, pedir dados bancários ou senhas, divulgar dados de outras pessoas, spam e qualquer conteúdo ilegal. Quem descumprir pode ter mensagens bloqueadas e o acesso suspenso. Use 🚫 Bloquear e o botão de denúncia no Perfil.</p>
 <h4>6. Mensagens temporárias e voz</h4><p>Mensagens temporárias somem da tela, mas <b>não é possível impedir</b> que alguém fotografe a tela. Não envie nada que não enviaria a um desconhecido. A voz nas partidas é ao vivo e <b>não é gravada</b> pela plataforma.</p>
 <h4>7. Anúncios de terceiros</h4><p>Anúncios e patrocínios são de responsabilidade dos próprios anunciantes. Negociações feitas com eles (inclusive pelo WhatsApp) são entre você e o anunciante.</p>
