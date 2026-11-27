@@ -1104,7 +1104,7 @@ body.nopeek .bub.ephb{color:transparent!important;text-shadow:0 0 12px #e9dcff!i
 .bgstage.phbg::after{background:linear-gradient(90deg,transparent 35%,#120d30aa 70%)}
 
 /* ===== PARTIDA MODERNA ===== */
-#match{background:radial-gradient(130% 70% at 50% 0%,var(--mg1,#3a1670) 0%,#120d30 55%,#07051a 100%);min-height:100vh}
+#match{background:radial-gradient(130% 70% at 50% 0%,color-mix(in srgb,var(--mg1,#3a1670) 55%,transparent) 0%,rgba(18,13,48,.45) 55%,rgba(7,5,26,.6) 100%);min-height:100vh}
 #match[data-g="dama"]{--mg1:#5a1a3a}#match[data-g="xadrez"]{--mg1:#123a66}#match[data-g="domino"]{--mg1:#4a3008}#match[data-g="sinuca"]{--mg1:#0b4a2a}#match[data-g="ludo"]{--mg1:#3a1670}
 #match .mtop{background:#0b082099;backdrop-filter:blur(8px);border:1px solid #ffffff14;border-radius:18px;padding:8px 10px}
 #match .pbar{background:linear-gradient(110deg,#1d1640ee,#120d30ee);border:1px solid #b026ff44;box-shadow:0 8px 20px #0008}
@@ -1300,6 +1300,24 @@ body:has(#legalGate) #mod{z-index:100000!important}
 @keyframes iwPulse{50%{box-shadow:0 6px 30px #ff3caccc,0 0 0 6px #ff3cac22}}
 #instWel .iwno{width:100%;margin-top:8px;padding:11px;background:transparent;border:0;color:#c9b8ff;font-size:14px;font-weight:700}
 #instWel .iwopt{display:inline-block;margin:0 0 10px;padding:6px 14px;border-radius:99px;font-size:12.5px;font-weight:900;letter-spacing:.4px;color:#052e16;background:linear-gradient(135deg,#4ade80,#22c55e);box-shadow:0 0 0 2px #bbf7d066,0 0 18px #22c55e99}
+
+/* cenário da arena: fundo de cada tela */
+html{background:radial-gradient(120% 50% at 50% 0%,#2a0e5c 0%,#0b0b1f 55%,#07070f 100%) fixed #07070f!important}
+body{background:transparent!important}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(9,5,26,.30) 0%,rgba(9,5,26,.40) 30%,rgba(9,5,26,.62) 60%,rgba(7,5,18,.80) 100%),var(--scimg,none) center top/cover no-repeat;transition:opacity .3s}
+body[data-sc="lobby"],body:not([data-sc]){--scimg:url(img/fundos/jogos.webp)}
+body[data-sc="bingo"]{--scimg:url(img/fundos/jogos.webp)}
+body[data-sc="online"]{--scimg:url(img/fundos/online.webp)}
+body[data-sc="chats"],body[data-sc="chat"]{--scimg:url(img/fundos/conversas.webp)}
+body[data-sc="wallet"]{--scimg:url(img/fundos/loja.webp)}
+body[data-sc="profile"],body[data-sc="bag"]{--scimg:url(img/fundos/perfil.webp)}
+body[data-sc="match"],body[data-sc="watch"]{--scimg:url(img/fundos/partida.webp)}
+body[data-sc="torneio"]{--scimg:url(img/fundos/ranking.webp)}
+body[data-sc="chat"]::before{background:linear-gradient(180deg,rgba(9,5,26,.62),rgba(7,5,18,.85)),var(--scimg) center/cover no-repeat}
+body[data-sc="match"]::before,body[data-sc="watch"]::before{background:linear-gradient(180deg,rgba(9,5,26,.35),rgba(7,5,18,.65)),var(--scimg) center/cover no-repeat}
+#legalGate{background:linear-gradient(180deg,rgba(9,5,26,.35),rgba(9,5,26,.88) 60%),url(img/fundos/abertura.webp) center top/cover no-repeat,#07070f!important}
+#instWel{background:linear-gradient(180deg,rgba(9,5,26,.55),rgba(5,3,14,.85)),url(img/fundos/abertura.webp) center/cover no-repeat!important}
 #legalGate .lgok{width:100%;margin-top:10px;padding:14px;font-size:16px}#legalGate .lgok:disabled{opacity:.45}
 /* ===== Perfil sofisticado (vidro + brilho) ===== */.pst{margin:6px 12px 0!important;display:grid!important;grid-template-columns:repeat(3,1fr);gap:0!important;border-radius:20px;background:linear-gradient(180deg,#ffffff12,#ffffff05);border:1px solid #ffffff22;box-shadow:inset 0 1px 0 #ffffff22,0 10px 24px #0007;backdrop-filter:blur(8px);overflow:hidden}.pst .st{background:none!important;border:none!important;border-radius:0!important;padding:12px 4px!important;position:relative}.pst .st+.st::before{content:"";position:absolute;left:0;top:18%;bottom:18%;width:1px;background:linear-gradient(#0000,#ffffff33,#0000)}.pst .st span{font-size:18px;opacity:.9}.pst .st b{font-size:24px!important;letter-spacing:.5px}.pst .st small{font-size:10.5px!important;text-transform:uppercase;letter-spacing:1px;font-weight:800}.ptiles{gap:12px!important}.ptile{background:linear-gradient(160deg,#ffffff14,#ffffff05)!important;border:1px solid #ffffff1f!important;box-shadow:inset 0 1px 0 #ffffff26,0 12px 26px #0008!important;backdrop-filter:blur(10px);overflow:hidden;min-height:112px!important;padding:16px!important;transition:transform .15s}.ptile:active{transform:scale(.97)}.ptile::before{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,var(--g) 0,#0000 70%);opacity:.55}.ptile::after{content:"›";position:absolute;right:14px;bottom:10px;font-size:22px;font-weight:300;color:#ffffff88}.ptile span{display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:14px;font-size:24px!important;margin-bottom:8px;background:linear-gradient(135deg,var(--g),var(--g2));box-shadow:0 6px 16px var(--gs),inset 0 1px 0 #ffffff55;filter:none!important}.ptile b{font-size:16px!important;letter-spacing:.3px}.ptile small{color:#ffffffa8!important;font-weight:600!important}.ptile.t1{--g:#b026ff;--g2:#ff2b8a;--gs:#b026ff66}.ptile.t2{--g:#00c896;--g2:#0277bd;--gs:#00c89666}.ptile.t3{--g:#ff5a6e;--g2:#7a1f3a;--gs:#ff5a6e55}.ptile.t4{--g:#ffc23d;--g2:#ff7a00;--gs:#ffb62766}.pgrp{background:linear-gradient(160deg,#ffffff0f,#ffffff04)!important;border:1px solid #ffffff1c!important;border-radius:20px!important;box-shadow:inset 0 1px 0 #ffffff1c,0 10px 22px #0006;backdrop-filter:blur(8px)}.pgrp>summary{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.pgrp>summary::after{content:'›'!important;font-size:22px;top:50%!important;transform:translateY(-50%);transition:transform .2s;color:#ffffff88!important}.pgrp[open]>summary::after{content:'›'!important;transform:translateY(-50%) rotate(90deg)}.pgrp>summary small{flex-basis:100%;margin-top:-6px;padding-left:2px}</style>
 </head>
@@ -2059,7 +2077,7 @@ function fly(e,down){const s=h('div','fly'+(down?' dn':''),e);s.style[down?'top'
 function botEmoji(e){setTimeout(()=>fly(e||pick(['😂','😎','🔥','🤡','😡','🫵','👏','💤']),true),400);}
 
 /* ========== NAV ========== */
-function go(id){if(id==='com')id='chats';if(id==='chats')setTimeout(renderCom,0);
+function go(id){if(id==='com')id='chats';try{document.body.dataset.sc=id;}catch(e){}if(id==='chats')setTimeout(renderCom,0);
   setTimeout(()=>tipScreen(id),450);
   if(id!=='lobby')adStop();
   document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id===id));
