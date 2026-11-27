@@ -1394,6 +1394,9 @@ body[data-sc="match"]::before,body[data-sc="watch"]::before{background:linear-gr
 .sty.add .sr::after{content:"+";position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:16px;font-weight:900;color:#2a1600;background:#ffd24a;border:2px solid #150a3a}
 .sty small{font-weight:800}
 .stry:has(> .sty:only-child)::after{content:"Seja o primeiro a postar um story hoje ✨";align-self:center;color:#d9c8ff;font-size:12.5px;font-weight:700;padding-left:6px}
+.clm{text-align:center}.clm .clmic{font-size:46px;margin:2px 0 6px}.clm>b{display:block;font-size:17px;color:#fff}.clm>small{display:block;color:var(--mut);margin:6px 0 12px}
+.clmopt{display:flex;text-align:left;gap:10px;padding:11px 12px;margin-top:8px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,210,74,.28)}
+.clmopt b{display:block;color:#ffd24a;font-size:14.5px}.clmopt small{display:block;color:#d9c8ff;font-size:12px;margin-top:2px}
 /* ===== Tema Real da Arena: roxo real + ouro (combina com o mascote e os cenários) ===== */
 :root{--gold:#ffd24a;--gold2:#f5a623;--royal:#2a0f6e;--royal2:#150a3a}
 .card{background:linear-gradient(165deg,rgba(46,20,112,.82),rgba(20,10,50,.86))!important;border:1px solid rgba(255,210,74,.26)!important;border-radius:20px!important;
@@ -4495,8 +4498,9 @@ $('#cSend').onclick=()=>{const i=$('#cIn');if(CUR&&i.value.trim()){if(sendDM(CUR
 $('#cIn').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('#cSend').click();}};
 $('#cBack').onclick=()=>{if(REC.mr)recStop(true);if(CUR){dropEph(CUR);ephClear(CUR);}CUR=null;go('chats');};
 $('#cAtt').onclick=()=>$('#cFile').click();
-$('#cFile').onchange=e=>{
+$('#cFile').onchange=async e=>{
   const f=e.target.files[0];e.target.value='';if(!f||!CUR)return;
+  if(f.type.startsWith('image/')){const lim=await chatUsar('foto');if(!lim.ok){chatLimModal('foto',lim);return;}}
   if(f.type.startsWith('video/')){modal('Vídeo ainda não',`Pra mandar vídeo o app precisa de um servidor de arquivos (é a próxima etapa, com o banco de dados).<br><br>Por enquanto você pode mandar <b style="color:var(--txt)">fotos</b>, ou colar aqui o <b style="color:var(--txt)">link</b> de um vídeo (YouTube, Instagram, Drive).`,[{t:'Entendi',pri:1}]);return;}
   if(!f.type.startsWith('image/')){toast('Escolha uma foto');return;}
   const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{
@@ -4531,7 +4535,7 @@ function recDone(){
   if(REC.stream)REC.stream.getTracks().forEach(t=>t.stop());const cancel=REC.cancel;REC.mr=null;REC.stream=null;
   if(cancel){toast('Áudio cancelado');return;}
   if(dur<1||blob.size<800){toast('Segure o 🎤 enquanto fala');return;}
-  const fr=new FileReader();fr.onload=()=>{if(CUR)sendDM(CUR,'',null,fr.result,dur);};fr.readAsDataURL(blob);
+  const fr=new FileReader();fr.onload=async()=>{if(!CUR)return;const lim=await chatUsar('audio');if(!lim.ok){chatLimModal('audio',lim);return;}sendDM(CUR,'',null,fr.result,dur);};fr.readAsDataURL(blob);
 }
 $('#cMic').addEventListener('pointerdown',e=>{try{$('#cMic').setPointerCapture(e.pointerId);}catch(x){}recStart(e);});
 $('#cMic').addEventListener('pointermove',recMove);
@@ -4566,7 +4570,9 @@ function callUI(){
   if(CALL.st==='out'){sub.textContent='Chamando…';mk('✕ Cancelar','red',()=>callEnd(true));}
   else if(CALL.st==='in'){sub.textContent='📞 Ligação de voz recebida';mk('✕ Recusar','red',callDecline);mk('📞 Atender','green',callAccept);}
   else if(CALL.st==='conn'){sub.textContent='Conectando…';mk(CALL.muted?'🔇 Mudo':'🎙️ Mudo','gray',callMute);mk('✕ Desligar','red',()=>callEnd(true));}
-  else if(CALL.st==='live'){sub.textContent=fmtDur(Math.floor((Date.now()-CALL.start)/1000));mk(CALL.muted?'🔇 Mudo (ligado)':'🎙️ Mudo','gray',callMute);mk('✕ Desligar','red',()=>callEnd(true));}
+  else if(CALL.st==='live'){const el=Math.floor((Date.now()-CALL.start)/1000);
+    if(CALL.lim&&el>=CALL.lim&&!CALL.limHit){CALL.limHit=1;setTimeout(()=>{callEnd(true);chatLimModal('call',{limite:2});toast('⏱️ Ligação grátis vai até 5 minutos');},0);}
+    sub.textContent=fmtDur(el)+(CALL.lim?' · grátis até '+fmtDur(CALL.lim):'');mk(CALL.muted?'🔇 Mudo (ligado)':'🎙️ Mudo','gray',callMute);mk('✕ Desligar','red',()=>callEnd(true));}
 }
 function callLog(peer,info){ // registra a ligação na conversa (só no próprio celular)
   const c=chatOf(peer,CALL.name,CALL.thumb);const m={id:mid(),me:info.me,ts:Date.now(),call:info.txt,text:''};c.msgs.push(m);c.last=m.ts;saveCH();
@@ -4588,12 +4594,36 @@ function makePC(){
     if(s==='failed'){toast('A ligação caiu');callEnd(true);}};
   return pc;
 }
+/* ===== Limites da conversa: texto livre; áudio 5, foto 3, ligação 2 (5 min) por dia. Premium / Papo Livre = sem limite ===== */
+const CHATLIM={ili:false};
+async function chatUsar(tipo){if(OKEY)return {ok:true,ilimitado:true};
+  try{const a={p_uid:S.uid,p_tipo:tipo};const r=CL.ses?await clRpc('arena_chat_usar',a):await rkAnon('arena_chat_usar',a);
+    if(!r)return {ok:true};CHATLIM.ili=!!r.ilimitado;return r;}catch(e){return {ok:true};}}
+function chatLimModal(tipo,r){const nm={audio:['🎙️','áudios'],foto:['📷','fotos'],call:['📞','ligações']}[tipo]||['💬','envios'];
+  const b=h('div');b.innerHTML=`<div class="clm"><div class="clmic">${nm[0]}</div><b>Você usou ${r.limite||''} ${nm[1]} grátis de hoje</b><small>Mensagem de texto continua liberada à vontade. Volta amanhã ou libera agora:</small>
+    <div class="clmopt"><div><b>👑 Premium</b><small>Conversa sem limite + selo, modo invisível e mais · a partir de R$ 4,90</small></div></div>
+    <div class="clmopt"><div><b>💬 Papo Livre 24h</b><small>Áudios, fotos e ligações sem limite por 24 horas · 💎 30</small></div></div>
+    ${tipo==='call'?'<div class="clmopt"><div><b>📞 +1 ligação hoje</b><small>Use seus diamantes verdes · <i class="gv">💎</i> 10</small></div></div>':''}</div>`;
+  const bt=[{t:'👑 Ver Premium',pri:1,f:()=>{go('wallet');setTimeout(()=>shopOpen('prem'),200);}},{t:'Papo Livre 💎30',f:()=>{papoLivre();}}];
+  if(tipo==='call')bt.push({t:'+1 ligação (10 verdes)',f:()=>{callExtra();}});
+  bt.push({t:'Agora não'});modal('Limite de hoje',b,bt);}
+async function papoLivre(){if(!CL.ses){toast('Entre na sua conta pra usar diamantes');needLogin();return;}
+  const r=await clRpc('arena_papo_livre',{p_uid:S.uid}).catch(()=>null);
+  if(r&&r.ok){CHATLIM.ili=true;gemSet(r.saldo|0);toast('💬 Papo Livre ativado por 24 horas!');sfx&&sfx('gem');}
+  else if(r&&r.erro==='saldo'){modal('💎 Faltam diamantes','O Papo Livre custa 💎 30. Compre diamantes na Loja.',[{t:'💎 Ir pra Loja',pri:1,f:()=>{go('wallet');setTimeout(()=>shopOpen('gem'),200);}},{t:'Agora não'}]);}
+  else toast('Não deu agora — tente de novo');}
+async function callExtra(){if(!CL.ses){toast('Entre na sua conta pra usar diamantes');needLogin();return;}
+  const r=await clRpc('arena_call_extra',{p_uid:S.uid}).catch(()=>null);
+  if(r&&r.ok){S.gemJ=r.saldo_jogo|0;save();toast('📞 +1 ligação liberada hoje! Pode ligar.');}
+  else if(r&&r.erro==='saldo')toast('Você precisa de 10 diamantes verdes — vença partidas pra ganhar');
+  else toast('Não deu agora — tente de novo');}
 async function startCall(peer,name,th){
   if(!S.rulesOk){rulesGate(()=>startCall(peer,name,th));return;}
   if(CALL.st){toast('Você já está numa ligação');return;}
   if(NET.on&&NET.started){toast('Termine a partida antes de ligar');return;}
+  const lim=await chatUsar('call');if(!lim.ok){chatLimModal('call',lim);return;}
   const on=ONLINE.get(peer);
-  Object.assign(CALL,{st:'out',cid:mid(),peer,name:name||'Jogador',thumb:th||(on&&on.thumb),muted:false,candQ:[]});
+  Object.assign(CALL,{st:'out',cid:mid(),peer,name:name||'Jogador',thumb:th||(on&&on.thumb),muted:false,candQ:[],lim:lim.ilimitado?0:300,limHit:0});
   callUI();
   const s=await getMic();if(!s){CALL.st=null;callUI();return;}
   CALL.stream=s;await fetchIce();
@@ -6631,7 +6661,7 @@ function gemLojaUI(){const el=$('#gemLoja');if(!el)return;
   $('#glGem').onclick=()=>shopOpen('gem');$('#glPac').onclick=()=>shopOpen('pac');}
 function premUI(){try{gemLojaUI();}catch(e){}const pm=isPrem(),ate=pm?new Date(S.premAte).toLocaleDateString('pt-BR'):'';
   const l=$('#premLobby');if(l){l.innerHTML=pm?`<span class="pi">👑</span><div><b>Você é Premium</b><small>Até ${ate} · modo invisível, selo e sem anúncios</small></div><span class="go">Loja</span>`:`<span class="pi">👑</span><div><b>Arena Premium</b><small>Fique invisível, ganhe selo 👑, sem anúncios e diamantes toda semana</small></div><span class="go">A partir de R$ 4,90</span>`;l.onclick=()=>shopOpen(pm?'gem':'prem');}
-  const c=$('#premCard');if(c){c.innerHTML=`<div class="ph"><span>👑</span><div style="flex:1"><b>${pm?'Premium ativo até '+ate:'Arena Premium'}</b><br><small style="color:var(--mut)">${pm?'Obrigado por apoiar a Arena!':'Modo invisível, selo 👑, sem anúncios e mais'}</small></div></div>
+  const c=$('#premCard');if(c){c.innerHTML=`<div class="ph"><span>👑</span><div style="flex:1"><b>${pm?'Premium ativo até '+ate:'Arena Premium'}</b><br><small style="color:var(--mut)">${pm?'Obrigado por apoiar a Arena!':'Conversa sem limite, modo invisível, selo 👑 e mais'}</small></div></div>
     ${pm||OKEY?`<label class="tgl"><input type="checkbox" id="pInv" ${S.invis?'checked':''}> <span>👻 Modo invisível ${S.invis?'(ninguém te vê online)':''}</span></label><label class="tgl"><input type="checkbox" id="pAds" ${verAds()?'checked':''}> <span>📣 Ver anúncios ${OKEY?'(pra acompanhar os anunciantes)':''}</span></label>`:''}
     <div class="row" style="margin-top:10px"><button class="pri" id="pShop">${pm?'💎 Loja':'👑 Ver planos'}</button><button id="pShop2">🎁 Pacotes</button></div>`;
     const pi=$('#pInv');if(pi)pi.onchange=()=>invSet(pi.checked);
