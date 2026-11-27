@@ -1334,9 +1334,9 @@ body[data-sc="match"]::before,body[data-sc="watch"]::before{background:linear-gr
 .hero1.hroyal h1 em{background:linear-gradient(180deg,#fff8d6,#ffd24a 55%,#f5a623);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero1 .hmas{position:absolute;right:10px;top:9px;width:110px;height:110px;border-radius:22px;object-fit:cover;border:2px solid #ffd24a;box-shadow:0 0 18px rgba(255,194,61,.6);z-index:1;animation:iwBob 2.6s ease-in-out infinite}
 
-#roomCam{position:fixed;inset:0;z-index:29;background:#000}
-#roomCam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
-#roomCam::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,transparent 16%,transparent 45%,rgba(0,0,0,.6) 60%);pointer-events:none}
+#roomCam{position:fixed;top:0;left:0;right:0;height:58vh;z-index:29;background:#000;overflow:hidden}
+#roomCam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;transform:scaleX(-1)}
+#roomCam::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,transparent 20%,transparent 78%,rgba(14,8,36,.9) 100%);pointer-events:none}
 #roomCam .lvtag{position:absolute;top:calc(14px + env(safe-area-inset-top));left:14px;z-index:2;font-size:13px;font-weight:900;letter-spacing:.5px;color:#fff;background:#ff2d55;padding:5px 11px;border-radius:9px;animation:lvbl 1.4s ease-in-out infinite}
 #roomCam .lvviews{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;z-index:2;font-size:13px;font-weight:800;color:#fff;background:rgba(0,0,0,.45);padding:5px 10px;border-radius:9px}
 #roomCam .lvwho{position:absolute;left:14px;top:calc(50px + env(safe-area-inset-top));z-index:2;line-height:1.15}
@@ -1344,6 +1344,28 @@ body[data-sc="match"]::before,body[data-sc="watch"]::before{background:linear-gr
 #roomCam .lvwho small{display:block;color:#ffd24a;font-size:12.5px;font-weight:800;text-shadow:0 1px 4px #000}
 #mod.livebg{background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 #mod.livebg .box{max-height:44vh!important;background:linear-gradient(180deg,rgba(30,12,74,.78),rgba(14,8,36,.94))!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+
+.rmui{margin-top:10px}
+.rmlink{width:100%;font-size:12.5px!important;padding:11px 14px!important;border-radius:14px!important;background:rgba(0,0,0,.35)!important;border:1px dashed rgba(255,210,74,.45)!important;color:#ffe9a8!important}
+.rmact{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.rmb{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px!important;border-radius:18px!important;background:rgba(255,255,255,.06)!important;border:1px solid rgba(255,255,255,.12)!important;color:#fff!important;text-decoration:none;font-size:12px!important;font-weight:800;box-shadow:none!important;transition:transform .12s}
+.rmb:active{transform:scale(.92)}
+.rmb i{display:grid;place-items:center;width:50px;height:50px;border-radius:50%;font-style:normal;font-size:24px;box-shadow:0 6px 16px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.35)}
+.rmw i{background:linear-gradient(145deg,#3ef08a,#14a855)}
+.rmc i{background:linear-gradient(145deg,#7aa8ff,#3a5bd9)}
+.rmo i{background:linear-gradient(145deg,#c77dff,#7b2ff7)}
+.rmlive{width:100%;margin-top:12px;padding:15px!important;border-radius:18px!important;font-size:16px!important;font-weight:900!important;color:#fff!important;border:0!important;display:flex;align-items:center;justify-content:center;gap:10px;
+  background:linear-gradient(135deg,#ff2d55,#ff3cac 55%,#b026ff)!important;box-shadow:0 6px 22px rgba(255,45,85,.5),inset 0 1px 0 rgba(255,255,255,.3)!important}
+.rmlive i{font-style:normal;font-size:20px}
+.rmlive.on{background:rgba(255,45,85,.14)!important;border:2px solid #ff2d55!important;box-shadow:0 0 18px rgba(255,45,85,.35)!important;font-size:14.5px!important}
+.rmdot{width:11px;height:11px;border-radius:50%;background:#ff2d55;box-shadow:0 0 0 4px rgba(255,45,85,.3);animation:lvbl 1.2s ease-in-out infinite}
+.rmhint{display:block;text-align:center;margin-top:6px;color:var(--mut);font-size:12px}
+.lvrow{gap:10px!important}
+.lvrow button{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 10px!important;border-radius:16px!important;font-weight:900!important;font-size:14.5px!important;color:#fff!important;border:0!important}
+.lvrow i{font-style:normal;font-size:18px}
+.lvbm .rmdot{background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.3)}
+.lvbv{background:linear-gradient(135deg,#7b2ff7,#b026ff)!important;box-shadow:0 6px 18px rgba(123,47,247,.5),inset 0 1px 0 rgba(255,255,255,.3)!important}
+.lvbm{background:linear-gradient(135deg,#ff2d55,#ff3cac)!important;box-shadow:0 6px 18px rgba(255,45,85,.5),inset 0 1px 0 rgba(255,255,255,.3)!important}
 /* ===== Tema Real da Arena: roxo real + ouro (combina com o mascote e os cenários) ===== */
 :root{--gold:#ffd24a;--gold2:#f5a623;--royal:#2a0f6e;--royal2:#150a3a}
 .card{background:linear-gradient(165deg,rgba(46,20,112,.82),rgba(20,10,50,.86))!important;border:1px solid rgba(255,210,74,.26)!important;border-radius:20px!important;
@@ -3234,10 +3256,11 @@ function renderRoom(){
   const g=NET.game,link=roomLink(),msg=`Bora jogar ${g.name} comigo na Arena dos Mestres? Toque no link: `;
   const body=h('div');
   body.innerHTML=`${NET.host?'Mande o link ou convide quem está online.':'Você está na sala. Aguarde o dono da sala começar.'} ${g.id==='ludo'?'Ludo aceita de 2 a 4 jogadores.':''}${g.duo?'<br><br>🤝 <b style="color:var(--txt)">Dominó em dupla</b>: até 4 jogadores, 2 contra 2. Lugar vazio vira robô. O dono da sala toca em <b>⇄ Trocar</b> pra montar as duplas.':''}
-    ${NET.host?`<input type="text" readonly value="${link}" style="font-size:13px;margin-top:10px">
-    <div class="row" style="margin-top:10px"><a class="wpp" href="https://wa.me/?text=${encodeURIComponent(msg+link)}" target="_blank" rel="noopener">💬 WhatsApp</a><button id="cpL">📋 Copiar</button></div>
-    <button id="invOn" style="width:100%;margin-top:8px">🟢 Convidar quem está online</button>
-    <button id="lvRoom" class="${LIVE.on?'pri':''}" style="width:100%;margin-top:8px">${LIVE.on?'🔴 Ao vivo — tocar pra encerrar':'🔴 Abrir live enquanto espera'}</button>${LIVE.on?`<small style="color:var(--mut);display:block;text-align:center;margin-top:6px">Quem está online vê sua live em "🔴 Lives nos jogos" e pode entrar pra assistir.</small>`:''}`:''}
+    ${NET.host?`<div class="rmui"><input type="text" readonly value="${link}" class="rmlink">
+    <div class="rmact"><a class="rmb rmw" href="https://wa.me/?text=${encodeURIComponent(msg+link)}" target="_blank" rel="noopener"><i>💬</i><span>WhatsApp</span></a>
+      <button class="rmb rmc" id="cpL"><i>🔗</i><span>Copiar link</span></button>
+      <button class="rmb rmo" id="invOn"><i>🟢</i><span>Chamar online</span></button></div>
+    <button id="lvRoom" class="rmlive ${LIVE.on?'on':''}">${LIVE.on?'<i class="rmdot"></i> AO VIVO · tocar pra encerrar':'<i>🎥</i> Fazer live enquanto espera'}</button>${LIVE.on?`<small class="rmhint">Quem está online vê sua live em "🔴 Lives nos jogos".</small>`:''}</div>`:''}
     <div class="lbl">Jogadores na sala (${NET.players.length}/${NET.max})</div><div id="rl"></div>`;
   const rl=body.querySelector('#rl');
   if(g.duo){['A','B'].forEach((tm,k)=>{rl.append(h('div','lbl',k?'🔵 Dupla 2':'🟣 Dupla 1'));const ps=NET.players.filter(p=>(p.tm||'A')===tm);
@@ -3877,7 +3900,7 @@ function liveMiniUI(n){const m=$('#liveMini');if(!m)return;const k='m'+n;if(m.da
   m.onclick=()=>go('online');}
 function liveCardUI(){const L0=liveList().filter(p=>p.live.lv);liveMiniUI(L0.length);const el=$('#liveCard');if(!el)return;const L=L0;const n=L.length;const k=n+'|'+L.map(p=>p.live.room).join();if(el.dataset.k===k)return;el.dataset.k=k;
   el.innerHTML=`<div class="lc-t"><span class="ldot">● LIVE</span><b>Lives nos jogos</b></div><small>Assista quem está ao vivo jogando, mande presentes 🎁 e peça pra entrar na live.</small>
-    <div class="row"><button class="pri" data-v>👀 Ver lives${n?' ('+n+')':''}</button><button data-m>🎥 Fazer minha live</button></div>`;
+    <div class="row lvrow"><button class="lvbv" data-v><i>👀</i><span>Ver lives${n?' ('+n+')':''}</span></button><button class="lvbm" data-m><i class="rmdot"></i><span>Fazer minha live</span></button></div>`;
   el.querySelector('[data-v]').onclick=()=>{const body=h('div');const box=h('div','livebox');const L2=liveList().filter(p=>p.live.lv);
     if(L2.length){L2.forEach(p=>{const g=GAMES.find(x=>x.id===p.live.g);const c=h('div','livec',`<span class="ldot">🔴 LIVE</span><b>${esc(g?g.name:'Partida')}</b><small>${(p.live.n||[]).map(esc).join(' x ')}${p.live.w?` · 👀 ${p.live.w}`:''}</small>`);
       const b=h('button','pri','Entrar');b.onclick=()=>{$('#mod').classList.remove('on');watchRoom(p.live.room,p.live.g);};c.append(b);box.append(c);});body.append(box);}
@@ -3909,7 +3932,8 @@ async function toggleCam(){
 async function camStart(){
   await fetchIce();
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('Este navegador não libera a câmera');return;}
-  try{CAM.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:480},height:{ideal:640},aspectRatio:{ideal:0.75},frameRate:{ideal:15,max:20}},audio:false});}
+  try{CAM.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:720},height:{ideal:1280},frameRate:{ideal:15,max:20}},audio:false});
+    try{const tr=CAM.stream.getVideoTracks()[0],cp=tr.getCapabilities&&tr.getCapabilities();if(cp&&cp.zoom&&cp.zoom.min!=null)await tr.applyConstraints({advanced:[{zoom:cp.zoom.min}]});}catch(e){}}
   catch(x){const n=x&&x.name;
     if(n==='NotFoundError'||n==='OverconstrainedError')modal('📷 Câmera não encontrada','Este aparelho não tem câmera ligada ou o navegador não achou nenhuma. No notebook, confira se a webcam está conectada e ativada.',[{t:'OK',pri:1}]);
     else if(n==='NotReadableError'||n==='AbortError')modal('📷 Câmera ocupada','A câmera está sendo usada por outro programa (WhatsApp, Meet, outra aba…). Feche o outro programa e toque em 📷 Câmera de novo.',[{t:'OK',pri:1}]);
