@@ -1699,7 +1699,7 @@ button.pri{box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 4px 14px rgba(123,47
     <div id="wbal"></div>
     <div class="lbl">Depositar (simulado)</div>
     <div class="row" id="deps"></div>
-    <button id="saque" style="width:100%;margin-top:10px">Sacar (mínimo R$ 10,00)</button>
+    <button id="saque" style="display:none;width:100%;margin-top:10px">Sacar (mínimo 🪙 1.000)</button>
   </div>
   <div class="card"><div style="display:flex;align-items:center"><b class="ct" style="flex:1">🧾 Histórico</b><button id="histClr" style="font-size:12px;padding:7px 10px">🧹 Limpar</button></div><div id="histOld"></div><div class="hist" id="hist"></div></div>
   </details>
@@ -2222,7 +2222,7 @@ window.GF={barras,linha,rosca};
 /* ========== BASE ========== */
 const $=s=>document.querySelector(s);
 const h=(tag,cls,html)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;};
-const fmt=c=>'R$ '+(c/100).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const fmt=c=>'🪙 '+Math.round(c).toLocaleString('pt-BR');
 const rnd=n=>Math.floor(Math.random()*n);
 const pick=a=>a[rnd(a.length)];
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;};
@@ -2558,7 +2558,7 @@ function noFunds(stake,g){
   fx.innerHTML=`<div class="nobox"><div class="noic">💰</div><h2>Você está sem moedas pra jogar</h2>
     <p>Pra entrar numa partida valendo <b>${fmt(stake)}</b> você precisa ter moedas na sua <b>Carteira</b>. Seu saldo agora: <b class="r">${fmt(S.bal)}</b></p>
     <div class="notest">🧪 <b>Isso é uma carteira de TESTE.</b> As moedas são de mentira, nenhum dinheiro real entra ou sai. O jogo só funciona quando tem moeda lá — é só adicionar de graça.</div>
-    <ol><li>Toque em <b>Ir pra Carteira</b></li><li>Toque em <b>+ R$ 10,00</b> (ou outro valor)</li><li>Volte em <b>Jogos</b> e entre na partida</li></ol>
+    <ol><li>Toque em <b>Ir pra Carteira</b></li><li>Toque em <b>+ 🪙 1.000</b> (ou outro valor)</li><li>Volte em <b>Jogos</b> e entre na partida</li></ol>
     <button class="pri nogo">💰 Ir pra Carteira e adicionar moedas</button>
     <button class="nofr">👥 Jogar grátis com um amigo</button><button class="nox">Agora não</button></div>`;
   document.body.append(fx);const cl=()=>fx.remove();
@@ -2590,7 +2590,7 @@ document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#ba
 function renderWallet(){gemLojaUI();
   $('#wbal').textContent=fmt(S.bal);
   const d=$('#deps');d.innerHTML='';
-  [200,500,1000,2000].forEach(v=>{const b=h('button',null,'+ '+fmt(v));b.onclick=()=>{S.bal+=v;addHist('Depósito (simulado)',v);renderWallet();toast('Saldo de teste adicionado');};d.append(b);});
+  [200,500,1000,2000].forEach(v=>{const b=h('button',null,'+ '+fmt(v));b.onclick=()=>{S.bal+=v;addHist('Fichas grátis',v);renderWallet();toast('Fichas de teste adicionadas');};d.append(b);});
   histArquiva();const ob=$('#histOld');const ks=Object.keys(S.histArq||{}).map(Number).sort((a,b)=>b-a);ob.innerHTML='';
   if(S.histNovo&&ks.length){const k=ks[0];const d=h('div','vdi');d.style.cssText='margin:8px 0;border-color:#ffc23d;background:#ffc23d14';
     d.innerHTML=`<b>🗓️ Virou o mês!</b><small>O histórico de ${histNomeMes(k)} foi guardado em stand-by (fechado, ocupa pouco). Baixe em PDF se precisar ou limpe quando quiser.</small><div class="row" style="margin-top:8px"><button class="pri" data-pdf>📄 Baixar PDF</button><button data-ok>Ok, deixar guardado</button></div>`;
@@ -2605,7 +2605,7 @@ function renderWallet(){gemLojaUI();
   S.hist.forEach(x=>hl.append(h('div',null,`<i class="hic ${x.v>=0?'in':'out'}">${x.v>=0?'↓':'↑'}</i><span>${x.t}<small>${x.d}</small></span><b class="${x.v>=0?'pos':'neg'}">${x.v>=0?'+':'−'} ${fmt(Math.abs(x.v))}</b>`)));
 }
 $('#saque').onclick=()=>{
-  if(S.bal<1000){modal('Saque','O saque mínimo é R$ 10,00. Seu saldo: '+fmt(S.bal)+'.',[{t:'OK',pri:1}]);return;}
+  if(S.bal<1000){modal('Saque','O saque mínimo é 🪙 1.000 fichas. Seu saldo: '+fmt(S.bal)+'.',[{t:'OK',pri:1}]);return;}
   modal('Sacar '+fmt(S.bal)+'?','No modo teste o saque é só simulado. Na versão real, o valor iria para a chave Pix cadastrada após verificação de identidade.',[{t:'Cancelar'},{t:'Confirmar',pri:1,f:()=>{addHist('Saque (simulado)',-S.bal);S.bal=0;save();renderWallet();toast('Saque simulado registrado');}}]);
 };
 
@@ -3003,7 +3003,7 @@ function adAudio(){const on=ADSND&&hasTap();
 function ytSrc(id,play){const m=ADSND&&hasTap()?0:1;const one=document.querySelectorAll('#rotBox .rsl').length<2;return `https://www.youtube.com/embed/${id}?rel=0&playsinline=1&modestbranding=1&controls=0${one?`&loop=1&playlist=${id}`:''}&end=30&enablejsapi=1&origin=${encodeURIComponent(location.origin)}${play?`&autoplay=1&mute=${m}`:''}`;}
 /* ====================== TUTORIAL / DICAS ====================== */
 const TOUR=[
- {sel:'#balTeste',ic:'💰',t:'Seu saldo de teste',d:'Você já começa com <b>R$ 1.000 de teste</b> pra jogar. Não é dinheiro de verdade. Quando acabar, toque aqui no saldo pra adicionar mais de graça.'},
+ {sel:'#balTeste',ic:'💰',t:'Seu saldo de teste',d:'Você já começa com <b>🪙 100.000 fichas de teste</b> pra jogar. Fichas não são dinheiro. Quando acabar, toque aqui no saldo pra adicionar mais de graça.'},
  {sel:'#agora',ic:'🎉',t:'Acontecendo agora',d:'<b>Bingo ao vivo</b>, <b>check-in diário</b> com <i class="gv">💎</i> diamantes grátis, <b>Mesas da Casa</b> pra assistir e torneios. <b>Arraste pro lado</b> pra ver tudo.'},
  {sel:'#games .gc',ic:'🎮',t:'Escolha um jogo',d:'São <b>18 jogos</b>: Dama, Xadrez, Dominó, Sinuca, Truco, KABOOM e muito mais — role a tela pra ver todos. Toque num jogo e em <b>Entrar</b> pra jogar contra o robô, ou <b>Com amigo</b> pra jogar online.'},
  {sel:'#friendBtn',ic:'👥',t:'Jogue com um amigo',d:'Crie uma sala e mande o convite pelo WhatsApp. Seu amigo abre o link e cai direto na partida com você.'},
@@ -3015,7 +3015,7 @@ const TOUR=[
 const TIPS={
  online:{ic:'🟢',t:'Jogadores online',d:'Toque em <b>Convidar</b> pra chamar alguém pra jogar. Em <b>🔴 Ao vivo</b> você assiste partidas e pode entrar na fila pra jogar a próxima.'},
  chats:{ic:'💬',t:'Conversas',d:'Toque em <b>+ Nova</b> pra falar com alguém. Segure o 🎤 pra gravar áudio, use 📎 pra foto e 📞 pra ligar. No 🚫 você bloqueia quem incomodar.'},
- wallet:{ic:'💰',t:'Carteira de teste',d:'Esse saldo é <b>de mentira</b>, só pra testar. Toque em <b>+ R$ 10,00</b> (ou outro) pra adicionar mais moedas sempre que precisar.'},
+ wallet:{ic:'💰',t:'Carteira de teste',d:'Esse saldo é <b>de mentira</b>, só pra testar. Toque em <b>+ 🪙 1.000</b> (ou outro) pra adicionar mais fichas sempre que precisar.'},
  profile:{ic:'👤',t:'Seu perfil',d:'Toque no <b>📷</b> da sua foto pra trocar, ou em <b>✏️ Editar perfil</b> pra mudar o nome. Em <b>🎒 Acessórios</b> você equipa o que ganhou nos baús.'},
  bingo:{ic:'🎱',t:'Como jogar o Bingo',d:'Escolha quantas cartelas quer antes do sorteio. As bolas são marcadas sozinhas. Quando fechar uma <b>linha</b> ou a <b>cartela cheia</b>, toque rápido em <b>BINGO!</b>'},
  bag:{ic:'🎒',t:'Seus acessórios',d:'Toque em <b>Equipar</b> pra usar. Os bloqueados mostram em qual jogo saem. Itens repetidos viram <b>🪙 ouro</b> pra trocar pelo que quiser.'},
